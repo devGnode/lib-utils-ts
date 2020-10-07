@@ -1,5 +1,6 @@
 import {Utils} from "./Utils";
-import {HashMap} from "./List";
+import {ArrayList, HashMap} from "./List";
+import {format} from "util";
 /****
  * Native Object extension area
  *
@@ -19,7 +20,7 @@ Number.prototype.equals = String.prototype.equals = function(value : string | nu
     return this.valueOf()===value;
 };
 // @ts-ignore
-String.prototype.equalsToIgnoreCase = function ( value : string = "") : boolean {
+String.prototype.equalsIgnoreCase = function ( value : string = "") : boolean {
     return this.toString().toLowerCase()===value.toLowerCase();
 };
 // @ts-ignore
@@ -27,11 +28,23 @@ String.prototype.regExp = function ( regExp : RegExp = /.+/, callback : Function
     return Utils.regExp(regExp,this.toString(),callback);
 };
 // @ts-ignore
-String.repeat = function( char : string, loop : number = 0 ) : String{
+String.repeatString = function( char : string, loop : number = 0 ) : String{
     return new Array<any>(loop).fill(char.charAt(0)).join("");
 };
-String.prototype.contains = function( value : string ) :boolean{
-    return new RegExp(value).test(value);
+String.prototype.contains = function( value : string|RegExp ) :boolean{
+    return new RegExp(value).test(this.valueOf());
+};
+String.prototype.format = function( message : string, ... args : any[] ) :string{
+    return format.apply(null,Array.from([message]).concat(args));
+};
+String.prototype.isEmpty = function(  ) : boolean{
+    return this.valueOf().length===0;
+};
+String.prototype.explodeAsList = function( separator : string|RegExp ) : ArrayList<string>{
+    return ArrayList.of<string>(this.valueOf().split(separator));
+};
+String.prototype.exec = function( regExp : any ) : string[]{
+  return regExp.exec(this.valueOf());
 };
 /***
  Date Extends

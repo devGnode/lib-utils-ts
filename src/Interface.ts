@@ -1,7 +1,7 @@
 /****
  * Array
  */
-import {List} from "./List";
+import {ArrayList, List} from "./List";
 import {Stream} from "./stream";
 import {Predication} from "./Predication";
 import {Optional} from "./Optional";
@@ -35,9 +35,16 @@ declare global {
 
     interface String {
         equals( value : string  ) : boolean
-        equalsToIgnoreCase( value : string ) : boolean
+        equalsIgnoreCase( value : string ) : boolean
         regExp( regExp : RegExp, callback : Function ) : string
-        contains( value : string ): boolean
+        contains( value : string|RegExp ): boolean
+        format( message: string, ... args : any[] ) : string
+        isEmpty( ) : boolean
+        explodeAsList( separator : string|RegExp ) : ArrayList<string>
+        exec( regExp :  RegExp ) : string[]
+    }
+    interface StringConstructor{
+        repeatString(char : string, loop : number ) : string
     }
     interface Object {
        // stream( ) : Stream<T>

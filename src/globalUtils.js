@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Utils_1 = require("./Utils");
 var List_1 = require("./List");
+var util_1 = require("util");
 /****
  * Native Object extension area
  *
@@ -22,7 +23,7 @@ Number.prototype.equals = String.prototype.equals = function (value) {
     return this.valueOf() === value;
 };
 // @ts-ignore
-String.prototype.equalsToIgnoreCase = function (value) {
+String.prototype.equalsIgnoreCase = function (value) {
     if (value === void 0) { value = ""; }
     return this.toString().toLowerCase() === value.toLowerCase();
 };
@@ -33,12 +34,28 @@ String.prototype.regExp = function (regExp, callback) {
     return Utils_1.Utils.regExp(regExp, this.toString(), callback);
 };
 // @ts-ignore
-String.repeat = function (char, loop) {
+String.repeatString = function (char, loop) {
     if (loop === void 0) { loop = 0; }
     return new Array(loop).fill(char.charAt(0)).join("");
 };
 String.prototype.contains = function (value) {
-    return new RegExp(value).test(value);
+    return new RegExp(value).test(this.valueOf());
+};
+String.prototype.format = function (message) {
+    var args = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        args[_i - 1] = arguments[_i];
+    }
+    return util_1.format.apply(null, Array.from([message]).concat(args));
+};
+String.prototype.isEmpty = function () {
+    return this.valueOf().length === 0;
+};
+String.prototype.explodeAsList = function (separator) {
+    return List_1.ArrayList.of(this.valueOf().split(separator));
+};
+String.prototype.exec = function (regExp) {
+    return regExp.exec(this.valueOf());
 };
 /***
  Date Extends
