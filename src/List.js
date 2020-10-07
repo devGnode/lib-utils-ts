@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HasMap = exports.LinkedList = exports.ArrayList = void 0;
+exports.HashMap = exports.LinkedList = exports.ArrayList = void 0;
 var Exception_1 = require("./Exception");
 var stream_1 = require("./stream");
 var Iterator_1 = require("./Iterator");
@@ -69,6 +69,12 @@ var AbstractArrayList = /** @class */ (function () {
     AbstractArrayList.prototype.toArray = function () {
         return this.list;
     };
+    AbstractArrayList.prototype.set = function (key, value) {
+        this.get(key); // if not exists will be throw an exception
+        this.list[key] = value;
+        return value;
+    };
+    AbstractArrayList.of = function (list) { return new ArrayList(list); };
     AbstractArrayList.prototype.toString = function () {
         var out = "", tmp;
         for (tmp in this.list) {
@@ -80,7 +86,6 @@ var AbstractArrayList = /** @class */ (function () {
         out = out.replace(/\,\s*$/, "");
         return "[ " + out + " ]";
     };
-    AbstractArrayList.of = function (list) { return new ArrayList(list); };
     return AbstractArrayList;
 }());
 var ArrayList = /** @class */ (function (_super) {
@@ -130,7 +135,6 @@ var LinkedList = /** @class */ (function () {
         catch (e) {
         }
     };
-    //public stream()
     LinkedList.prototype.clear = function () { this.list = { length: 0 }; };
     LinkedList.of = function (list) {
         var out = new LinkedList();
@@ -142,18 +146,18 @@ var LinkedList = /** @class */ (function () {
     return LinkedList;
 }());
 exports.LinkedList = LinkedList;
-var HasMap = /** @class */ (function (_super) {
-    __extends(HasMap, _super);
-    function HasMap() {
+var HashMap = /** @class */ (function (_super) {
+    __extends(HashMap, _super);
+    function HashMap() {
         return _super.call(this) || this;
     }
-    HasMap.of = function (list) {
-        var out = new HasMap();
+    HashMap.of = function (list) {
+        var out = new HashMap();
         for (var tmp in list)
             out.put(tmp, list[tmp]);
         return out;
     };
-    return HasMap;
+    return HashMap;
 }(LinkedList));
-exports.HasMap = HasMap;
+exports.HashMap = HashMap;
 //# sourceMappingURL=List.js.map

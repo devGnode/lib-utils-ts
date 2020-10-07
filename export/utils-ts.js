@@ -1,5 +1,5 @@
 const {indexOfBoundException}  = require("../src/Exception");
-const { ArrayList, LinkedList, List, HasMap } = require('../src/ArrayList');
+const { ArrayList, LinkedList, List, HashMap } = require('../src/List');
 
 module.exports = {
 

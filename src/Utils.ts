@@ -1,8 +1,6 @@
-
 export class Utils{
 
-    public static regExp( regexp : RegExp = /.+/, value : string = "", callback : Function = undefined ){
-        if(typeof value !=="string") return value;
+    public static regExp( regexp : RegExp = /.+/, value : string, callback : Function  ){
         try{
             let tmp,toReplace;
             while(( tmp = regexp.exec(value) )){

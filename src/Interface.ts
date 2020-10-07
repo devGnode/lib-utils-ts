@@ -1,7 +1,3 @@
-/***
- *
- */
-
 /****
  * Array
  */
@@ -41,15 +37,25 @@ declare global {
         equals( value : string  ) : boolean
         equalsToIgnoreCase( value : string ) : boolean
         regExp( regExp : RegExp, callback : Function ) : string
+        contains( value : string ): boolean
     }
-
     interface Object {
        // stream( ) : Stream<T>
     }
-
     interface Number {
         equals( value : number ) : boolean
     }
+    interface Date {
+        plusDays( days : number ) : Date
+        lessDays( days : number ) : Date
+        plusYears( years : number ) : Date
+        lessYears( years : number ) : Date
+        dateFormat( patter : string ) : String
+    }
+    interface DateConstructor {
+        dateFormat( patter : string ) : String
+    }
+
 }
 
 export interface PredicationConstructor<T> {
@@ -79,6 +85,7 @@ export interface ArrayListInterface<T> {
     clone( ) : List<T>
     iterator() : Iterator<T>
     listIterator( index?: number ) : ListIterator<T>
+    set( key : number, value : T ) : T
 
     //to-do implement
     // remove( o : number | Object ) : boolean

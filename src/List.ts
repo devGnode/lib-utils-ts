@@ -1,7 +1,6 @@
 import {
     array,
     ArrayListInterface,
-    ascii,
     LinkedListInterface,
     ListKey,
     objectLikeArray,
@@ -68,6 +67,14 @@ class AbstractArrayList<T> implements ArrayListInterface<T>{
         return this.list;
     }
 
+    public set(key: number, value: T): T {
+        this.get(key); // if not exists will be throw an exception
+        this.list[key] = value;
+        return value;
+    }
+
+    public static of<T>( list : array<T> ): List<T> {return new ArrayList<T>(list);}
+
     public toString() : string{
         let out : string = "",tmp : any;
         for( tmp in this.list ){
@@ -79,7 +86,6 @@ class AbstractArrayList<T> implements ArrayListInterface<T>{
         return `[ ${out} ]`;
     }
 
-    public static of<T>( list : array<T> ): List<T> {return new ArrayList<T>(list);}
 }
 
 export class ArrayList<T> extends AbstractArrayList<T> {
@@ -127,7 +133,6 @@ export class LinkedList<V>  implements LinkedListInterface<V>{
 
         }
     }
-    //public stream()
 
     public clear() : void {this.list = {length:0};}
 
@@ -140,12 +145,12 @@ export class LinkedList<V>  implements LinkedListInterface<V>{
     get(key: string | number): V {return this.list[key];}
 }
 
-export class HasMap<V> extends LinkedList<V>{
+export class HashMap<V> extends LinkedList<V>{
 
     constructor() {super();}
 
-    public static of<V>( list : array<V> | {} ): HasMap<V> {
-        let out : HasMap<V> = new HasMap<V>();
+    public static of<V>( list : array<V> | {} ): HashMap<V> {
+        let out : HashMap<V> = new HashMap<V>();
         for( let tmp in  list )out.put(tmp,list[tmp]);
         return out;
     }

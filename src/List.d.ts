@@ -16,8 +16,9 @@ declare class AbstractArrayList<T> implements ArrayListInterface<T> {
     indexOf(object: Object): number;
     clone(): ArrayList<T>;
     toArray(): array<T>;
-    toString(): string;
+    set(key: number, value: T): T;
     static of<T>(list: array<T>): List<T>;
+    toString(): string;
 }
 export declare class ArrayList<T> extends AbstractArrayList<T> {
     constructor(list?: array<T>);
@@ -42,8 +43,8 @@ export declare class LinkedList<V> implements LinkedListInterface<V> {
     static of<V>(list: array<V> | {}): LinkedList<V>;
     get(key: string | number): V;
 }
-export declare class HasMap<V> extends LinkedList<V> {
+export declare class HashMap<V> extends LinkedList<V> {
     constructor();
-    static of<V>(list: array<V> | {}): HasMap<V>;
+    static of<V>(list: array<V> | {}): HashMap<V>;
 }
 export {};
