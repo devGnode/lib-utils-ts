@@ -11,8 +11,6 @@ This framework has been created only for Typescript projects, it's possible to u
   
 # Native Extension  
   
-# Native Extension  
-  
 These objects `Number`, `Str+ing`, `Date` have been extended. Below their prototype :
 
 ##### Number
