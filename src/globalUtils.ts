@@ -16,15 +16,15 @@ import {format} from "util";
  * String extends
  */
 // @ts-ignore
-Number.prototype.equals = String.prototype.equals = function(value : string | number = "") : boolean {
+Number.prototype.equals = String.prototype.equals = function(value : string | number ) : boolean {
     return this.valueOf()===value;
 };
 // @ts-ignore
-String.prototype.equalsIgnoreCase = function ( value : string = "") : boolean {
+String.prototype.equalsIgnoreCase = function ( value : string ) : boolean {
     return this.toString().toLowerCase()===value.toLowerCase();
 };
 // @ts-ignore
-String.prototype.regExp = function ( regExp : RegExp = /.+/, callback : Function = null ) : string{
+String.prototype.regExp = function ( regExp : RegExp = /.+/, callback : Function ) : string{
     return Utils.regExp(regExp,this.toString(),callback);
 };
 // @ts-ignore
@@ -43,7 +43,7 @@ String.prototype.isEmpty = function(  ) : boolean{
 String.prototype.explodeAsList = function( separator : string|RegExp ) : ArrayList<string>{
     return ArrayList.of<string>(this.valueOf().split(separator));
 };
-String.prototype.exec = function( regExp : any ) : string[]{
+String.prototype.exec = function( regExp : RegExp ) : string[]{
   return regExp.exec(this.valueOf());
 };
 /***

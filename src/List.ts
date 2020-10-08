@@ -142,7 +142,7 @@ export class LinkedList<V>  implements LinkedListInterface<V>{
         return out;
     }
 
-    get(key: string | number): V {return this.list[key];}
+    public get(key: string | number): V {return this.list[key];}
 }
 
 export class HashMap<V> extends LinkedList<V>{
