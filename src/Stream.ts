@@ -130,7 +130,7 @@ export class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<
 
     public  listIterator(): ListIterator<T> { return new ListIterator<T>(this.list); }
 
-    public static of<T>( list : array<T> ){return new Stream(list);}
+    public static of<T>( list : array<T> ): Stream<T>{return new Stream(list);}
 }
 
 export class ObjectStream<T> implements StreamAble<T,ObjectStream<T>>,OptionalMapInterface<T,ObjectStream<T>>{

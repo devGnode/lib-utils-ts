@@ -1,16 +1,43 @@
+<img src="https://img.shields.io/npm/v/lib-utils-ts"/> <img src="https://img.shields.io/snyk/vulnerabilities/npm/lib-utils-ts"/> <img src="https://img.shields.io/npm/l/lib-utils-ts"/> <img src="https://img.shields.io/github/languages/top/devGnode/lib-utils-ts"/> <img src="https://img.shields.io/node/v/lib-utils-ts"/> <img src="https://ci.appveyor.com/api/projects/status/github/devGnode/lib-utils-ts?svg=true&branch=develop"/>
 
 # Utils-ts
   
-This framework has been created only for Typescript projects, it possible to use it for javascript project but is not really adapte for this, cause generics is not support by the native javascript.  
+This framework has been created only for Typescript projects, it's possible to use it for javascript project but is not really adapted for this, cause generics is not support by the native javascript.  
   
   
 ## Set up  
   
-`npm i `  
+`npm i lib-utils-ts`  
   
-# Extended  
+# Native Extension  
   
-some text   
+# Native Extension  
+  
+These objects `Number`, `Str+ing`, `Date` have been extended. Below their prototype :
+
+##### Number
++ **equals**( value : number ) : boolean 
+
+#### String
++ **equals**( value :string  ) : boolean
++ **equalsIgnoreCase**( value : string ): boolean
++ **contains**( value: string ) : boolean
++ **isEmpty**( ) : boolean
++ **regExp**( regExp : RegExp, callback : Function ) : string
++ **repeatString**( char : String\[0\], loop : number ) : string
++ **format***( message : string, ... args : any\[\] ) : string
++ **exec**( regExp : RegExp ) : String\[\]
++ **explodeAsList**( ) : ArrayList\<string\>
+
+#### Date
++ **plusDays**( days : number ) : Date
++ **lessDays**( days : number) : Date
++ **plusYears**( years : number ): Date
++ **lessYears**( years : number ) :Date 
++ **dateFormat**( pattern : string ) : Date
+
+Static : 
++ **dateFormat**( pattern : string ) : Date
   
 ## Iterator\<E\>  
   
@@ -118,15 +145,35 @@ Optional.of("azertyuiop").map(pfn);
 let p : PredicationConstructor<String> = value => value.equals("azertyuiop");  
 ````  
   
-#### ListIterator\<E\>  
+## List 
   
+## ArrayList\<T\>
+
+**Constructor**  
   
-- List\<T\>  
-- LinkedList\<T\>  
-- HasMap\<T\>  
+- `( value : Array<T> ) : ArrayList<T>`  
   
+**Methods**  
+  
+- `add(...value: T[]): void`  
+- `get( key : number ) : T`  
+    + indexOfBoundException
+- `clear( ) : void`  
+- `size( ) : number`  
+- `isEmpty( ) : boolean`  
+- `stream( ) :  Stream<T>`  
+- `remove( ) : void`  
+- `iterator(): Iterator<T>`  
+- `listIterator( index number): ListIterator<T>`  
+- `indexOf( object : Object ) : number`  
+- `clone( ) : ArrayList<T>`  
+- `toArray(): array<T>`  
+- `set(key: number, value: T): T`  
+- `of<T>( list : array<T> ): List<T>`
+
+
 ```typescript  
-import {List,List,LinkedList,HashMap} from 'utils-ts';  
+import {List,List,LinkedList,HashMap} from 'lib-utils-ts';  
   
 let boolList : List<Boolean> = new List<Boolean>();  
 let stringList : List<String> = new List<String>();  
@@ -155,27 +202,78 @@ map.put("id",123456789);
 /**...*/  
   
 class Personal{  
- readonly p : number; readonly q : number;}  
+
+ readonly p : number; readonly q : number;
+
+}  
   
 let personalList : List<Personal> = new List<Personal>();  
   
 personalList.add(new Personal());  
   
 ```  
+
+## LinkedList\<V\> & HashMap\<V\> 
+
+**Constructor**  
   
-- Stream\<T\>  
+- `(  ) : LinkedList<V>`  or ` HashMap\<V\>` 
   
+**Methods**  
+  
+- `put( key : ListKey, value: V ): void`  
+- `delete( key : ListKey ) : void `  
+- `count( ) : number`
+- `each( callback : streamLambda<V>  ) : void`  
+- `count( ) : number`
+- `clear() : void `
+- `static of<V>( list : {} ):`
+- `get(key: string | number): V`
+
+## Stream\<T\>
+   
+**Constructor**  
+  
+- `( value : Array<T> ) : Stream<T>`  
+  
+**Methods**  
+  
+- `each( callback : streamLambda<T> ): Stream<T>`  
+- `mapTo<U>( callback : lambdaType<T,U> ): Stream<U>`  
+    + indexOfBoundException
+- `map( callback : streamLambda<T> ): Stream<T>`  
+- `mapToInt( callback : streamLambda<T> ) : Stream<Number>`  
+- `filter( callback : predication<T> ): Stream<T>`  
+- `limit( limit : Number ): Stream<T>`  
+- `findFirst( ) : Optional<T>`  
+- `findAny( ) : Optional<T>`  
+- `allMatch( callback : predication<T> ): boolean`  
+- `anyMatch( callback : predication<T> ): boolean`  
+- `noneMatch( callback : predication<T> ): boolean`  
+- `hasPeer(): boolean`  
+- `count(): number`  
+- `sum( ) : Optional<Number>`
+- `count(): number`  
+- `min(): Optional<Number>`  
+- `max() : Optional<Number>`  
+- `getList( ) : ArrayList<T>`  
+- `toArray() : array<T>`  
+- `iterator(): Iterator<T> `  
+- `listIterator(): ListIterator<T> `
+- ` of<T>( list : array<T> ): Stream<T>`
+
 ```typescript  
   
 let stream : Stream<String> = new Stream<String>();  
   
 ```  
+
   
 ## mix List & Stream  
   
 ```typescript  
   
-import {List,List,Stream} from 'utils-ts';  
+import {List,List,Stream} from 'lib-utils-ts';  
   
 let list : List<String> = new List<String>();  
   
@@ -186,5 +284,33 @@ list.add("");
   
 list = list.stream()  
  .filter(value=>value.length>0) .map(value=>value.equals("some text")) .getList();
+
+```
+
+
+```typescript  
+  
+import {List,List,Stream} from 'lib-utils-ts';  
+  
+let list : List<String> = new List<String>();  
+  
+list.add("title");  
+list.add("some text");  
+list.add("some text");  
+list.add("");  
+  
+let predicate : predicateFn<String> = ( value : String, key ) => value.length>0;
+
+// Accepted
+list = list.stream()
+    .filter(predicate)
+    .mapTo(value=>value.equals("some text"))
+    .getList();
+
+//or
+list = list.stream()
+    .filter(value=>value.length>0)
+    .mapTo(value=>value.equals("some text"))
+    .getList();
 
 ```
