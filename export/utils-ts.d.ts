@@ -1,2 +1,5 @@
 export * from '../src/List'
 export * from '../src/Exception'
+export * from '../src/Iterator'
+export * from '../src/Optional'
+export * from '../src/Stream'

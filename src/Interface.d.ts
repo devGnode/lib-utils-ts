@@ -145,13 +145,13 @@ export interface StreamAble<T, U> {
     count(): number;
 }
 export interface ArrayStream<T> {
-    each(callback: lambda): Stream<T>;
-    limit(): Stream<T>;
+    each(callback: streamLambda<T>): Stream<T>;
+    limit(limit: Number): Stream<T>;
     allMatch(callback: predication<T>): boolean;
     anyMatch(callback: predication<T>): boolean;
     noneMatch(callback: predication<T>): boolean;
     hasPeer(callback: predication<T>): boolean;
-    mapToInt(callback: lambda): Stream<Number>;
+    mapToInt(callback: streamLambda<T>): Stream<Number>;
     filter(predicate: predication<T>): Stream<T>;
     findFirst(): Optional<T>;
     findAny(): Optional<T>;
