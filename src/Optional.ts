@@ -8,7 +8,7 @@ export class Optional<T> implements OptionalInterface<T>,OptionalMapInterface<T,
 
     constructor( value : T ) {this.value = value;}
 
-    public isPresent( ){return this.value!==null;}
+    public isPresent( ){return this.value!==null&&this.value!==undefined;}
 
     public isEmpty( ){return !this.isPresent();}
 

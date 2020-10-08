@@ -1,11 +1,7 @@
-/***
- *
- */
-
 /****
  * Array
  */
-import {List} from "./List";
+import {ArrayList, List} from "./List";
 import {Stream} from "./stream";
 import {Predication} from "./Predication";
 import {Optional} from "./Optional";
@@ -39,17 +35,34 @@ declare global {
 
     interface String {
         equals( value : string  ) : boolean
-        equalsToIgnoreCase( value : string ) : boolean
+        equalsIgnoreCase( value : string ) : boolean
         regExp( regExp : RegExp, callback : Function ) : string
+        contains( value : string|RegExp ): boolean
+        format( message: string, ... args : any[] ) : string
+        isEmpty( ) : boolean
+        explodeAsList( separator : string|RegExp ) : ArrayList<string>
+        exec( regExp :  RegExp ) : string[]
     }
-
+    interface StringConstructor{
+        repeatString(char : string, loop : number ) : string
+    }
     interface Object {
        // stream( ) : Stream<T>
     }
-
     interface Number {
         equals( value : number ) : boolean
     }
+    interface Date {
+        plusDays( days : number ) : Date
+        lessDays( days : number ) : Date
+        plusYears( years : number ) : Date
+        lessYears( years : number ) : Date
+        dateFormat( patter : string ) : String
+    }
+    interface DateConstructor {
+        dateFormat( patter : string ) : String
+    }
+
 }
 
 export interface PredicationConstructor<T> {
@@ -79,6 +92,7 @@ export interface ArrayListInterface<T> {
     clone( ) : List<T>
     iterator() : Iterator<T>
     listIterator( index?: number ) : ListIterator<T>
+    set( key : number, value : T ) : T
 
     //to-do implement
     // remove( o : number | Object ) : boolean

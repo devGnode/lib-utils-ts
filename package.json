@@ -1,6 +1,6 @@
 {
   "name": "lib-utils-ts",
-  "version": "1.0.0-alpha",
+  "version": "1.0.3-alpha",
   "author": "Maroder - <devgnode@gmail.com>",
   "description": "",
   "repository": {
@@ -8,6 +8,7 @@
     "url": "git://github.com/devGnode/lib-utils-ts.git"
   },
   "main": "export/utils-ts.js",
+  "types": "export/utils-ts.d.ts",
   "scripts": {
     "test": "ts-node test.ts",
     "build": "tsc"

@@ -13,7 +13,22 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NoSuchElementException = exports.NullPointerException = exports.indexOfBoundException = void 0;
+exports.NoSuchElementException = exports.NullPointerException = exports.indexOfBoundException = exports.runtimeException = void 0;
+/***
+ * Exception Area
+ */
+var runtimeException = /** @class */ (function (_super) {
+    __extends(runtimeException, _super);
+    function runtimeException(message, code) {
+        if (message === void 0) { message = null; }
+        if (code === void 0) { code = 0; }
+        var _this = _super.call(this, message) || this;
+        _this.name = runtimeException["name"];
+        return _this;
+    }
+    return runtimeException;
+}(Error));
+exports.runtimeException = runtimeException;
 var indexOfBoundException = /** @class */ (function (_super) {
     __extends(indexOfBoundException, _super);
     function indexOfBoundException(message) {

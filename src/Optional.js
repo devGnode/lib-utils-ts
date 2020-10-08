@@ -8,7 +8,7 @@ var Optional = /** @class */ (function () {
         this.value = null;
         this.value = value;
     }
-    Optional.prototype.isPresent = function () { return this.value !== null; };
+    Optional.prototype.isPresent = function () { return this.value !== null && this.value !== undefined; };
     Optional.prototype.isEmpty = function () { return !this.isPresent(); };
     Optional.prototype.equals = function (obj) { return this.value === obj; };
     Optional.prototype.get = function () { return this.value; };

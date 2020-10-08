@@ -47,9 +47,7 @@ var Stream = /** @class */ (function () {
             else
                 state = callback.call(null, value, key);
             if ((state && _this.findLimit === null) || (state && (_this.findLimit > 0 && out.length < _this.findLimit))) {
-                if (typeof key === "number")
-                    keyInt = i++;
-                out[keyInt || String(key)] = value;
+                out[i++] = value;
             }
         });
         return new Stream(out);
@@ -61,7 +59,7 @@ var Stream = /** @class */ (function () {
     };
     Stream.prototype.findFirst = function () {
         var out = this.list[0];
-        return new Optional_1.Optional(this.list[0] === undefined ? out : null);
+        return new Optional_1.Optional(this.list[0] === undefined ? null : out);
     };
     Stream.prototype.findAny = function () {
         var out = this.list[Math.floor(Math.random() * (this.list.length - 1))];

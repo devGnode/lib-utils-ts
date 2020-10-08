@@ -57,8 +57,7 @@ export class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<
             }else state = callback.call(null,value,key);
 
             if((state && this.findLimit===null)||(state&&(this.findLimit>0&&out.length<this.findLimit))){
-                if(typeof  key === "number") keyInt = i++;
-                out[keyInt||String(key)] = value;
+                out[i++] = value;
             }
 
        });
@@ -73,7 +72,7 @@ export class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<
 
     public findFirst( ) : Optional<T> {
         let out : T = this.list[0];
-        return new Optional<T>(this.list[0]===undefined?out:null);
+        return new Optional<T>(this.list[0]===undefined?null:out);
     }
 
     public findAny( ) : Optional<T> {
