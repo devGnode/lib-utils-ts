@@ -13,10 +13,10 @@ import {format} from "util";
  *
  */
 /***
- * String extends
+ * String extension
  */
 // @ts-ignore
-Number.prototype.equals = String.prototype.equals = function(value : string | number ) : boolean {
+Boolean.prototype.equals = Number.prototype.equals = String.prototype.equals = function(value : string | number| boolean | Object ) : boolean {
     return this.valueOf()===value;
 };
 // @ts-ignore
@@ -34,8 +34,8 @@ String.repeatString = function( char : string, loop : number = 0 ) : String{
 String.prototype.contains = function( value : string|RegExp ) :boolean{
     return new RegExp(value).test(this.valueOf());
 };
-String.prototype.format = function( message : string, ... args : any[] ) :string{
-    return format.apply(null,Array.from([message]).concat(args));
+String.prototype.format = function(  ... args : any[] ) :string{
+    return format.apply(null,Array.from([this.valueOf()]).concat(args));
 };
 String.prototype.isEmpty = function(  ) : boolean{
     return this.valueOf().length===0;
@@ -46,8 +46,11 @@ String.prototype.explodeAsList = function( separator : string|RegExp ) : ArrayLi
 String.prototype.exec = function( regExp : RegExp ) : string[]{
   return regExp.exec(this.valueOf());
 };
+String.prototype.orDefault = function( value : String|string ): string{
+    return this.isEmpty()?value:this.valueOf();
+};
 /***
- Date Extends
+ Date Extension
  */
 Date.prototype.plusDays = function ( days : number ) : Date{
     return new Date( this.setDate( this.getDate() + days ) );
@@ -61,10 +64,13 @@ Date.prototype.plusYears = function ( years : number ) : Date{
 Date.prototype.lessYears = function ( years : number ) : Date{
     return this.plusYears(-Math.abs(years));
 };
+Date.prototype.elapsedTime = function( date : Date ) : number{
+    return this.getTime()- date.getTime();
+};
 let local_round = value=>value.length%2===0?"0"+value:value;
 Date.dateFormat = Date.prototype.dateFormat = function( pattern : string ) : string{
     let now =this instanceof Date ? this : new Date();
-    HashMap.of<string>({
+    HashMap.of<string,string>({
         YYYY:now.getFullYear(), YY: String(now.getFullYear()).substring(2,4),
         MM: local_round(now.getMonth()+1),dd: local_round(now.getDate()),
         hh:local_round(now.getHours()), mm: local_round( now.getMinutes()),
@@ -74,3 +80,16 @@ Date.dateFormat = Date.prototype.dateFormat = function( pattern : string ) : str
     });
     return pattern;
 };
+/***
+ Boolean extension
+ */
+Boolean.prototype.state = function(  expectTrue : any, orElse : any ) : any {
+    return this.valueOf()? expectTrue : orElse;
+};
+/***
+ Array extension
+ */
+Array.asList = function<T>( value : T[] ): ArrayList<T> {
+    return new ArrayList<T>(value);
+};
+

@@ -15,10 +15,10 @@ var util_1 = require("util");
  *
  */
 /***
- * String extends
+ * String extension
  */
 // @ts-ignore
-Number.prototype.equals = String.prototype.equals = function (value) {
+Boolean.prototype.equals = Number.prototype.equals = String.prototype.equals = function (value) {
     return this.valueOf() === value;
 };
 // @ts-ignore
@@ -38,12 +38,12 @@ String.repeatString = function (char, loop) {
 String.prototype.contains = function (value) {
     return new RegExp(value).test(this.valueOf());
 };
-String.prototype.format = function (message) {
+String.prototype.format = function () {
     var args = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        args[_i - 1] = arguments[_i];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
     }
-    return util_1.format.apply(null, Array.from([message]).concat(args));
+    return util_1.format.apply(null, Array.from([this.valueOf()]).concat(args));
 };
 String.prototype.isEmpty = function () {
     return this.valueOf().length === 0;
@@ -54,8 +54,11 @@ String.prototype.explodeAsList = function (separator) {
 String.prototype.exec = function (regExp) {
     return regExp.exec(this.valueOf());
 };
+String.prototype.orDefault = function (value) {
+    return this.isEmpty() ? value : this.valueOf();
+};
 /***
- Date Extends
+ Date Extension
  */
 Date.prototype.plusDays = function (days) {
     return new Date(this.setDate(this.getDate() + days));
@@ -69,6 +72,9 @@ Date.prototype.plusYears = function (years) {
 Date.prototype.lessYears = function (years) {
     return this.plusYears(-Math.abs(years));
 };
+Date.prototype.elapsedTime = function (date) {
+    return this.getTime() - date.getTime();
+};
 var local_round = function (value) { return value.length % 2 === 0 ? "0" + value : value; };
 Date.dateFormat = Date.prototype.dateFormat = function (pattern) {
     var now = this instanceof Date ? this : new Date();
@@ -81,5 +87,17 @@ Date.dateFormat = Date.prototype.dateFormat = function (pattern) {
         pattern = pattern.replace(new RegExp("\%" + key), value);
     });
     return pattern;
+};
+/***
+ Boolean extension
+ */
+Boolean.prototype.state = function (expectTrue, orElse) {
+    return this.valueOf() ? expectTrue : orElse;
+};
+/***
+ Array extension
+ */
+Array.asList = function (value) {
+    return new List_1.ArrayList(value);
 };
 //# sourceMappingURL=globalUtils.js.map

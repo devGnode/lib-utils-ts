@@ -1,5 +1,4 @@
-import { PredicateInterfaces, predication } from "./Interface";
-import { List } from "./List";
+import { List, PredicateInterfaces, predication } from "./Interface";
 export declare class Predication<T> implements PredicateInterfaces<T> {
     protected plist: List<predication<String>>;
     and(Predicate: any): Predication<T>;

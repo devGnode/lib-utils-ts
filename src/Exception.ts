@@ -1,12 +1,12 @@
 /***
  * Exception Area
  */
-export class runtimeException extends Error{
-    public name = runtimeException["name"];
+export class RuntimeException extends Error{
+    public name = RuntimeException["name"];
     constructor( message : string = null, code : number = 0 ) {super(message);}
 }
-export class indexOfBoundException extends Error{
-    public name = indexOfBoundException["name"];
+export class IndexOfBoundException extends Error{
+    public name = IndexOfBoundException["name"];
     constructor( message : string = null ) {super(message);}
 }
 export class NullPointerException extends Error{

@@ -1,11 +1,11 @@
 /***
  * Exception Area
  */
-export declare class runtimeException extends Error {
+export declare class RuntimeException extends Error {
     name: string;
     constructor(message?: string, code?: number);
 }
-export declare class indexOfBoundException extends Error {
+export declare class IndexOfBoundException extends Error {
     name: string;
     constructor(message?: string);
 }
