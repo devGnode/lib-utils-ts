@@ -1,7 +1,6 @@
 import {Utils} from "./Utils";
 import {ArrayList, HashMap} from "./List";
 import {format} from "util";
-import {Comparator} from "./Comparator";
 /****
  * Native Object extension area
  *

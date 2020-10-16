@@ -6,7 +6,6 @@ import {Stream} from "./stream";
 import {Predication} from "./Predication";
 import {Optional} from "./Optional";
 import {Iterator, ListIterator} from "./Iterator";
-import {Comparator} from "./Comparator";
 /**
  * typeOf
  */
