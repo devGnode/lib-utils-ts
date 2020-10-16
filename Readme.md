@@ -25,9 +25,10 @@ These objects `Number`, `Str+ing`, `Date` have been extended. Below their protot
 + **isEmpty**( ) : boolean
 + **regExp**( regExp : RegExp, callback : Function ) : string
 + **repeatString**( char : String\[0\], loop : number ) : string
-+ **format***( message : string, ... args : any\[\] ) : string
++ **format***( ... args : any\[\] ) : string
 + **exec**( regExp : RegExp ) : String\[\]
 + **explodeAsList**( ) : ArrayList\<string\>
++ **orDefault**( value : string ): string
 
 #### Date
 + **plusDays**( days : number ) : Date
@@ -35,10 +36,16 @@ These objects `Number`, `Str+ing`, `Date` have been extended. Below their protot
 + **plusYears**( years : number ): Date
 + **lessYears**( years : number ) :Date 
 + **dateFormat**( pattern : string ) : Date
++ **elapsedTime**( date : Date ) : number
 
 Static : 
 + **dateFormat**( pattern : string ) : Date
   
+#### Boolean
+
++ **state**( expectTrue : any, orElse : any ) : any
++ **equals**( value: boolean ) : boolean  
+
 ## Iterator\<E\>  
   
 **Methods**  
@@ -145,31 +152,84 @@ Optional.of("azertyuiop").map(pfn);
 let p : PredicationConstructor<String> = value => value.equals("azertyuiop");  
 ````  
   
-## List 
+# List 
+
+### Interface Iterable\<E\>
+
+`iterator( ): Iterator<T>`
+
+## Interface Collection\<E\>
+
+public interface Collection\<E\> extends Iterable\<E\>
+
+- `add( value : E ) : boolean`
+- `add(...value: E[]): boolean`
+- `addAll( collection : Collection<E> ) : boolean`
+- `clear( ) :void`
+- `contains( o : object  ) : boolean`
+- `containsAll( collection : Collection<E> ) : boolean`
+- `equals( o : object ) : boolean`
+- `remove( key : E ) : boolean`
+- `isEmpty( ) : boolean`
+- `size( ) :number`
+- `toArray( ) : array<E>`
+        
+## Interface List\<E\>
+
+- `get( index : number ) : E`
+- `indexOf( value : object  ) : number`
+- `lasIndexOf( value : object ) : number`
+- `set( index : number, element : E): E`
+- `listIterator( ) : ListIterator<E>`
+- `subList( from : number, to : number ): List<E>`
+- `stream( ) : Stream<E>`
+      
+## Interface Cloneable\<E\> 
+
+- `clone( ) : ArrayList<E>`
+ 
+## AbstractCollection\<E\>
+
+public abstract class **AbstractCollection\<E\>** implements **Collection\<E\>**
+
+## AbstractList\<E\>
+
+public abstract class **AbstractList\<E\>** extends **AbstractCollection\<E\>** implements **List\<E\>**,**NativeExportable\<E\>**
   
-## ArrayList\<T\>
+## ArrayList\<E\>
+
+public class **ArrayList\<E\>** extends **AbstractList\<E\>** implements **Cloneable\<E\>**,**List\<E\>**,**ArrayListInterfaceA\<E\>**
 
 **Constructor**  
   
-- `( value : Array<T> ) : ArrayList<T>`  
+- `( value : array<E> ) : ArrayList<E>`  
   
 **Methods**  
   
-- `add(...value: T[]): void`  
-- `get( key : number ) : T`  
-    + indexOfBoundException
+- `add(...value: E[]): void`  
+- `addAll( collection : Collection<E> ): boolean`
 - `clear( ) : void`  
+- `contains(o: Object): boolean`
+- `containsAll(collection: Collection<E>): boolean`
+- `equals(o: object): boolean`
+- `get( key : number ) : E`  
+    + indexOfBoundException
+- `isEmpty(): boolean`    
 - `size( ) : number`  
+- `iterator(): Iterator<E>`  
+- `listIterator( index number): ListIterator<E>` 
 - `isEmpty( ) : boolean`  
-- `stream( ) :  Stream<T>`  
-- `remove( ) : void`  
-- `iterator(): Iterator<T>`  
-- `listIterator( index number): ListIterator<T>`  
+- `stream( ) :  Stream<E>`  
+- `remove(key: E): boolean`  
 - `indexOf( object : Object ) : number`  
-- `clone( ) : ArrayList<T>`  
-- `toArray(): array<T>`  
-- `set(key: number, value: T): T`  
-- `of<T>( list : array<T> ): List<T>`
+- `lasIndexOf(value: object): number `
+- `set(index: number, element: E): E`
+- `subList(from: number, to: number): List<E>`
+- `shift( ) : E `
+- `pop( ): E`
+- `clone( ) : ArrayList<E>`  
+- `toArray(): array<E>`  
+- `of<E>( list : array<E> ): List<E>`
 
 
 ```typescript  
@@ -212,23 +272,109 @@ let personalList : List<Personal> = new List<Personal>();
 personalList.add(new Personal());  
   
 ```  
+# Set\<E\>
 
-## LinkedList\<V\> & HashMap\<V\> 
+public interface Set\<E\> extends Collection\<E\>
+
+## AbstractSet\<E\>
+
+public abstract class AbstractSet\<E\> extends AbstractCollection\<E\> implements Set\<E\>
+
+## SetList\<E\>
+
+public class SetList\<E\> extends AbstractSet\<E\>
 
 **Constructor**  
   
-- `(  ) : LinkedList<V>`  or ` HashMap\<V\>` 
+- `(  ) : SetList<E>` 
+
+# Interface Map\<E\>
+
+- `clear( ): void`
+- `containsKey( key : K ) : boolean`
+- `containsValue( value : V ): boolean`
+- `entrySet() : Set<MapEntries<K,V>>`
+- `equals( o : Object ) : boolean`
+- `get( key : Object ) : V`
+- `isEmpty( ) : boolean`
+- `keySet( ) : Set<K>`
+- `put( key : K, value : V ) : V`
+- `remove( o : Object ): V`
+- `size( ) : number`
+- `valueCollection( ) : Collection<V>`
+- `each( callback : streamLambda<V> ): void`
+    
+## MapEntry\<K,V\>
+
+public class MapEntry<K,V> implements MapEntries<K,V>
+
+**Constructor**
+
+- `(key: K, value: V) : MapEntry`
+
+Methods
+
+- `getKey(): K `
+- `getValue(): V`
+
+## AbstractMap\<K extends string|number,V\>
+
+public abstract class AbstractMap\<K extends string|number,V\> implements Map\<K,V\>
+
+## HashMap\<K,V\>
+
+public class HashMap\<K extends ListKey,V\> extends AbstractMap\<K , V\>
+
+**Constructor**  
+  
+- `(  ) : ` HashMap\<K,V\>` 
   
 **Methods**  
   
-- `put( key : ListKey, value: V ): void`  
-- `delete( key : ListKey ) : void `  
+- `put(key: K, value: V): V`
+- `get(key: Object): V`
+- `containsKey(key: Object): boolean`
+- `containsValue(value : V): boolean`
+- `keySet(): Set<K>`
+- `entrySet(): Set<MapEntry<K, V>>`
+- `equals(o: Object): boolean`
+- `remove(o: Object): V`  
 - `count( ) : number`
-- `each( callback : streamLambda<V>  ) : void`  
-- `count( ) : number`
+- `each(callback : streamLambdaK<V,K>): V`  
+- `size( ) : number`
+- `valueCollection(): Collection<V>`
 - `clear() : void `
 - `static of<V>( list : {} ):`
-- `get(key: string | number): V`
+
+```typescript  
+  
+import {HashMap} from 'lib-utils-ts';  
+  
+let list : HashMap<String,string> = new HashMap({});  
+  
+list.put("entry0","foo");  
+list.put("entry1","bar");  
+list.put("entry2","foo"); 
+
+/***
+ Iterable
+***/
+
+let hMap : HashMap<string, string> = new HashMap({ foo:"123",bar:"4545",});
+// let setHMap : Set<MapEntries<string, string>> = ghj.entrySet();
+let ItrHMap : Iterator<MapEntry<string, string>> = hMap.entrySet().iterator();
+
+while (ItrHMap.hasNext()){
+    let mapentry : MapEntry<string, string>  = ItrHMap.next();
+
+    console.log(mapentry.getKey(),mapentry.getValue());
+}
+
+// OR
+
+(<ArrayList<string>>ghj.valueCollection()).stream().each(value=>console.log(value));
+
+```
 
 ## Stream\<T\>
    

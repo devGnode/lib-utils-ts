@@ -19,19 +19,39 @@ var Exception_1 = require("./Exception");
  * @Iterator
  */
 var Iterator = /** @class */ (function () {
+    /***
+     *
+     * @param value
+     */
     function Iterator(value) {
+        /***
+         *
+         */
         this.iteration = 0;
+        /***
+         *
+         */
         this.list = [];
         this.list = value;
     }
+    /***
+     *
+     * @param key
+     */
     Iterator.prototype.get = function (key) {
         if (this.list[key] === undefined)
             throw new Exception_1.NoSuchElementException("elements [ " + key + " ] is not defined");
         return this.list[key];
     };
+    /***
+     *
+     */
     Iterator.prototype.hasNext = function () {
         return this.iteration + 1 <= this.list.length;
     };
+    /***
+     *
+     */
     Iterator.prototype.next = function () {
         var key = this.iteration;
         this.iteration++;
@@ -45,13 +65,24 @@ exports.Iterator = Iterator;
  */
 var ListIterator = /** @class */ (function (_super) {
     __extends(ListIterator, _super);
+    /***
+     *
+     * @param listIterate
+     */
     function ListIterator(listIterate) {
         return _super.call(this, listIterate) || this;
     }
+    /***
+     *
+     * @param e
+     */
     ListIterator.prototype.add = function (e) {
         this.list[this.iteration++] = e;
     };
     ;
+    /***
+     *
+     */
     ListIterator.prototype.hasPrevious = function () {
         try {
             this.get(this.iteration - 1);
@@ -61,6 +92,9 @@ var ListIterator = /** @class */ (function (_super) {
             return false;
         }
     };
+    /***
+     *
+     */
     ListIterator.prototype.nextIndex = function () {
         try {
             this.get(this.iteration);
@@ -71,10 +105,17 @@ var ListIterator = /** @class */ (function (_super) {
         }
     };
     ;
+    /***
+     *
+     */
     ListIterator.prototype.previous = function () {
         this.iteration--;
         return this.get(this.iteration);
     };
+    /***
+     *
+     * @param e
+     */
     ListIterator.prototype.set = function (e) {
         this.list[this.iteration - 1] = e;
     };

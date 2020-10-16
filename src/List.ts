@@ -1,158 +1,392 @@
 import {
     array,
-    ArrayListInterface,
-    LinkedListInterface,
-    ListKey,
-    objectLikeArray,
-    streamLambda
+    Collection, List,
+    ListKey, NativeExportable,
+    Cloneable, ArrayListInterfaceA,
+    Map, MapType, MapEntries,
+    Set, streamLambdaK, StreamAble
 } from "./Interface";
-import {indexOfBoundException} from "./Exception";
-import { Stream } from "./stream";
+import {IndexOfBoundException, NullPointerException} from "./Exception";
+import {ObjectStream, Stream} from "./stream";
 import {Iterator, ListIterator} from "./Iterator";
-
-class AbstractArrayList<T> implements ArrayListInterface<T>{
-
-    protected list : array<T> = null;
-
-    constructor( list :  array<T> = null) {this.list = list;}
-
-    public get( key : ListKey = 0 ) : T {
-        if( this.list[key]===undefined ) throw new indexOfBoundException(`${key} not found`);
-        return this.list[key];
+import {Define} from "./Define";
+/***
+ * public AbstractCollection<E>
+ */
+export abstract class AbstractCollection<E> implements Collection<E>{
+    /***
+     *
+     */
+    protected value : array<E> = null;
+    /***
+     *
+     * @param value
+     */
+    protected constructor( value : array<E> ) {this.value = value;}
+    /***
+     *
+     * @param value
+     */
+    public add(value: E): boolean {this.value.push(value);return true;}
+    /***
+     *
+     * @param collection
+     */
+    public addAll( collection : Collection<E> ): boolean {
+        let tmp : Iterator<E> = collection.iterator();
+        try{ while (tmp.hasNext()) this.value[this.value.length] = tmp.next();}catch (e) {
+            return false;
+        }
+        return true;
     }
-
-    public clear( ) : void { this.list = []; }
-
-    public size( ) : number {return this.list?.length; }
-
-    public isEmpty(): boolean {return this.size()===0;}
-
-    public stream() : Stream<T> {return new Stream<T>(this.list);}
-
-    public remove( from : number, to? : number  ) :void {
-        if( to === undefined ) to = from;
-        this.list = this.list
-            .slice(0,Math.abs(from))
-            .concat(this.list.slice( ( to<0? this.list.length-to:to )+1, this.list.length));
+    /***
+     *
+     */
+    public clear(): void {
+        let itr : Iterator<E> = this.iterator();
+        while( itr.hasNext() ) this.value.pop();
     }
-
-    public iterator(): Iterator<T> {
-        return new Iterator<T>(this.list);
-    }
-
-    public listIterator(index?: number): ListIterator<T> {
-        return new ListIterator<T>(this.list);
-    }
-
+    /***
+     *
+     * @param o
+     */
     public contains(o: Object): boolean {
-        let itr : Iterator<T> = this.iterator();
-        while( itr.hasNext() ) if( itr.next() === o ) return true;
+        let itr : Iterator<E> = this.iterator();
+        while( itr.hasNext() ) if( itr.next() === (<E>o) ) return true;
         return false;
     }
-
-    public indexOf( object : Object ) : number{
-        let itr : ListIterator<T> = this.listIterator();
-        while( itr.hasNext() )if( itr.next() === object )  return itr.nextIndex()-1;
-        return null;
+    /***
+     *
+     * @param collection
+     */
+    public containsAll(collection: Collection<E>): boolean {
+        let itr : Iterator<E> = collection.iterator();
+        while( itr.hasNext() ) if( !this.contains(itr.next()) )return false;
+        return true;
     }
+    /***
+     *
+     * @param o
+     */
+    public equals(o: object): boolean {return this.value === o;}
+    /***
+     *
+     */
+    public isEmpty(): boolean {return this.size()===0;}
+    /***
+     *
+     */
+    public iterator(): Iterator<E> { return new Iterator<E>(this.value); }
+    /***
+     *
+     * @param value
+     */
+    public remove(value: E): boolean {
+        let to : number = this.value.indexOf(value);
+        this.value = this.value
+            .slice(0,Math.abs(to))
+            .concat(this.value.slice( ( to<0? this.value.length-to:to )+1, this.value.length));
+        return true;
+    }
+    /****
+     *
+     */
+    public size( ) : number {return this.value?.length; }
+    /**
+     * @param
+     */
+     public toArray( ): array<E> {return this.value;}
+    /***
+     *
+     */
+    public toString( ):string{return this.value.toString();}
+    /***
+     *
+     */
+    public toJson(): MapType<any, any>{return {};}
+}
+/***
+ * AbstractList<E>
+ */
+export abstract class AbstractList<E> extends AbstractCollection<E> implements List<E>,NativeExportable<E>{
+    /***
+     *
+     */
+    protected modCount : number = 0;
+    /***
+     *
+     * @param value
+     */
+    protected constructor( value : array<E> ) {super(value);}
+    /**
+     *
+     * @param index
+     */
+    public get(index: number): E {
+        if( this.value[index]===undefined ) throw new IndexOfBoundException(`element ${index} not found`);
+        return this.value[index];
+    }
+    /***
+     *
+     * @param value
+     */
+    public indexOf(value: object ): number {return this.value.indexOf((<any>value));}
+    /***
+     *
+     * @param value
+     */
+    public lasIndexOf(value: object): number {return this.indexOf(value)-1;}
+    /**
+     * @param index
+     * @param element
+     */
+    public set(index: number, element: E): E {
+        Define.of<E>(element).orElseThrow(new NullPointerException("Element value is null"));
+        this.get(index); // IndexOfBoundException
+        return this.value[index] = element;
+    }
+    /***
+     *
+     */
+    public listIterator( ): ListIterator<E> {return new ListIterator<E>(this.value);}
+    /***
+     *
+     * @param from
+     * @param to
+     */
+    public subList(from: number, to: number): List<E> {
+        if( to === undefined ) to = from;
+        this.value = this.value
+            .slice(0,Math.abs(from))
+            .concat(this.value.slice( ( to<0? this.value.length-to:to )+1, this.value.length));
+        return this;
+    }
+    /***
+     *
+     */
+    public shift( ) : E { return this.value.shift();}
+    /***
+     *
+     */
+    public pop( ): E{ return this.value.pop(); }
+    /***
+     *
+     */
+    public stream(): Stream<E> {return new Stream<E>(this.value);}
+}
 
-    public clone( ) : ArrayList<T>{
-        let out : List<T> = new ArrayList<T>(),
-            itr : Iterator<T> = this.iterator();
+/***
+ * ArrayList<E> 
+ */
+export class ArrayList<E> extends AbstractList<E> implements Cloneable<E>,List<E>,ArrayListInterfaceA<E>{
+    /***
+     *
+     * @param value
+     */
+    constructor( value?: array<E>) {super(value||new Array<E>());}
+    /****
+     *
+     */
+    public clone(): ArrayList<E> {
+        let out : ArrayList<E> = new ArrayList<E>(), itr : Iterator<E> = this.iterator();
         while(itr.hasNext())out.add(itr.next());
         return out;
     }
-
-    public toArray(): array<T> {
-        return this.list;
-    }
-
-    public set(key: number, value: T): T {
-        this.get(key); // if not exists will be throw an exception
-        this.list[key] = value;
-        return value;
-    }
-
-    public static of<T>( list : array<T> ): List<T> {return new ArrayList<T>(list);}
-
-    public toString() : string{
-        let out : string = "",tmp : any;
-        for( tmp in this.list ){
-            let name;
-            if(typeof this.list[tmp] == 'object') name = `Object@${this.list[tmp].constructor?this.list[tmp].constructor.name: typeof this.list[tmp]}`;
-            out += `${tmp} = ${name}, `;
-        }
-        out = out.replace(/\,\s*$/,"");
-        return `[ ${out} ]`;
-    }
-
-}
-
-export class ArrayList<T> extends AbstractArrayList<T> {
-
-    constructor(list?: array<T>) {
-        super(list || new Array<T>());
-    }
-
-    // @ts-ignore
-    public add(...value: T[]): void {
-        let tmp : Iterator<T> = new Iterator<T>(value);
-        while (tmp.hasNext()) this.list[this.list.length] = tmp.next();
-    }
-
-}
-export type List<T> = ArrayList<T>;
-
-/***
- * LinkedList
- */
-export class LinkedList<V>  implements LinkedListInterface<V>{
-
-    protected list : objectLikeArray<V>= {length:0};
-    protected length  : number = 0;
     /***
-     * Constructor
+     *
+     * @param value
      */
-    constructor() {this.list = {length:0};}
-
-    public put( key : ListKey, value: V ): void {this.list[key] = value;}
-
-    public delete( key : ListKey ) : void {delete this.list[key];}
-
-    public count( ) : number {
-        let count : number = 0;
-        this.each(()=>{count++;});
-        return count;
+    public add(...value: E[]): boolean {
+        let tmp : Iterator<E> = new Iterator(value);
+        while (tmp.hasNext()) this.value[this.value.length] = tmp.next();
+        return true;
     }
+    /**
+     *
+     */
+    public static of<T>( value : array<T>) : ArrayList<T>{ return new ArrayList<T>(value); }
 
-    public each( callback : streamLambda<V>  ) : void {
-        let tmp : any;
-        try{
-            for(tmp in this.list) if(!tmp.equals("length"))callback(this.list[tmp],tmp);
-        }catch (e) {
-
-        }
+}
+/***
+ * AbstractSet<E>
+ */
+export abstract class AbstractSet<E> extends AbstractCollection<E> implements Set<E>{
+    /**
+     * @param value
+     */
+    protected constructor( value : array<E>) {super(value);}
+}
+/**
+ *
+ */
+export class SetList<E> extends AbstractSet<E>{
+    constructor(value : array<E>) {super(value);}
+}
+/***
+ *
+ */
+export class MapEntry<K,V> implements MapEntries<K,V>{
+    /***
+     *
+     */
+    private readonly key: K;
+    private readonly value : V;
+    /***
+     *
+     * @param key
+     * @param value
+     */
+    constructor(key: K, value: V) {
+        this.key    =key;
+        this.value  =value;
     }
-
-    public clear() : void {this.list = {length:0};}
-
-    public static of<V>( list : array<V> | {} ): LinkedList<V> {
-        let out : LinkedList<V> = new LinkedList<V>();
-        for( let tmp in  list )out.put(tmp,list[tmp]);
-        return out;
-    }
-
-    public get(key: string | number): V {return this.list[key];}
+    /***
+     *
+     */
+    public getKey(): K {return this.key;}
+    /***
+     *
+     */
+    public getValue(): V {return this.value;}
 }
 
-export class HashMap<V> extends LinkedList<V>{
+export abstract class AbstractMap<K extends string|number,V> implements Map<K,V>{
+    /***
+     *
+     */
+    protected value : MapType<K,V> = null;
+    protected length : number = 0;
+    /***
+     *
+     * @param value
+     */
+    protected constructor( value : MapType<K,V> ) {this.value = value;}
+    /***
+     *
+     */
+    public clear(): void {this.value = <any>{};}
+    /***
+     *
+     * @param key
+     */
+    public containsKey(key: Object): boolean {
+        return Stream.of(this.keySet().toArray())
+            .anyMatch(value=>value===key);
+    }
+    /****
+     *
+     * @param value
+     */
+    public containsValue(value : V): boolean {
+        return Stream.of(this.entrySet().toArray())
+            .anyMatch( map=> map.getValue()===value);
+    }
+    /***
+     *
+     */
+    public keySet(): Set<K> {
+        let out : List<K> = new ArrayList();
+        this.each((dummy, key)=>{out.add(key);});
+        return new SetList<K>(out.toArray());
+    }
+    /***
+     *
+     * @param o
+     */
+    public equals(o: Object): boolean {return this.value===o;}
+    /***
+     *
+     * @param callback
+     */
+    public each(callback : streamLambdaK<V,K>): V{
+        let tmp : any,ret : any;
+        try{for(tmp in this.value)if((ret = callback(this.value[tmp],tmp)))break;}catch (e) {
+            console.warn(e)
+        }
+        return <V>ret;
+    }
+    /***
+     *
+     * @param key
+     */
+    public get(key: Object): V { this.length++; return this.value[<any>key];}
+    /***
+     *
+     */
+    public isEmpty(): boolean {return this.size()<=0;}
+    /***
+     *
+     */
+    public entrySet(): Set<MapEntry<K, V>> {
+        let out : List<MapEntry<K,V>> = new ArrayList();
+        this.each((value, key)=>{out.add(new MapEntry<K,V>(key,value));});
+        return new SetList<MapEntry<K, V>>(out.toArray());
+    }
+    /***
+     *
+     * @param key
+     * @param value
+     */
+    public put(key: K, value: V): V { this.length++; return this.value[key] = value;}
+    /***
+     *
+     * @param o
+     */
+    public remove(o: Object): V {
+       return this.each((value ,key)=>{
+           if(String(o).equals(String(key))){
+               let find : V = value;
+               delete this.value[key];
+               this.length--;
+               return find;
+           }
+       });
+    }
+    /***
+     *
+     */
+    public size(): number {return this.length;}
+    /***
+     *
+     * for get a ArrayList just cast this value
+     * like (<ArrayList<T>>valueCollection())
+     */
+    public valueCollection(): Collection<V> {
+        let out : V[] = [];
+        this.each(value=>{out.push(value);});
+        return new ArrayList(out);
+    }
+    /**
+     *
+     */
+    public stream(): StreamAble<K, V> {return new ObjectStream(this.value);}
 
-    constructor() {super();}
+}
 
-    public static of<V>( list : array<V> | {} ): HashMap<V> {
-        let out : HashMap<V> = new HashMap<V>();
-        for( let tmp in  list )out.put(tmp,list[tmp]);
+export class HashMap<K extends ListKey,V> extends AbstractMap<K , V>{
+    /**
+     *
+     * @param value
+     */
+    constructor( value : MapType<K, V> ) {super(value);}
+    /*
+     *
+     */
+    public toJson(): MapType<any, any>{
+        let out : MapType<any, any> = {}, tmp : MapEntry<K, V>,
+            itr : Iterator<MapEntry<K, V>> = this.entrySet().iterator();
+        while( itr.hasNext() ){
+            tmp = itr.next();
+            if( tmp.getValue() instanceof HashMap) out[tmp.getKey()] =(<any>tmp.getValue()).toJson();
+            else if( tmp.getValue() instanceof ArrayList) out[tmp.getKey()]= (<any>tmp.getValue()).toArray();
+            else{
+                out[tmp.getKey()]=tmp.getValue();
+            }
+        }
         return out;
     }
-
+    /***
+     *
+     */
+    public static of<K  extends ListKey,V>( value : any ): HashMap<K, V> { return new HashMap<K,V>(value); }
 }

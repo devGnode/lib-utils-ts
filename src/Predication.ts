@@ -1,5 +1,5 @@
-import {PredicateInterfaces, predication} from "./Interface";
-import {ArrayList, List} from "./List";
+import {List, PredicateInterfaces, predication} from "./Interface";
+import {ArrayList} from "./List";
 
 
 export class Predication<T> implements PredicateInterfaces<T>{

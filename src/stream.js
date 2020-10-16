@@ -1,10 +1,26 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ObjectStream = exports.Stream = void 0;
+exports.ObjectStream = exports.AbstractObjectStream = exports.Stream = void 0;
 var List_1 = require("./List");
 var Predication_1 = require("./Predication");
 var Optional_1 = require("./Optional");
 var Iterator_1 = require("./Iterator");
+/***
+ *
+ */
 var Stream = /** @class */ (function () {
     function Stream(value) {
         if (value === void 0) { value = null; }
@@ -12,6 +28,10 @@ var Stream = /** @class */ (function () {
         this.findLimit = null;
         this.list = value;
     }
+    /***
+     *
+     * @param callback
+     */
     Stream.prototype.each = function (callback) {
         var tmp, key;
         for (tmp in this.list) {
@@ -22,6 +42,10 @@ var Stream = /** @class */ (function () {
         }
         return this;
     };
+    /**
+     *
+     * @param callback
+     */
     Stream.prototype.mapTo = function (callback) {
         var _this = this;
         var out = [], i = 0;
@@ -29,12 +53,20 @@ var Stream = /** @class */ (function () {
         out = out.length > 0 ? out : null;
         return new Stream(out);
     };
-    Stream.prototype.map = function (callback) {
-        return this.mapTo(callback);
-    };
-    Stream.prototype.mapToInt = function (callback) {
-        return this.mapTo(callback);
-    };
+    /***
+     *
+     * @param callback
+     */
+    Stream.prototype.map = function (callback) { return this.mapTo(callback); };
+    /**
+     *
+     * @param callback
+     */
+    Stream.prototype.mapToInt = function (callback) { return this.mapTo(callback); };
+    /***
+     *
+     * @param callback
+     */
     Stream.prototype.filter = function (callback) {
         var _this = this;
         if (callback === void 0) { callback = (function () { return void 0; }); }
@@ -52,6 +84,10 @@ var Stream = /** @class */ (function () {
         });
         return new Stream(out);
     };
+    /***
+     *
+     * @param limit
+     */
     Stream.prototype.limit = function (limit) {
         if (limit === void 0) { limit = null; }
         this.findLimit = limit;
@@ -109,48 +145,90 @@ var Stream = /** @class */ (function () {
     return Stream;
 }());
 exports.Stream = Stream;
-var ObjectStream = /** @class */ (function () {
-    function ObjectStream(value) {
-        if (value === void 0) { value = null; }
+var AbstractObjectStream = /** @class */ (function () {
+    function AbstractObjectStream(value) {
         this.list = null;
         this.findLimit = null;
         this.list = value;
     }
-    ObjectStream.prototype.map = function (callback) {
-        throw new Error("Method not implemented.");
+    AbstractObjectStream.prototype.each = function (callback) {
+        var tmp, ret;
+        try {
+            for (tmp in this.list)
+                if ((ret = callback(this.list[tmp], tmp)))
+                    break;
+        }
+        catch (e) {
+            console.warn(e);
+        }
+        return new ObjectStream(ret);
     };
-    ObjectStream.prototype.allMatch = function (callback) {
-        if (callback === void 0) { callback = (function () { return void 0; }); }
-        return false;
-    };
-    ObjectStream.prototype.anyMatch = function (callback) {
-        if (callback === void 0) { callback = (function () { return void 0; }); }
-        return false;
-    };
-    ObjectStream.prototype.count = function () {
-        return 0;
-    };
-    ObjectStream.prototype.each = function (callback) {
-        return undefined;
-    };
-    ObjectStream.prototype.filter = function (predicate) {
+    AbstractObjectStream.prototype.filter = function (predicate) {
+        var _this = this;
         if (predicate === void 0) { predicate = (function () { return void 0; }); }
-        return undefined;
+        var out = {}, i = 0;
+        this.each(function (value, key) {
+            var state, keyInt = 0;
+            if (predicate instanceof Predication_1.Predication) {
+                state = predicate.test(value);
+            }
+            else
+                state = predicate.call(null, value, key);
+            if ((state && _this.findLimit === null) || (state && (_this.findLimit > 0 && i < _this.findLimit))) {
+                out[key] = value;
+                i++;
+            }
+        });
+        return new ObjectStream(out);
     };
-    ObjectStream.prototype.findAny = function () {
-        return undefined;
+    AbstractObjectStream.prototype.mapTo = function (callback) {
+        var _this = this;
+        var out = {};
+        this.each(function (value, key) { return out[key] = callback.call(_this, value, key); });
+        out = out.length > 0 ? out : null;
+        return new ObjectStream(out);
     };
-    ObjectStream.prototype.findFirst = function () {
-        return undefined;
+    AbstractObjectStream.prototype.map = function (callback) { return this.mapTo(callback); };
+    AbstractObjectStream.prototype.findAny = function () {
+        var out = null, i = 0, rand = Math.floor(Math.random() * (this.count() - 1));
+        this.each(function (value) { if (rand === i)
+            return out = value; i++; });
+        return new Optional_1.Optional(out);
     };
-    ObjectStream.prototype.limit = function () {
-        return undefined;
+    AbstractObjectStream.prototype.findFirst = function () {
+        var out = null;
+        this.each(function (value) { return out = value; });
+        return new Optional_1.Optional(out);
     };
-    ObjectStream.prototype.noneMatch = function (callback) {
-        if (callback === void 0) { callback = (function () { return void 0; }); }
-        return false;
+    AbstractObjectStream.prototype.limit = function (limit) {
+        this.findLimit = limit;
+        return this;
     };
-    return ObjectStream;
+    AbstractObjectStream.prototype.noneMatch = function (callback) { return !this.anyMatch(callback); };
+    AbstractObjectStream.prototype.allMatch = function (callback) { return this.filter(callback).count() === this.count(); };
+    AbstractObjectStream.prototype.anyMatch = function (callback) { return this.filter(callback).count() > 0; };
+    AbstractObjectStream.prototype.count = function () {
+        var c = 0;
+        this.each(function () { c++; });
+        return c;
+    };
+    /***
+     *
+     * @param list
+     */
+    AbstractObjectStream.of = function (list) { return new ObjectStream(list); };
+    return AbstractObjectStream;
 }());
+exports.AbstractObjectStream = AbstractObjectStream;
+/***
+ *
+ */
+var ObjectStream = /** @class */ (function (_super) {
+    __extends(ObjectStream, _super);
+    function ObjectStream(value) {
+        return _super.call(this, value) || this;
+    }
+    return ObjectStream;
+}(AbstractObjectStream));
 exports.ObjectStream = ObjectStream;
 //# sourceMappingURL=stream.js.map

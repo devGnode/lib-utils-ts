@@ -4,14 +4,16 @@ import {
     array,
     ArrayStream,
     ascii,
-    lambdaType, objectLikeArray,
+    lambdaType, MapType,
     OptionalMapInterface,
     predication, StreamAble,
-    streamLambda
+    streamLambda, streamLambdaK
 } from "./Interface";
 import {Optional} from "./Optional";
 import {Iterator, ListIterator} from "./Iterator";
-
+/***
+ *
+ */
 export class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<T>>{
 
     private readonly list : array<T>= null;
@@ -20,7 +22,10 @@ export class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<
     constructor( value : array<T> = null ) {
         this.list = value;
     }
-
+    /***
+     *
+     * @param callback
+     */
     public each( callback : streamLambda<T> ): Stream<T> {
         let tmp : string|number, key : ascii;
 
@@ -31,22 +36,30 @@ export class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<
         }
         return this;
     }
-
+    /**
+     *
+     * @param callback
+     */
    public mapTo<U>( callback : lambdaType<T,U> ): Stream<U> {
         let out : array<U> = [], i = 0;
         this.each((value,key)=>out[i++]=callback.call(this,value,key));
         out = out.length>0?out:null;
         return new Stream<U>(out);
    }
-
-   public map( callback : streamLambda<T> ): Stream<T> {
-      return this.mapTo<T>(callback);
-   }
-
-   public mapToInt( callback : streamLambda<T> ) : Stream<Number>{
-       return this.mapTo<Number>(callback);
-   }
-
+    /***
+     *
+     * @param callback
+     */
+   public map( callback : streamLambda<T> ): Stream<T> {return this.mapTo<T>(callback);}
+    /**
+     *
+     * @param callback
+     */
+   public mapToInt( callback : streamLambda<T> ) : Stream<Number>{return this.mapTo<Number>(callback);}
+    /***
+     *
+     * @param callback
+     */
    public filter( callback : predication<T> = (()=> void 0)): Stream<T> {
        let out : array<T> = [], i : number = 0;
 
@@ -64,7 +77,10 @@ export class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<
 
         return new Stream<T>( out );
    }
-
+    /***
+     *
+     * @param limit
+     */
     public limit( limit : Number = null ): Stream<T> {
         this.findLimit = limit;
         return this;
@@ -133,53 +149,88 @@ export class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<
     public static of<T>( list : array<T> ): Stream<T>{return new Stream(list);}
 }
 
-export class ObjectStream<T> implements StreamAble<T,ObjectStream<T>>,OptionalMapInterface<T,ObjectStream<T>>{
+export abstract class AbstractObjectStream<K extends string|number,V> implements StreamAble<K,V>{
 
-    private readonly list : objectLikeArray<T> = null;
+    private readonly list : MapType<K,V> = null;
     private findLimit : Number      = null;
 
-    constructor( value : objectLikeArray<T> = null ) {
+    protected constructor( value : MapType<K,V> ) {
         this.list = value;
     }
 
-    map(callback: streamLambda<T>): ObjectStream<T> {
-        throw new Error("Method not implemented.");
+    public each(callback: streamLambdaK<V,K> ): ObjectStream<K, V> {
+        let tmp : any,ret : any;
+        try{for(tmp in this.list)if((ret = callback(this.list[tmp],tmp)))break;}catch (e) {
+            console.warn(e)
+        }
+        return new ObjectStream(ret);
     }
 
-    allMatch( callback: predication<T> = (()=> void 0) ): boolean {
-        return false;
+    public filter(predicate: predication<V> = (()=> void 0) ): ObjectStream<K, V> {
+        let out : MapType<K, V> = <any>{}, i : number = 0;
+
+        this.each((value,key)=>{
+            let state : boolean, keyInt : number = 0;
+            if( predicate instanceof Predication ){
+                state = predicate.test(value);
+            }else state = predicate.call(null,value,key);
+
+            if((state && this.findLimit===null)||(state&&(this.findLimit>0&&i<this.findLimit))){
+                out[key] = value;
+                i++;
+            }
+
+        });
+        return new ObjectStream<K,V>( out );
     }
 
-    anyMatch(callback: predication<T> = (()=> void 0)): boolean {
-        return false;
+    public mapTo<U>(callback: streamLambdaK<U,K> ): StreamAble<K,U>{
+        let out : any = {};
+        this.each((value,key)=>out[key]=callback.call(this,value,key));
+        out = out.length>0?out:null;
+        return new ObjectStream<K,U>(out);
     }
 
-    count(): number {
-        return 0;
+    public map( callback: streamLambdaK<V,K> ) : StreamAble<K, V>{return this.mapTo<V>(callback);}
+
+    public findAny(): Optional<V> {
+        let out : V = null, i: number= 0,
+            rand :number = Math.floor(Math.random()*(this.count()-1));
+        this.each(value=>{ if(rand===i)return out=value; i++; });
+        return new Optional<V>(out);
     }
 
-    each(callback: streamLambda<T> ): ObjectStream<T> {
-        return undefined;
+    public findFirst(): Optional<V> {
+        let out : V = null;
+        this.each(value=>out=value);
+        return new Optional<V>(out);
     }
 
-    filter(predicate: predication<T> = (()=> void 0) ): ObjectStream<T> {
-        return undefined;
+    public limit( limit : number): ObjectStream<K, V> {
+        this.findLimit = limit;
+        return this;
     }
 
-    findAny(): Optional<T> {
-        return undefined;
-    }
+    public noneMatch(callback : predication<V> ): boolean {return !this.anyMatch(callback);}
 
-    findFirst(): Optional<T> {
-        return undefined;
-    }
+    public allMatch( callback: predication<V> ): boolean {return this.filter(callback).count()===this.count();}
 
-    limit(): Stream<T> {
-        return undefined;
-    }
+    public anyMatch(callback: predication<V> ): boolean {return this.filter(callback).count()>0;}
 
-    noneMatch(callback : predication<T> = (()=> void 0)): boolean {
-        return false;
+    public count(): number {
+        let c:number=0;
+        this.each(()=>{ c++ });
+        return c;
     }
-
+    /***
+     *
+     * @param list
+     */
+    public static of<K extends string|number,V>( list : MapType<K, V> ): ObjectStream<K,V> {return new ObjectStream<K, V>(list);}
+}
+/***
+ *
+ */
+export class ObjectStream<K extends string|number,V> extends AbstractObjectStream<K,V>{
+    constructor(value : MapType<K,V> ) {super(value);}
 }
