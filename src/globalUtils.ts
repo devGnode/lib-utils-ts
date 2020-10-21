@@ -49,6 +49,10 @@ String.prototype.exec = function( regExp : RegExp ) : string[]{
 String.prototype.orDefault = function( value : String|string ): string{
     return this.isEmpty()?value:this.valueOf();
 };
+//https://stackoverflow.com/questions/5326165/use-javascript-to-stripslashes-possible/14623073
+String.prototype.stripSlashes = function() :string{
+    return this.replace(/\\(.)/mg, "$1");
+};
 /***
  Date Extension
  */

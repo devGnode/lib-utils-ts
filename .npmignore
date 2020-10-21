@@ -1,5 +1,15 @@
 # CI/CD
 *.yml
+
 #
-Test.*
-test.*
+.idea/
+.vscode/
+node_modules/
+logs/
+# test
+Test*.js
+Test*.ts
+Test*.js.map
+*.p12
+*.crt
+*.pem

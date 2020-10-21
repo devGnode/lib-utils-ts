@@ -6,6 +6,7 @@ import {Stream} from "./stream";
 import {Predication} from "./Predication";
 import {Optional} from "./Optional";
 import {Iterator, ListIterator} from "./Iterator";
+import {InputStreamReader, OutputStreamWriter} from "./file/IOStream";
 /**
  * typeOf
  */
@@ -50,6 +51,7 @@ declare global {
         explodeAsList( separator : string|RegExp ) : ArrayList<string>
         exec( regExp :  RegExp ) : string[]
         orDefault( value : string ): string
+        stripSlashes() :string
     }
     interface StringConstructor{
         repeatString(char : string, loop : number ) : string
@@ -211,12 +213,23 @@ export interface Map<K extends string|number,V> {
     each( callback : streamLambda<V> ): void
     stream( ) : StreamAble<K,V>
 }
-
+/***
+ * 
+ */
 export interface MapEntries<K,V> {
     getKey() : K
     getValue( ) : V
 }
-
+/***
+ * 
+ */
+export interface Enumeration<E> {
+    hasMoreElement( ) :boolean
+    next(): E
+}
+/****
+ * 
+ */
 export interface OptionalMapInterface<T,U> {
     /**
      * @param callback
@@ -314,3 +327,37 @@ export interface IDefine<T>{
      */
     valueOf( ): T
 }
+export interface path {
+    getPath():string
+    getFileName( ):string
+}
+/***
+ * Properties
+ */
+export interface IPropertiesFile<K extends string|number,V>{
+    /***
+     *
+     * @param key
+     * @param value
+     */
+    setProperty( key : K, value : V ) : void
+    /***
+     *
+     * @param key
+     * @param defaultValue
+     */
+    getProperty( key: K, defaultValue?: V ) : V
+}
+/***
+ *
+ */
+export interface IPropertiesFileA extends IPropertiesFile<string, any>{}
+/***
+ */
+export interface properties<V> extends  IPropertiesFile<string, V>{
+    hasKey( key : string ):boolean
+    load( input : InputStreamReader ) : void
+    stringPropertiesName( ) : Set<string>
+    store( output: OutputStreamWriter ) : void
+}
+

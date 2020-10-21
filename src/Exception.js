@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NoSuchElementException = exports.NullPointerException = exports.IndexOfBoundException = exports.RuntimeException = void 0;
+exports.JSONException = exports.IOException = exports.NoSuchElementException = exports.NullPointerException = exports.IndexOfBoundException = exports.RuntimeException = void 0;
 /***
  * Exception Area
  */
@@ -62,4 +62,26 @@ var NoSuchElementException = /** @class */ (function (_super) {
     return NoSuchElementException;
 }(Error));
 exports.NoSuchElementException = NoSuchElementException;
+var IOException = /** @class */ (function (_super) {
+    __extends(IOException, _super);
+    function IOException(message) {
+        if (message === void 0) { message = null; }
+        var _this = _super.call(this, message) || this;
+        _this.name = IOException["name"];
+        return _this;
+    }
+    return IOException;
+}(Error));
+exports.IOException = IOException;
+var JSONException = /** @class */ (function (_super) {
+    __extends(JSONException, _super);
+    function JSONException(message) {
+        if (message === void 0) { message = null; }
+        var _this = _super.call(this, message) || this;
+        _this.name = IOException["name"];
+        return _this;
+    }
+    return JSONException;
+}(Error));
+exports.JSONException = JSONException;
 //# sourceMappingURL=Exception.js.map
