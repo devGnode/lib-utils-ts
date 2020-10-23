@@ -1,3 +1,6 @@
+const  {AbstractProperties, Properties, PropertiesA, PropertiesJson}  = require("../src/file/Properties");
+const  {Path}  = require("../src/file/Path");
+const  {AbstractIOFile, InputStreamReader, FileReader, OutputStreamWriter, FileWriter}  = require("../src/file/IOStream");
 const  {Define} = require("../src/Define");
 const {Stream,AbstractObjectStream,ObjectStream} = require("../src/Stream");
 const {Optional}  = require("../src/Optional");
@@ -26,6 +29,18 @@ module.exports = {
     ObjectStream:ObjectStream,
 
     Define:Define,
+
+    AbstractProperties:AbstractProperties,
+    PropertiesA:PropertiesA,
+    Properties: Properties,
+    PropertiesJson: PropertiesJson,
+
+    Path: Path,
+    AbstractIOFile:AbstractIOFile,
+    InputStreamReader:InputStreamReader,
+    FileReader:FileReader,
+    OutputStreamWriter:OutputStreamWriter,
+    FileWriter:FileWriter,
 
     IndexOfBoundException:IndexOfBoundException,
     NullPointerException:NullPointerException,

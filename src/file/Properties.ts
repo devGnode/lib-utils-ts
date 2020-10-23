@@ -1,9 +1,10 @@
 import { List, properties, Set} from "../Interface";
-import {FileReaderA, FileWriter, OutputStreamWriter,InputStreamReader} from "./IOStream";
+import {FileReader, FileWriter, OutputStreamWriter,InputStreamReader} from "./IOStream";
 import {Define} from "../Define";
 import {JSONException, NullPointerException} from "../Exception";
 import { HashMap} from "../List";
 import {Iterator} from "../Iterator";
+import "../globalUtils";
 /***
  * Properties class, exportable :
  *   interface properties<V> extends IProperties<string,V>
@@ -56,9 +57,6 @@ export abstract class AbstractProperties<V> implements properties<V>{
      */
     public stringPropertiesName( ) : Set<string>{return this.prop.keySet();}
     /***
-     * This method doesnt't support this annotation :
-     *  prop=foo \
-     *      bar
      *
      * Throw :
      *  - NullPointerException
@@ -67,22 +65,32 @@ export abstract class AbstractProperties<V> implements properties<V>{
      */
     public load( input : InputStreamReader ) : void{
         Define.of(input).orElseThrow(new NullPointerException("target is null !"));
-        let chunk:string;
+        let chunk:string = null,chunkKey:string,push:boolean=false;
         this.path = input.getPath();
         input.getLines()
             .stream()
-            .filter(value=>!value.contains(/^\s*(\#|\!)/))
+            .filter(value=>!value.contains(/^\t*\s*(\#|\!)/))
             .each(value=>{
-                value.regExp(/\s*([\w\d\_\-\:\.]{1,})\=\s*([^\r\n]*)/,(dummy,value)=>{
-                    console.log(String(value[2]).stripSlashes());
-                    if( String(value[2]).stripSlashes().contains(/\s*\\$/) ){
-                        chunk = String(value[2]).replace(/\\$/,"");
-                    }
+                if(chunk===null)
+                value.regExp(/\t*\s*([\w\d\_\-\:\.]{1,})\t*\s*\=\t*\s*([^\r\n]*)/,(dummy,value)=>{
+
+                    if( String(value[2]).stripSlashes().contains(/\s{1,}\\\t*\s*$/) ){
+                        chunkKey = value[1];
+                        chunk = String(value[2]).replace(/\\$|^\s*\t*/g,"");
+                    }else
                     this.prop.put(value[1],value[2]);
                     return "";
                 });
+                else if(chunk!==null&&!push){
+
+                    if( !String(value).stripSlashes().contains(/\s{1,}\\\t*\s*$/) )push=true;
+                    chunk += value.replace(/\\$|^\s*\t*/g,"");
+                    if(push) {
+                        this.prop.put(chunkKey,<any>chunk);
+                        chunkKey=chunk=null;push=false;
+                    }
+                }
             });
-        console.log(this.prop);
     }
     /***
      *
@@ -90,7 +98,7 @@ export abstract class AbstractProperties<V> implements properties<V>{
     public store( output: OutputStreamWriter ): void{
         let out:string="";
         this.prop.stream().each((value,key)=>{out+= `${key}=${value}\n`;});
-        output.write(out,false);
+        output.write(out,false,"utf8",true);
     }
     /***
      * Update properties before use this method, call load method.
@@ -100,7 +108,7 @@ export abstract class AbstractProperties<V> implements properties<V>{
      */
     public update( ) :void{
         Define.of(this.path).orElseThrow(new NullPointerException("path is null !"));
-        let file : List<string> = new FileReaderA(this.path).getLines(),
+        let file : List<string> = new FileReader(this.path).getLines(),
             itr : Iterator<string> = this.prop.keySet().iterator(),
             str:string,found:boolean=false;
 
@@ -119,22 +127,23 @@ export abstract class AbstractProperties<V> implements properties<V>{
     }
 }
 /***
- *
+ *  if you want declare yourself your generic type for your
+ *  properties file, Properties class have a `Object` type
  */
-export class PropertiesA<V> extends AbstractProperties<V>{
-    constructor() {super();}
-}
+export class PropertiesA<V> extends AbstractProperties<V>{constructor() {super();}}
 /***
  *
  */
-export class Properties extends AbstractProperties<Object>{
-    constructor() {super();}
-}
+export class Properties extends AbstractProperties<Object>{constructor() {super();}}
 /**
  *
  *
  * */
 export class PropertiesJson extends AbstractProperties<Object>{
+    /***
+     *
+     */
+    private truncate:boolean = false;
     /***
      *
      */
@@ -160,11 +169,12 @@ export class PropertiesJson extends AbstractProperties<Object>{
         let out:string="";
         Define.of(output).orElseThrow(new NullPointerException("target output stream is null !"));
         this.prop.stream().each((value,key)=>{out+= `\t"${key}":"${value}",\n`;});
-        output.write("{\n%s\n}".format(out.replace(/,\n*$/,"")),false);
+        output.write("{\n%s\n}".format(out.replace(/,\n*$/,"")),this.truncate);
+        this.truncate=false;
     }
     /***
      * As Json properties file doesn't support comment
-     * just make a store
+     * just make a store with truncate file
      */
-    public update( ) :void{this.store(new FileWriter(this.path));}
+    public update( ) :void{ this.truncate=true; this.store(new FileWriter(this.path));}
 }

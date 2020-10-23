@@ -1,6 +1,9 @@
 import * as path from "path";
 import {fileStream} from "./IOStream";
-
+import "../globalUtils";
+/***
+ * Wrapper Class
+ */
 export class Path implements fileStream{
 
     private readonly path :string;
@@ -11,12 +14,12 @@ export class Path implements fileStream{
         let p = path.parse(pathA);
         this.path = p.dir;
         this.file = p.name;
-        this.ext = p.ext;
+        this.ext  = p.ext;
     }
 
-    public get( ):string{return this.path+"/"+this.file+"."+this.ext;}
+    public get( ):string{return "%s/%s.%s".format(this.path,this.file,this.ext);}
 
-    getPath(): string {return this.path;}
+    public  getPath(): string {return this.path;}
 
-    getFileName(): string {return "%s.%s".format(this.file,this.ext);}
+    public  getFileName(): string {return "%s.%s".format(this.file,this.ext);}
 }

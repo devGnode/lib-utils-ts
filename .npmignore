@@ -6,9 +6,13 @@
 .vscode/
 node_modules/
 logs/
+
 # test
 Test*.js
 Test*.ts
+test.*
+Test.*
+*.properties
 Test*.js.map
 *.p12
 *.crt
