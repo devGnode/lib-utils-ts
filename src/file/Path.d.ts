@@ -1,4 +1,5 @@
-import { fileStream } from "./IOStream";
+import "../globalUtils";
+import { fileStream } from "../Interface";
 export declare class Path implements fileStream {
     private readonly path;
     private readonly file;

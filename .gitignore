@@ -5,17 +5,12 @@ node_modules/
 logs/
 
 #
-**/*.d.ts
-**/*.js
-**/*.js.map
+
 
 # test
-Test*.js
-Test*.ts
 test.*
 Test.*
 *.properties
-Test*.js.map
 *.p12
 *.crt
 *.pem

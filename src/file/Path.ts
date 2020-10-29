@@ -1,6 +1,6 @@
 import * as path from "path";
-import {fileStream} from "./IOStream";
 import "../globalUtils";
+import {fileStream} from "../Interface";
 /***
  * Wrapper Class
  */

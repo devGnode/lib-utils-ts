@@ -2,42 +2,15 @@ import { ArrayList } from "./List";
 import { array, ArrayStream, lambdaType, MapType, OptionalMapInterface, predication, StreamAble, streamLambda, streamLambdaK } from "./Interface";
 import { Optional } from "./Optional";
 import { Iterator, ListIterator } from "./Iterator";
-/***
- *
- */
 export declare class Stream<T> implements ArrayStream<T>, OptionalMapInterface<T, Stream<T>> {
     private readonly list;
     private findLimit;
     constructor(value?: array<T>);
-    /***
-     *
-     * @param callback
-     */
     each(callback: streamLambda<T>): Stream<T>;
-    /**
-     *
-     * @param callback
-     */
     mapTo<U>(callback: lambdaType<T, U>): Stream<U>;
-    /***
-     *
-     * @param callback
-     */
     map(callback: streamLambda<T>): Stream<T>;
-    /**
-     *
-     * @param callback
-     */
     mapToInt(callback: streamLambda<T>): Stream<Number>;
-    /***
-     *
-     * @param callback
-     */
     filter(callback?: predication<T>): Stream<T>;
-    /***
-     *
-     * @param limit
-     */
     limit(limit?: Number): Stream<T>;
     findFirst(): Optional<T>;
     findAny(): Optional<T>;
@@ -71,15 +44,8 @@ export declare abstract class AbstractObjectStream<K extends string | number, V>
     allMatch(callback: predication<V>): boolean;
     anyMatch(callback: predication<V>): boolean;
     count(): number;
-    /***
-     *
-     * @param list
-     */
     static of<K extends string | number, V>(list: MapType<K, V>): ObjectStream<K, V>;
 }
-/***
- *
- */
 export declare class ObjectStream<K extends string | number, V> extends AbstractObjectStream<K, V> {
     constructor(value: MapType<K, V>);
 }
