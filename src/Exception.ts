@@ -17,3 +17,11 @@ export class NoSuchElementException extends Error{
     public name = NoSuchElementException["name"];
     constructor( message : string = null ) {super(message);}
 }
+export class IOException extends Error{
+    public name = IOException["name"];
+    constructor( message : string = null ) {super(message);}
+}
+export class JSONException extends Error{
+    public name = IOException["name"];
+    constructor( message : string = null ) {super(message);}
+}

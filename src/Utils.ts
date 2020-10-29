@@ -13,4 +13,15 @@ export class Utils{
         return value;
     }
 
+    public static merge( objA : Object = {}, ...args : Object[] ) : Object{
+        try{
+            let i:number=0,objB:Object;
+            while((objB=args[i])) {
+                for (let tmp in objB) if (!objA[tmp]) objA[tmp] = objB[tmp];
+                i++;
+            }
+        }catch (e) {return objA;}
+        return objA;
+    }
+
 }

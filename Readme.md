@@ -1,4 +1,4 @@
-<img src="https://img.shields.io/npm/v/lib-utils-ts"/> <img src="https://img.shields.io/snyk/vulnerabilities/npm/lib-utils-ts"/> <img src="https://img.shields.io/npm/l/lib-utils-ts"/> <img src="https://img.shields.io/github/languages/top/devGnode/lib-utils-ts"/> <img src="https://img.shields.io/node/v/lib-utils-ts"/> <img src="https://ci.appveyor.com/api/projects/status/github/devGnode/lib-utils-ts?svg=true&branch=develop"/>
+ <img src="https://img.shields.io/npm/v/lib-utils-ts"/> <img src="https://img.shields.io/snyk/vulnerabilities/npm/lib-utils-ts"/> <img src="https://img.shields.io/npm/l/lib-utils-ts"/> <img src="https://img.shields.io/github/languages/top/devGnode/lib-utils-ts"/> <img src="https://img.shields.io/node/v/lib-utils-ts"/> <img src="https://ci.appveyor.com/api/projects/status/github/devGnode/lib-utils-ts?svg=true&branch=develop"/>
 
 # Utils-ts
   
@@ -23,7 +23,7 @@ These objects `Number`, `Str+ing`, `Date` have been extended. Below their protot
 + **isEmpty**( ) : boolean
 + **regExp**( regExp : RegExp, callback : Function ) : string
 + **repeatString**( char : String\[0\], loop : number ) : string
-+ **format***( ... args : any\[\] ) : string
++ **format**( ... args : any\[\] ) : string
 + **exec**( regExp : RegExp ) : String\[\]
 + **explodeAsList**( ) : ArrayList\<string\>
 + **orDefault**( value : string ): string
@@ -43,6 +43,18 @@ Static :
 
 + **state**( expectTrue : any, orElse : any ) : any
 + **equals**( value: boolean ) : boolean  
+
+Static : 
+
++ **of**( value: Object) : Boolean
+
+#### Number
+
++ **equals**( value : number ) : boolean
+
+Static : 
+
++ **of**( value: Object) : number
 
 ## Iterator\<E\>  
   
@@ -99,25 +111,25 @@ while( itr_la.hasPrevious() ){
   
 **Constructor**  
   
-- `( value : T ) : Optional<T>`  
+- `( value : E ) : Optional<E>`  
   
 **Methods**  
   
-- `get( ) : T`  
+- `get( ) : E`  
 - `equals( obj : Object ) : boolean`  
 - `isEmpty( ) : boolean`  
 - `isPresent( ) : boolean`  
-- `orElse( other : T ) : T`  
-- `orElseThrow( other : T ) : T`  
-- `filter( predicate : predication<T>) : Optional<T>`  
-- `map( callback : lambaStream<T>  ) : Optional<T>`  
-- `mapTo( callback : lambdaType<T,U> ) : Optional<U>`  
+- `orElse( other : E ) : E`  
+- `orElseThrow( other : E ) : E`  
+- `filter( predicate : predication<E>) : Optional<E>`  
+- `map( callback : lambaStream<E>  ) : Optional<E>`  
+- `mapTo( callback : lambdaType<E,U> ) : Optional<U>`  
   
 **Static** :  
   
-- `of<T>( value : T )  : Optional<T>`  
+- `of<T>( value : E )  : Optional<E>`  
  - NullPointerException  
-- `ofNullable<T>( value : T )  : Optional<T>`  
+- `ofNullable<E>( value : E )  : Optional<E>`  
   
 ````typescript  
   
@@ -375,7 +387,9 @@ while (ItrHMap.hasNext()){
 ```
 
 ## Stream\<T\>
-   
+ 
+Public  class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<T>>
+  
 **Constructor**  
   
 - `( value : Array<T> ) : Stream<T>`  
@@ -458,3 +472,65 @@ list = list.stream()
     .getList();
 
 ```
+## Properties
+
+#### Interface 
+
+public export interface IPropertiesFile\<K extends string|number,V\>
+
+- `setProperty( key : K, value : V ) : void` 
+    - NullPointerException : if key is null
+- `getProperty( key: K, defaultValue?: V ) : V` 
+    - NullPointerException : if key is null
+
+public interface properties\<V\> extends  IPropertiesFile\<string, V\>
+
+- `hasKey( key : string ):boolean` 
+- `load( input : InputStreamReader ) : void` 
+    - NullPointerException
+    - IOException
+- `stringPropertiesName( ) : Set<string>` 
+- `store( output: OutputStreamWriter ) : void` 
+- `update( ) : void`
+    - NullPointerException
+    - IOException
+
+#### Class 
+
+public Abstract class AbstractProperties\<V\> implements properties\<V\>
+
+public class PropertiesA\<V\> extends AbstractProperties\<V\>
+
+```typescript  
+
+let prop : PropertiesA<string> = new PropertiesA<string>();
+prop.setProperty("foo","bar");
+
+```
+
+public class Properties extends AbstractProperties\<Object\>
+
+```typescript  
+
+let prop : Properties = new Properties();
+prop.setProperty("foo","bar");
+prop.setProperty("foo",1234);
+prop.setProperty("foo",true);
+```
+
+public class PropertiesJson extends AbstractProperties\<Object\>
+
+```typescript  
+
+let prop : PropertiesJson = new PropertiesJson();
+prop.setProperty("foo","bar");
+prop.setProperty("foo",1234);
+prop.setProperty("foo",true);
+prop.store(new FileWriter("./foo/bar.json"));
+```
+
+
+## Feature 
+
+- 1.2.0-beta : Implementation and stabilisation of `ArrayList<E>`, `HashMap<E>`, `Stream<E>` ..
+- 1.2.1-beta : Implementation of `Properties` class and wrap file class `FileReader` and `FileWriter`
