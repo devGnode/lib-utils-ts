@@ -1,23 +1,14 @@
-/****
- * Array
- */
 import { ArrayList } from "./List";
 import { Stream } from "./stream";
 import { Predication } from "./Predication";
 import { Optional } from "./Optional";
 import { Iterator, ListIterator } from "./Iterator";
 import { InputStreamReader, OutputStreamWriter } from "./file/IOStream";
-/**
- * typeOf
- */
 export declare type NullType = null | undefined;
 export declare type Null<T> = T | NullType;
 declare type PrimAscii = number | string;
 export declare type ascii = Number | String | PrimAscii;
 export declare type lambda = ((value: any, key?: ascii) => void) | Function;
-/***
- * List<T>
- */
 export declare type optional<T, V> = T & {
     __sizeof__: V;
 };
@@ -26,11 +17,6 @@ export declare type array<T> = T[] | Array<T> | null;
 export declare type MapType<K extends ListKey, V> = {
     [J in K]: V;
 };
-/***
- * PredicateFn return Boolean
- * in this version predication
- * look like to Comparator
- */
 export declare type predicateFn<T> = (value: T, key?: ascii) => Boolean;
 export declare type predicationK<K, V> = (value: V, key: K) => Boolean;
 export declare type predication<T> = predicateFn<T> | Predication<T> | PredicationConstructor<T>;
@@ -38,9 +24,6 @@ export declare type streamLambda<T> = (value: T, key?: ascii) => T | void;
 export declare type streamLambdaK<V, K> = (value: V, key?: K) => V | void;
 export declare type streamLambdaTo<T, U> = (value: T, key?: ascii) => U | void;
 export declare type lambdaType<T, U> = streamLambdaTo<T, U> | streamLambda<T> | streamLambdaK<T, U>;
-/***
- * Global Extended native object prototype
- */
 declare global {
     interface String {
         equals(value: string): boolean;
@@ -60,6 +43,9 @@ declare global {
     interface Number {
         equals(value: number): boolean;
     }
+    interface NumberConstructor {
+        of(value: Object): number;
+    }
     interface Date {
         plusDays(days: number): Date;
         lessDays(days: number): Date;
@@ -75,39 +61,23 @@ declare global {
         state(expectTrue: any, orElse: any): any;
         equals(value: boolean): boolean;
     }
+    interface BooleanConstructor {
+        of(value: Object): Boolean;
+    }
     interface ArrayConstructor {
         asList<T>(value: T[]): ArrayList<T>;
     }
 }
-/***
- *
- */
 export interface PredicationConstructor<T> {
     (value: T, key?: ascii): boolean;
     test?(value: T): boolean;
     and?(Predicate: predication<T>): Predication<T>;
 }
-/**
- *
- */
 export interface PredicateInterfaces<T> {
-    /***
-     *
-     * @param value
-     */
     test(value: T): boolean;
-    /***
-     *
-     * @param Predicate
-     */
     and(Predicate: predication<T>): Predication<T>;
 }
-/***
- */
 export interface Iterable<T> {
-    /**
-     * iterate object element
-     */
     iterator(): Iterator<T>;
 }
 export interface Collection<E> extends Iterable<E> {
@@ -135,51 +105,20 @@ export interface List<E> extends Collection<E> {
     subList(from: number, to: number): List<E>;
     stream(): Stream<E>;
 }
-/***
- *
- */
 export interface Cloneable<E> {
-    /***
-     *
-     */
     clone(): ArrayList<E>;
 }
-/***
- *
- */
 export interface NativeExportable<T> {
-    /***
-     *
-     */
     shift(): T;
-    /***
-     *
-     */
     pop(): T;
 }
-/***
- *
- */
 export interface ArrayListInterfaceA<E> {
 }
-/***
- *
- */
 export interface Sortable<T> {
     compareTo(obj: T): any;
 }
-/***
- * Iterator interfaces
- * E => array<T> => T[] | Array<T>
- */
 export interface IteratorInterface<E> {
-    /***
-     *
-     */
     hasNext(): boolean;
-    /***
-     *
-     */
     next(): E;
 }
 export interface listIteratorInterface<E> {
@@ -205,65 +144,26 @@ export interface Map<K extends string | number, V> {
     each(callback: streamLambda<V>): void;
     stream(): StreamAble<K, V>;
 }
-/***
- *
- */
 export interface MapEntries<K, V> {
     getKey(): K;
     getValue(): V;
 }
-/***
- *
- */
 export interface Enumeration<E> {
     hasMoreElement(): boolean;
     next(): E;
 }
-/****
- *
- */
 export interface OptionalMapInterface<T, U> {
-    /**
-     * @param callback
-     */
     map(callback: streamLambda<T>): U;
 }
-/**
- *
- */
 export interface OptionalInterface<T> {
-    /***
-     *
-     */
     equals(obj: Object): boolean;
-    /***
-     *
-     */
     get(): T;
-    /**
-     * @param predicate
-     */
     filter(predicate: predication<T>): Optional<T>;
-    /***
-     *
-     */
     isEmpty(): boolean;
-    /***
-     *
-     */
     isPresent(): boolean;
-    /***
-     * @param other
-     */
     orElse(other: T): T;
-    /***
-     * @param other
-     */
     orElseThrow(other: Object): T;
 }
-/***
- *
- */
 export interface StreamAble<K extends string | number, V> {
     each(callback: lambda): StreamAble<K, V>;
     limit(limit: number): StreamAble<K, V>;
@@ -287,67 +187,43 @@ export interface ArrayStream<T> extends StreamAble<number, T> {
     toArray(): array<T>;
     getList(): ArrayList<T>;
 }
-/****
- * <Definer null value>
- * */
 export interface IDefine<T> {
-    /***
-     *
-     */
     isNullable(): boolean;
-    /***
-     *
-     */
     isNull(): boolean;
-    /***
-     *
-     */
     orNull(value: T): T;
-    /***
-     *
-     */
     orElseThrow(exception: Error | TypeError): T;
-    /***
-     *
-     */
     getType(): string;
-    /***
-     *
-     */
     valueOf(): T;
 }
 export interface path {
     getPath(): string;
     getFileName(): string;
 }
-/***
- * Properties
- */
 export interface IPropertiesFile<K extends string | number, V> {
-    /***
-     *
-     * @param key
-     * @param value
-     */
     setProperty(key: K, value: V): void;
-    /***
-     *
-     * @param key
-     * @param defaultValue
-     */
     getProperty(key: K, defaultValue?: V): V;
 }
-/***
- *
- */
 export interface IPropertiesFileA extends IPropertiesFile<string, any> {
 }
-/***
- */
 export interface properties<V> extends IPropertiesFile<string, V> {
     hasKey(key: string): boolean;
     load(input: InputStreamReader): void;
     stringPropertiesName(): Set<string>;
     store(output: OutputStreamWriter): void;
+    update(): void;
+}
+export interface reader {
+    read(): string;
+    getLines(): List<string>;
+    getIterator(): Iterator<string>;
+    size(): number;
+    reset(): void;
+}
+export interface writer {
+    write(l: string): void;
+}
+export interface fileStream {
+    getPath(): string;
+    getFileName(): string;
 }
 export {};

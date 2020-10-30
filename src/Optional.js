@@ -1,42 +1,41 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Optional = void 0;
-var Predication_1 = require("./Predication");
-var Exception_1 = require("./Exception");
-var Optional = /** @class */ (function () {
-    function Optional(value) {
+const Predication_1 = require("./Predication");
+const Exception_1 = require("./Exception");
+class Optional {
+    constructor(value) {
         this.value = null;
         this.value = value;
     }
-    Optional.prototype.isPresent = function () { return this.value !== null && this.value !== undefined; };
-    Optional.prototype.isEmpty = function () { return !this.isPresent(); };
-    Optional.prototype.equals = function (obj) { return this.value === obj; };
-    Optional.prototype.get = function () { return this.value; };
-    Optional.prototype.map = function (callback) { return this.mapTo(callback); };
-    Optional.prototype.mapTo = function (callback) {
+    isPresent() { return this.value !== null && this.value !== undefined; }
+    isEmpty() { return !this.isPresent(); }
+    equals(obj) { return this.value === obj; }
+    get() { return this.value; }
+    map(callback) { return this.mapTo(callback); }
+    mapTo(callback) {
         return new Optional(callback.call(null, this.value));
-    };
-    Optional.prototype.filter = function (predicate) {
-        var state;
+    }
+    filter(predicate) {
+        let state;
         if (predicate instanceof Predication_1.Predication)
             state = predicate.test(this.value);
         else
             state = predicate(this.value);
         return new Optional(state === true ? this.value : null);
-    };
-    Optional.prototype.orElse = function (other) { return !this.isEmpty() ? this.value : other; };
-    Optional.prototype.orElseThrow = function (other) {
+    }
+    orElse(other) { return !this.isEmpty() ? this.value : other; }
+    orElseThrow(other) {
         if (!this.isEmpty())
             return this.value;
         throw other;
-    };
-    Optional.of = function (value) {
+    }
+    static of(value) {
         if (value === null)
             throw new Exception_1.NullPointerException("value is null");
         return new Optional(value);
-    };
-    Optional.ofNullable = function (value) { return new Optional(value); };
-    return Optional;
-}());
+    }
+    static ofNullable(value) { return new Optional(value); }
+}
 exports.Optional = Optional;
 //# sourceMappingURL=Optional.js.map

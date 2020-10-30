@@ -59,6 +59,9 @@ declare global {
     interface Number {
         equals( value : number ) : boolean
     }
+    interface NumberConstructor{
+        of( value: Object) : number
+    }
     interface Date {
         plusDays( days : number ) : Date
         lessDays( days : number ) : Date
@@ -74,16 +77,26 @@ declare global {
         state( expectTrue : any, orElse : any ) : any
         equals( value: boolean ) : boolean
     }
+    interface BooleanConstructor{
+        of(value: Object) : Boolean
+    }
     interface ArrayConstructor {
         asList<T>(value: T[]): ArrayList<T>
     }
+
 }
 /***
  *
  */
 export interface PredicationConstructor<T> {
+    /***
+     */
     ( value : T, key? : ascii ) : boolean
+    /***
+     */
     test?( value : T ) : boolean
+    /***
+     */
     and?( Predicate : predication<T>) : Predication<T>
 }
 /**
@@ -110,17 +123,39 @@ export interface Iterable<T> {
     iterator( ): Iterator<T>
 }
 export interface Collection<E> extends Iterable<E> {
+    /***
+     */
     add( value : E ) : boolean
+    /***
+     */
     add(...value: E[]): boolean
+    /***
+     */
     addAll( collection : Collection<E> ) : boolean
+    /***
+     */
     clear( ) :void
     contains( o : object  ) : boolean
+    /***
+     */
     containsAll( collection : Collection<E> ) : boolean
+    /***
+     */
     equals( o : object ) : boolean
+    /***
+     */
     remove( value : E ) : boolean
+    /***
+     */
     isEmpty( ) : boolean
+    /***
+     */
     size( ) :number
+    /***
+     */
     toArray( ) : array<E>
+    /***
+     */
     toJson( ) : MapType<any, any>
 }
 
@@ -129,13 +164,29 @@ export interface Set<E> extends Collection<E>{
 }
 
 export interface List<E> extends Collection<E>{
+    /***
+     */
     get( index : number ) : E
+    /***
+     */
     indexOf( value : object  ) : number
+    /***
+     */
     lasIndexOf( value : object ) : number
+    /***
+     */
     set( index : number, element : E): E
+    /***
+     */
     listIterator( ) : ListIterator<E>
+    /***
+     */
     subList( from : number, to : number ): List<E>
+    /***
+     */
     stream( ) : Stream<E>
+    /***
+     */
 }
 /***
  *
@@ -190,28 +241,70 @@ export interface IteratorInterface<E> {
     next( ) : E
 }
 export interface listIteratorInterface<E> {
+    /***
+     */
     hasPrevious( ) : boolean
+    /***
+     */
     nextIndex( ) : number
+    /***
+     */
     previous( ) : E
+    /***
+     */
     set( e  : E ) : void
+    /***
+     */
     add( e : E ) : void
+    /***
+     */
 }
 
 export interface Map<K extends string|number,V> {
+    /***
+     */
     clear( ): void
+    /***
+     */
     containsKey( key : K ) : boolean
+    /***
+     */
     containsValue( value : V ): boolean
+    /***
+     */
     entrySet() : Set<MapEntries<K,V>>
+    /***
+     */
     equals( o : Object ) : boolean
+    /***
+     */
     get( key : Object ) : V
+    /***
+     */
     isEmpty( ) : boolean
+    /***
+     */
     keySet( ) : Set<K>
+    /***
+     */
     put( key : K, value : V ) : V
+    /***
+     */
     remove( o : Object ): V
+    /***
+     */
     size( ) : number
+    /***
+     */
     valueCollection( ) : Collection<V>
+    /***
+     */
     each( callback : streamLambda<V> ): void
+    /***
+     */
     stream( ) : StreamAble<K,V>
+    /***
+     */
 }
 /***
  * 
@@ -274,28 +367,65 @@ export interface OptionalInterface<T> {
  *
  */
 export interface StreamAble<K extends string|number,V> {
-
+    /***
+     */
     each( callback : lambda ) : StreamAble<K,V>
+    /***
+     */
     limit( limit: number) : StreamAble<K,V>
+    /***
+     */
     allMatch( callback : predication<V>) : boolean
+    /***
+     */
     anyMatch( callback : predication<V> ) : boolean
+    /***
+     */
     noneMatch( callback : predication<V> ) : boolean
+    /***
+     */
     filter( predicate : predication<V> ) : StreamAble<K,V>
+    /***
+     */
     findFirst( ) : Optional<V>
+    /***
+     */
     findAny( ) : Optional<V>
+    /***
+     */
     count() : number
 }
 
 export interface ArrayStream<T> extends StreamAble<number,T>{
+    /***
+     */
     hasPeer( callback : predication<T> ) : boolean
+    /***
+     */
     mapToInt( callback : streamLambda<T> ) : ArrayStream<Number>
+    /***
+     */
     sum() : Optional<Number>
+    /***
+     */
     min() : Optional<Number>
+    /***
+     */
     max() : Optional<Number>
+    /***
+     */
     sorted( ) : void
+    /***
+     */
     iterator() : Iterator<T>
+    /***
+     */
     listIterator() : ListIterator<T>
+    /***
+     */
     toArray() : array<T>
+    /***
+     */
     getList() :  ArrayList<T>
 }
 /****
@@ -355,9 +485,67 @@ export interface IPropertiesFileA extends IPropertiesFile<string, any>{}
 /***
  */
 export interface properties<V> extends  IPropertiesFile<string, V>{
+    /***
+     */
     hasKey( key : string ):boolean
+    /***
+     */
     load( input : InputStreamReader ) : void
+    /***
+     */
     stringPropertiesName( ) : Set<string>
+    /***
+     */
     store( output: OutputStreamWriter ) : void
+    /***
+     *
+     */
+    update( ) :void
 }
-
+/****
+ *
+ */
+export interface reader {
+    /***
+     *
+     */
+    read( ): string
+    /***
+     *
+     */
+    getLines(): List<string>
+    /***
+     *
+     */
+    getIterator( ) :Iterator<string>
+    /***
+     *
+     */
+    size( ):number
+    /***
+     *
+     */
+    reset( ): void
+}
+/****
+ *
+ */
+export interface writer {
+    /***
+     *
+     */
+    write( l:string): void
+}
+/***
+ *
+ */
+export interface fileStream {
+    /***
+     *
+     */
+    getPath( ): string
+    /***
+     *
+     */
+    getFileName( ):string
+}

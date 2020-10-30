@@ -1,44 +1,37 @@
 /// <reference types="node" />
-import { List } from "../Interface";
+import { fileStream, List, reader, writer } from "../Interface";
 import { Path } from "./Path";
-export interface reader {
-    read(): string;
-    getLines(): List<string>;
-}
-export interface writer {
-    write(l: string): void;
-}
-export interface fileStream {
+import "../globalUtils";
+import { Iterator } from "../Iterator";
+export declare abstract class AbstractIOFile implements fileStream {
+    protected file: string;
+    protected constructor(file: string);
     getPath(): string;
     getFileName(): string;
+    static exists(path: Path): boolean;
+    static getFileSize(filename?: string): number;
 }
-export declare class InputStreamReader implements reader, fileStream {
-    protected file: string;
+export declare class InputStreamReader extends AbstractIOFile implements reader {
     protected data: string[];
     protected index: number;
     protected constructor(file: string);
+    size(): number;
+    reset(): void;
     read(): string;
-    getPath(): string;
     getLines(): List<string>;
+    getIterator(): Iterator<string>;
     toString(): string;
-    getFileName(): string;
 }
-/***
- *
- */
-export declare class FileReaderA extends InputStreamReader {
+export declare class FileReader extends InputStreamReader {
     constructor(file: string);
 }
-/***
- */
-export declare class OutputStreamWriter implements writer, fileStream {
-    protected file: string;
+export declare class OutputStreamWriter extends AbstractIOFile implements writer {
     protected flag: string;
-    constructor(file: string, flag?: string);
+    protected truncate: boolean;
+    constructor(file: string, flag?: string, truncate?: boolean);
+    setTruncate(state: boolean): void;
+    setFlag(flag: string): void;
     write(data: string, truncate?: boolean, encoding?: BufferEncoding, create?: boolean): void;
-    static exists(path: Path): boolean;
-    getPath(): string;
-    getFileName(): string;
 }
 export declare class FileWriter extends OutputStreamWriter {
     constructor(file: string);

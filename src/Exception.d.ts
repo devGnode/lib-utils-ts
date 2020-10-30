@@ -1,6 +1,3 @@
-/***
- * Exception Area
- */
 export declare class RuntimeException extends Error {
     name: string;
     constructor(message?: string, code?: number);
