@@ -1,3 +1,4 @@
+import {flombok} from "../src/flombok";
 const  {AbstractProperties, Properties, PropertiesA, PropertiesJson}  = require("../src/file/Properties");
 const  {Path}  = require("../src/file/Path");
 const  {AbstractIOFile, InputStreamReader, FileReader, OutputStreamWriter, FileWriter}  = require("../src/file/IOStream");
@@ -41,6 +42,8 @@ module.exports = {
     FileReader:FileReader,
     OutputStreamWriter:OutputStreamWriter,
     FileWriter:FileWriter,
+
+    flombok:flombok,
 
     IndexOfBoundException:IndexOfBoundException,
     NullPointerException:NullPointerException,

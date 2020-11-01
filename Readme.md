@@ -529,8 +529,53 @@ prop.setProperty("foo",true);
 prop.store(new FileWriter("./foo/bar.json"));
 ```
 
+## FLombok 
+
+- version `0.0.1`
+
+FakeLombok is a decorator annotation, for use this 
+
+### usage 
+
+```typescript  
+
+class Test{
+    
+    @flombok.GETTER( )
+    @flombok.SETTER( )
+    public fooS :string;
+    
+    @flombok.GETTER( )
+    @flombok.SETTER( )
+    protected fooN : number;
+
+    @flombok.GETTER( )
+    @flombok.SETTER( )
+    protected fooMO : MyObjectInterface;
+
+    public getFooS: flombok.getStringFunc;
+    public setFooS: flombok.setStringFunc;
+
+    public getFooN: flombok.getNumberFunc;
+    public setFooN: flombok.setNumberFunc;
+
+    public getFooMO: flombok.accessorGetFunc<MyObjectInterface>;
+    public setFooMO: flombok.accessorSetFunc<MyObjectInterface>;
+}
+
+let test : Test = new Test();
+
+test.setFooS( "bar" );
+console.log( test.getFooS( ) ); 
+
+let mo  : MyObjectInterface = test.getFooMO( );
+
+```
+
 
 ## Feature 
 
 - 1.2.0-beta : Implementation and stabilisation of `ArrayList<E>`, `HashMap<E>`, `Stream<E>` ..
-- 1.2.1-beta : Implementation of `Properties` class and wrap file class `FileReader` and `FileWriter`
+- 1.2.1-beta : 
+    + Implementation of `Properties` class and wrap file class `FileReader` and `FileWriter`
+    + Featured flombok decorator annotation version 0.0.1 `Test version`, cause the decoration annotation is an experimental feature of TypeScript.
