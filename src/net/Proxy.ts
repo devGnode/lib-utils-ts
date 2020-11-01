@@ -83,6 +83,4 @@ export class Proxy {
     public getSocksProxy() : string{ return this.socksProxy; }
 
     public getSocksVersion() : string{ return this.socksVersion;}
-
-    public enum(){ let t; }
 }

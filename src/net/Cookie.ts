@@ -1,8 +1,6 @@
 import "../globalUtils"
 import {Define} from "../Define";
-import {List} from "../Interface";
 import {ArrayList} from "../List";
-
 
 export type cookieSameSite = "lax"|"strict"|"none"
 export class Cookie{
@@ -113,11 +111,11 @@ export class Cookie{
 
     public toString( ): string{
         return "%s=%s;%s=%s;".format(this.getName(), this.value,"path",this.path)+
-          //  this.domain.orNull("").likeProperty("domain")+
-          //  this.expiry.orNull("").likeProperty("expiry")+
+            this.domain.map(value=>value!==null?`domain=${value};`:"").get()+
+            this.expiry.map(value=>value!==null?`expiry=${value};`:"").get()+
             this.secure.state("secure;","")+
-            this.httpOnly.state("httpOnly;","")
-         //   this.samesite.orNull("").likeProperty("samesite");
+            this.httpOnly.state("httpOnly;","")+
+            this.samesite.map(value=>value!==null?`samesite=${value};`:"").get();
     }
 
     public static parse( cookie : string ){
