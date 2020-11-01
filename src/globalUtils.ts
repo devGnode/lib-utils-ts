@@ -59,7 +59,7 @@ Date.dateFormat = Date.prototype.dateFormat = function( pattern : string ) : str
  Boolean extension
  */
 Boolean.prototype.state = function(  expectTrue : any, orElse : any ) : any {return this.valueOf()? expectTrue : orElse;};
-Boolean.of = function(  value : string|number ) : Boolean {return value === "true"||value===1;};
+Boolean.of = function(  value : Object ) : boolean {return value===true||value === "true"||value===1;};
 /***
  Array extension
  */

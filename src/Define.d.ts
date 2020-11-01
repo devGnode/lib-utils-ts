@@ -1,6 +1,6 @@
 import { IDefine } from "./Interface";
-export declare class Define<T> implements IDefine<T> {
-    private readonly value;
+import { Optional } from "./Optional";
+export declare class Define<T> extends Optional<T> implements IDefine<T> {
     constructor(value: T);
     isNullable(): boolean;
     isNull(): boolean;

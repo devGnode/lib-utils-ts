@@ -1,11 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Define = void 0;
-class Define {
-    constructor(value) {
-        this.value = null;
-        this.value = value;
-    }
+const Optional_1 = require("./Optional");
+class Define extends Optional_1.Optional {
+    constructor(value) { super(value); }
     isNullable() { return this.isNull(); }
     isNull() { return this.value === null || this.value === undefined; }
     orNull(value) { return this.isNull() ? value : this.value; }

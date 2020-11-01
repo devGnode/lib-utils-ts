@@ -34,5 +34,5 @@ export declare class OutputStreamWriter extends AbstractIOFile implements writer
     write(data: string, truncate?: boolean, encoding?: BufferEncoding, create?: boolean): void;
 }
 export declare class FileWriter extends OutputStreamWriter {
-    constructor(file: string);
+    constructor(file: string, flag?: string, truncate?: boolean);
 }

@@ -34,6 +34,6 @@ Date.dateFormat = Date.prototype.dateFormat = function (pattern) {
     return pattern;
 };
 Boolean.prototype.state = function (expectTrue, orElse) { return this.valueOf() ? expectTrue : orElse; };
-Boolean.of = function (value) { return value === "true" || value === 1; };
+Boolean.of = function (value) { return value === true || value === "true" || value === 1; };
 Array.asList = function (value) { return new List_1.ArrayList(value); };
 //# sourceMappingURL=globalUtils.js.map
