@@ -35,6 +35,7 @@ export type streamLambda<T>     = ( value : T, key?: ascii ) => T | void
 export type streamLambdaK<V,K>  = ( value : V, key?: K ) => V | void
 export type streamLambdaTo<T,U> = ( value : T, key?: ascii ) => U | void
 export type lambdaType<T,U>     = streamLambdaTo<T,U> | streamLambda<T> | streamLambdaK<T,U>
+export type asyncStreamLambdaTo<T,U> = ( value : T, key?: ascii ) => Promise<U>
 /***
  * Global Extended native object prototype
  */
@@ -78,7 +79,7 @@ declare global {
         equals( value: boolean ) : boolean
     }
     interface BooleanConstructor{
-        of(value: Object) : Boolean
+        of(value: Object) : boolean
     }
     interface ArrayConstructor {
         asList<T>(value: T[]): ArrayList<T>
@@ -481,7 +482,7 @@ export interface IPropertiesFile<K extends string|number,V>{
 /***
  *
  */
-export interface IPropertiesFileA extends IPropertiesFile<string, any>{}
+export interface IPropertiesFileA extends IPropertiesFile<string, Object>{}
 /***
  */
 export interface properties<V> extends  IPropertiesFile<string, V>{

@@ -24,6 +24,7 @@ export declare type streamLambda<T> = (value: T, key?: ascii) => T | void;
 export declare type streamLambdaK<V, K> = (value: V, key?: K) => V | void;
 export declare type streamLambdaTo<T, U> = (value: T, key?: ascii) => U | void;
 export declare type lambdaType<T, U> = streamLambdaTo<T, U> | streamLambda<T> | streamLambdaK<T, U>;
+export declare type asyncStreamLambdaTo<T, U> = (value: T, key?: ascii) => Promise<U>;
 declare global {
     interface String {
         equals(value: string): boolean;
@@ -62,7 +63,7 @@ declare global {
         equals(value: boolean): boolean;
     }
     interface BooleanConstructor {
-        of(value: Object): Boolean;
+        of(value: Object): boolean;
     }
     interface ArrayConstructor {
         asList<T>(value: T[]): ArrayList<T>;
@@ -203,7 +204,7 @@ export interface IPropertiesFile<K extends string | number, V> {
     setProperty(key: K, value: V): void;
     getProperty(key: K, defaultValue?: V): V;
 }
-export interface IPropertiesFileA extends IPropertiesFile<string, any> {
+export interface IPropertiesFileA extends IPropertiesFile<string, Object> {
 }
 export interface properties<V> extends IPropertiesFile<string, V> {
     hasKey(key: string): boolean;

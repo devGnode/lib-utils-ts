@@ -2,19 +2,16 @@
  *
  */
 import {IDefine} from "./Interface";
+import {Optional} from "./Optional";
 /***
  *
  */
-export class Define<T> implements IDefine<T>{
-    /***
-     *
-     */
-    private readonly value : T = null;
+export class Define<T> extends Optional<T> implements IDefine<T>{
     /***
      *
      * @param value
      */
-    constructor(value : T) {this.value = value;}
+    constructor(value : T) { super(value); }
     /***
      *
      */
@@ -22,7 +19,7 @@ export class Define<T> implements IDefine<T>{
     /***
      *
      */
-    public isNull() : boolean{return this.value===null||this.value===undefined;}
+    public isNull(): boolean{return this.value===null||this.value===undefined;}
     /***
      *
      * @param value

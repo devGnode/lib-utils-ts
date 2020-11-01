@@ -119,4 +119,4 @@ export class OutputStreamWriter extends AbstractIOFile implements writer{
 /***
  *
  */
-export class FileWriter extends OutputStreamWriter{constructor(file: string) {super(file);}}
+export class FileWriter extends OutputStreamWriter{constructor(file: string, flag: string = "a", truncate : boolean = true) {super(file,flag,truncate);}}

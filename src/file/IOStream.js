@@ -84,7 +84,7 @@ class OutputStreamWriter extends AbstractIOFile {
 }
 exports.OutputStreamWriter = OutputStreamWriter;
 class FileWriter extends OutputStreamWriter {
-    constructor(file) { super(file); }
+    constructor(file, flag = "a", truncate = true) { super(file, flag, truncate); }
 }
 exports.FileWriter = FileWriter;
 //# sourceMappingURL=IOStream.js.map
