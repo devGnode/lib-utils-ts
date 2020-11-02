@@ -36,6 +36,13 @@ export class Define<T> extends Optional<T> implements IDefine<T>{
     /***
      *
      */
+    public orThrow( exception : Object ): Define<T>{
+        if(this.isNull()) throw exception;
+        return this;
+    }
+    /***
+     *
+     */
     public getType( ){ return typeof this.value; }
     /***
      *

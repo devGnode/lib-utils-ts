@@ -3,7 +3,7 @@ import {Predication} from "./Predication";
 import {
     array,
     ArrayStream,
-    ascii,
+    ascii, asyncStreamLambdaTo,
     lambdaType, MapType,
     OptionalMapInterface,
     predication, StreamAble,
@@ -46,6 +46,20 @@ export class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<
         out = out.length>0?out:null;
         return new Stream<U>(out);
    }
+    /**
+     * @alpha
+     * @test
+     * @param callback
+     */
+    public async asyncMapTo<U>( callback : asyncStreamLambdaTo<T,U> ): Promise<Stream<U>> {
+        let out : array<U> = [], i = 0;
+        let itr : Iterator<T> =this.iterator();
+        while( itr.hasNext() ){
+            out[i]= await callback.call(this,itr.next(),i);
+            i++;
+        }
+        return new Stream<U>(out.length>0?out:null);
+    }
     /***
      *
      * @param callback

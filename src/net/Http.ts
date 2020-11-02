@@ -31,6 +31,8 @@ import {ArrayList, HashMap} from "../List";
 import {Proxy} from "./Proxy";
 import {Cookie} from "./Cookie";
 import "../globalUtils"
+import {Optional} from "../Optional";
+import {Define} from "../Define";
 /**
  *
  */
@@ -56,7 +58,7 @@ class httpEvent{
      *
      * @param rest
      */
-    public static async send( rest : AbsRestHttp ):Promise<Response>{
+    public static async send( rest : AbstractRestHttp ):Promise<Response>{
         let httpA : any = (rest.getProto().equals("http")?http:https),
             handle;
         return new Promise<Response>((resolve,reject)=>{
@@ -91,7 +93,8 @@ class httpEvent{
     }
 }
 /***
- *
+ * RESPONSE CLASS
+ * Wrap getter http response
  */
 export class Response {
     /***
@@ -105,7 +108,7 @@ export class Response {
     /***
      *
      */
-    getCookies() : ArrayList<Cookie> {
+    public getCookies() : ArrayList<Cookie> {
         let mapToCookie : streamLambdaTo<string,Cookie>=value=>Cookie.parse(value);
         return ArrayList.of<string>( this.getHeader("set-cookie") )
             .stream()
@@ -115,7 +118,7 @@ export class Response {
     /***
      *
      */
-    getCookie( name :string ) : Cookie {
+    public getCookie( name :string ) : Cookie {
         return this.getCookies()
             .stream()
             .filter(cookie=>cookie.getValue().equals(name))
@@ -125,11 +128,11 @@ export class Response {
     /***
      *
      */
-    getHeaders() : HashMap<string,any>{ return HashMap.of<string,any>(this.response.headers); }
+    public getHeaders() : HashMap<string,any>{ return HashMap.of<string,any>(this.response.headers); }
     /***
      *
      */
-    getHeader( name :string) : any{
+    public getHeader( name :string) : any{
         try{return this.response.headers[name]}catch (e) {
             return null;
         }
@@ -137,12 +140,12 @@ export class Response {
     /***
      *
      */
-    getBody():string{ return this.response.body;}
+    public getBody():string{ return this.response.body;}
     /***
      *  throwable : RuntimeException
      *
      */
-    getBodyAsObject():any{
+    public getBodyAsObject():any{
         try{return JSON.parse(this.response.body);}catch (e) {
             throw new RuntimeException(e);
         }
@@ -150,28 +153,35 @@ export class Response {
     /***
      *
      */
-    getStatusCode( ): number{ return this.response.statusCode; }
+    public getStatusCode( ): Number{ return Number(this.response.statusCode); }
     /***
      *
      */
-    getStatusMessage( ): string{ return this.response.statusMessage; }
+    public getStatusMessage( ): string{ return this.response.statusMessage; }
     /***
      *
      */
-    contentType() : string{ return this.getHeader("Content-Type")||this.getHeader("content-type"); }
+    public contentType() : string{ return this.getHeader("Content-Type")||this.getHeader("content-type"); }
     /***
      *
      */
-    hasError( ): boolean{ return this.response.errorno>0; }
+    public hasError( ): boolean{ return this.response.errorno>0; }
     /***
      *
      */
-    getLasError( ): string{ return this.response.error; }
+    public getLasError( ): string{ return this.response.error; }
+    /***
+     *
+     * @param code
+     */
+    public success( code : number ): Define<Response>{
+        return new Define<Response>( this.getStatusCode().equals(code) ? this : null );
+    }
 }
 /***
  *
  */
-abstract class AbsRestHttp{
+abstract class AbstractRestHttp{
 
     protected proto : httpProtoType = null;
     protected header : HashMap<string,any> = null;
@@ -205,7 +215,7 @@ abstract class AbsRestHttp{
         }
     }
 }
-export class RestHttp extends AbsRestHttp{
+export class RestHttp extends AbstractRestHttp{
     /***
      *
      */
@@ -448,8 +458,9 @@ export class HttpOptions<T> implements wrapHeader<T>{
    /***
     * @constructor
     */
-   public build() : T{
+   public build() : any{
        if(!this.params.isEmpty()) this.options.put("path", (this.options.get("path")||"/")+this.params );
-        return this.value.constructor(this.options,this.data);
+       if(this.value instanceof RestHttps) return new RestHttps(this.options,JSON.stringify(this.data));
+        return new RestHttp(this.options,JSON.stringify(this.data));
    }
 }
