@@ -26,12 +26,11 @@
 import * as http from "http";
 import * as https from "https";
 import {RuntimeException} from '../Exception';
-import {streamLambdaTo} from "../Interface";
+import {restHttp, streamLambdaTo} from "../Interface";
 import {ArrayList, HashMap} from "../List";
 import {Proxy} from "./Proxy";
 import {Cookie} from "./Cookie";
 import "../globalUtils"
-import {Optional} from "../Optional";
 import {Define} from "../Define";
 /**
  *
@@ -185,7 +184,7 @@ export class Response {
 /***
  *
  */
-abstract class AbstractRestHttp{
+abstract class AbstractRestHttp implements restHttp{
 
     protected proto : httpProtoType = null;
     protected header : HashMap<string,any> = null;
@@ -218,6 +217,10 @@ abstract class AbstractRestHttp{
             return Exception;
         }
     }
+
+    public setData(data: string): void { this.data = data; }
+
+    public setHeader(header: HashMap<string, any>): void { this.header = header}
 }
 export class RestHttp extends AbstractRestHttp{
     /***
@@ -262,12 +265,12 @@ export class RestHttps extends RestHttp{
  * Only most popular options are implemented,
  * you can add new options  yourself  it not prohibited.
  */
-export class HttpOptions<T> implements wrapHeader<T>{
+export class HttpOptions<T extends restHttp> implements wrapHeader<T>{
 
     private options : HashMap<string,any> = new HashMap<string,any>({});
     private data : object|string   = null;
     private params : string        = "";
-    private value : T              = null;
+    private  readonly value : T    = null;
 
     constructor( value : T  ){
         this.value=value;
@@ -464,7 +467,8 @@ export class HttpOptions<T> implements wrapHeader<T>{
     */
    public build() : any{
        if(!this.params.isEmpty()) this.options.put("path", (this.options.get("path")||"/")+this.params );
-       if(this.value instanceof RestHttps) return new RestHttps(this.options,JSON.stringify(this.data));
-        return new RestHttp(this.options,JSON.stringify(this.data));
+       this.value.setHeader(this.options);
+       this.value.setData(JSON.stringify(this.data))
+        return this.value;
    }
 }

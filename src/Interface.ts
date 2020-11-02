@@ -1,13 +1,14 @@
 /****
  * Array
  */
-import {ArrayList} from "./List";
+import {ArrayList, HashMap} from "./List";
 import {Stream} from "./stream";
 import {Predication} from "./Predication";
 import {Optional} from "./Optional";
 import {Iterator, ListIterator} from "./Iterator";
 import {InputStreamReader, OutputStreamWriter} from "./file/IOStream";
 import {Define} from "./Define";
+import {Response} from "./net/Http";
 /**
  * typeOf
  */
@@ -554,4 +555,16 @@ export interface fileStream {
      *
      */
     getFileName( ):string
+}
+/***
+ * Interface net/
+ */
+export interface restHttp{
+    getProto( ): string
+    getHeaderAsObject( ) : HashMap<string,any>
+    getDataAsObject( ) :any
+    getData( ): string
+    setData( data : string ) :void
+    setHeader( header: HashMap<string,any> ):void
+    request( ) : Promise<Response>
 }
