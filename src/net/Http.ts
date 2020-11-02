@@ -59,6 +59,7 @@ class httpEvent{
      * @param rest
      */
     public static async send( rest : AbstractRestHttp ):Promise<Response>{
+
         let httpA : any = (rest.getProto().equals("http")?http:https),
             handle;
         return new Promise<Response>((resolve,reject)=>{
@@ -93,6 +94,7 @@ class httpEvent{
     }
 }
 /***
+
  * RESPONSE CLASS
  * Wrap getter http response
  */
@@ -128,6 +130,7 @@ export class Response {
     /***
      *
      */
+
     public getHeaders() : HashMap<string,any>{ return HashMap.of<string,any>(this.response.headers); }
     /***
      *
@@ -177,6 +180,7 @@ export class Response {
     public success( code : number ): Define<Response>{
         return new Define<Response>( this.getStatusCode().equals(code) ? this : null );
     }
+
 }
 /***
  *
