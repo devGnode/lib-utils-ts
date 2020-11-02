@@ -3,9 +3,7 @@
 .vscode/
 node_modules/
 logs/
-
-#
-
+test/
 
 # test
 test.*
@@ -14,3 +12,8 @@ Test.*
 *.p12
 *.crt
 *.pem
+
+# mounted file
+*.d.ts
+*.js
+*.js.map
