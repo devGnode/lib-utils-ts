@@ -7,6 +7,7 @@ import {Predication} from "./Predication";
 import {Optional} from "./Optional";
 import {Iterator, ListIterator} from "./Iterator";
 import {InputStreamReader, OutputStreamWriter} from "./file/IOStream";
+import {Define} from "./Define";
 /**
  * typeOf
  */
@@ -449,6 +450,10 @@ export interface IDefine<T>{
      *
      */
     orElseThrow( exception : Error|TypeError ): T
+    /***
+     *
+     */
+    orThrow( exception : Object ): Define<T>
     /***
      *
      */

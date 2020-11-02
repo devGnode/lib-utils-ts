@@ -6,6 +6,7 @@ export declare class Define<T> extends Optional<T> implements IDefine<T> {
     isNull(): boolean;
     orNull(value: T): T;
     orElseThrow(exception: Error | TypeError): T;
+    orThrow(exception: Object): Define<T>;
     getType(): "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function";
     valueOf(): T;
     toString(): string;

@@ -1,5 +1,5 @@
 import { ArrayList } from "./List";
-import { array, ArrayStream, lambdaType, MapType, OptionalMapInterface, predication, StreamAble, streamLambda, streamLambdaK } from "./Interface";
+import { array, ArrayStream, asyncStreamLambdaTo, lambdaType, MapType, OptionalMapInterface, predication, StreamAble, streamLambda, streamLambdaK } from "./Interface";
 import { Optional } from "./Optional";
 import { Iterator, ListIterator } from "./Iterator";
 export declare class Stream<T> implements ArrayStream<T>, OptionalMapInterface<T, Stream<T>> {
@@ -8,6 +8,7 @@ export declare class Stream<T> implements ArrayStream<T>, OptionalMapInterface<T
     constructor(value?: array<T>);
     each(callback: streamLambda<T>): Stream<T>;
     mapTo<U>(callback: lambdaType<T, U>): Stream<U>;
+    asyncMapTo<U>(callback: asyncStreamLambdaTo<T, U>): Promise<Stream<U>>;
     map(callback: streamLambda<T>): Stream<T>;
     mapToInt(callback: streamLambda<T>): Stream<Number>;
     filter(callback?: predication<T>): Stream<T>;

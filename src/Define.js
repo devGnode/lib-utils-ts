@@ -12,6 +12,11 @@ class Define extends Optional_1.Optional {
             throw exception;
         return this.value;
     }
+    orThrow(exception) {
+        if (this.isNull())
+            throw exception;
+        return this;
+    }
     getType() { return typeof this.value; }
     valueOf() { return this.value; }
     toString() { return String(this.value); }

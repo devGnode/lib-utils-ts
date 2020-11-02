@@ -4,6 +4,7 @@ import { Predication } from "./Predication";
 import { Optional } from "./Optional";
 import { Iterator, ListIterator } from "./Iterator";
 import { InputStreamReader, OutputStreamWriter } from "./file/IOStream";
+import { Define } from "./Define";
 export declare type NullType = null | undefined;
 export declare type Null<T> = T | NullType;
 declare type PrimAscii = number | string;
@@ -193,6 +194,7 @@ export interface IDefine<T> {
     isNull(): boolean;
     orNull(value: T): T;
     orElseThrow(exception: Error | TypeError): T;
+    orThrow(exception: Object): Define<T>;
     getType(): string;
     valueOf(): T;
 }

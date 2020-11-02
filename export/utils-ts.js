@@ -1,4 +1,5 @@
-import {flombok} from "../src/flombok";
+const {flombok} = require("../src/flombok");
+const {HttpOptions, Response, RestHttp, RestHttps} = require("../src/net/Http");
 const  {AbstractProperties, Properties, PropertiesA, PropertiesJson}  = require("../src/file/Properties");
 const  {Path}  = require("../src/file/Path");
 const  {AbstractIOFile, InputStreamReader, FileReader, OutputStreamWriter, FileWriter}  = require("../src/file/IOStream");
@@ -42,6 +43,11 @@ module.exports = {
     FileReader:FileReader,
     OutputStreamWriter:OutputStreamWriter,
     FileWriter:FileWriter,
+
+    RestHttp:RestHttp,
+    RestHttps:RestHttps,
+    Response:Response,
+    HttpOptions:HttpOptions,
 
     flombok:flombok,
 

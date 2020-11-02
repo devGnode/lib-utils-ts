@@ -27,6 +27,15 @@ class Stream {
         out = out.length > 0 ? out : null;
         return new Stream(out);
     }
+    async asyncMapTo(callback) {
+        let out = [], i = 0;
+        let itr = this.iterator();
+        while (itr.hasNext()) {
+            out[i] = await callback.call(this, itr.next(), i);
+            i++;
+        }
+        return new Stream(out.length > 0 ? out : null);
+    }
     map(callback) { return this.mapTo(callback); }
     mapToInt(callback) { return this.mapTo(callback); }
     filter(callback = (() => void 0)) {
