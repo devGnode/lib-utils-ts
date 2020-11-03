@@ -4,7 +4,7 @@ import {
     array,
     ArrayStream,
     ascii, asyncStreamLambdaTo,
-    lambdaType, MapType,
+    lambdaType, MapType, objectStream,
     OptionalMapInterface,
     predication, StreamAble,
     streamLambda, streamLambdaK
@@ -163,7 +163,10 @@ export class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<
     public static of<T>( list : array<T> ): Stream<T>{return new Stream(list);}
 }
 
-export abstract class AbstractObjectStream<K extends string|number,V> implements StreamAble<K,V>{
+/***
+*
+*/
+export abstract class AbstractObjectStream<K extends string|number,V> implements objectStream<K,V>{
 
     private readonly list : MapType<K,V> = null;
     private findLimit : Number      = null;
@@ -172,7 +175,7 @@ export abstract class AbstractObjectStream<K extends string|number,V> implements
         this.list = value;
     }
 
-    public each(callback: streamLambdaK<V,K> ): ObjectStream<K, V> {
+    public each(callback: streamLambdaK<V,K> ): objectStream<K, V> {
         let tmp : any,ret : any;
         try{for(tmp in this.list)if((ret = callback(this.list[tmp],tmp)))break;}catch (e) {
             console.warn(e)
@@ -241,6 +244,10 @@ export abstract class AbstractObjectStream<K extends string|number,V> implements
      * @param list
      */
     public static of<K extends string|number,V>( list : MapType<K, V> ): ObjectStream<K,V> {return new ObjectStream<K, V>(list);}
+
+    valueOfOptional(): Optional<MapType<K, V>> {
+        return new Optional<MapType<K, V>>(this.list);
+    }
 }
 /***
  *

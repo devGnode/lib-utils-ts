@@ -4,7 +4,7 @@ import {
     ListKey, NativeExportable,
     Cloneable, ArrayListInterfaceA,
     Map, MapType, MapEntries,
-    Set, streamLambdaK, StreamAble
+    Set, streamLambdaK
 } from "./Interface";
 import {IndexOfBoundException, NullPointerException} from "./Exception";
 import {ObjectStream, Stream} from "./stream";
@@ -359,7 +359,7 @@ export abstract class AbstractMap<K extends string|number,V> implements Map<K,V>
     /**
      *
      */
-    public stream(): StreamAble<K, V> {return new ObjectStream(this.value);}
+    public stream(): ObjectStream<K, V> {return new ObjectStream(this.value);}
 
 }
 
