@@ -1,3 +1,5 @@
+import {HashMap} from "./List";
+
 export class Utils{
 
     public static regExp( regexp : RegExp = /.+/, value : string, callback : Function  ){
@@ -23,5 +25,16 @@ export class Utils{
         }catch (e) {return objA;}
         return objA;
     }
-
+    /***
+     * Return an object without any null value property.
+     *
+     * @param value
+     */
+    public static notNUll( value : Object): Object{
+        return HashMap.of<string,number>(value)
+            .stream()
+            .filter(value=> value !== null && value !== undefined )
+            .valueOfOptional()
+            .get();
+    }
 }

@@ -106,7 +106,7 @@ export class OutputStreamWriter extends AbstractIOFile implements writer{
 
     public setFlag( flag : string ): void{ this.flag = flag; }
 
-    public write( data :string, truncate:boolean = true,encoding: BufferEncoding = "utf8", create: boolean = true ): void{
+    public write( data :string|Buffer, truncate:boolean = true,encoding: BufferEncoding = "utf8", create: boolean = true ): void{
         try{
             if(!OutputStreamWriter.exists( new Path(this.file) )&&create) mkdirSync(new Path(this.file).getPath(),{recursive:true});
             if(truncate) fs.truncateSync(this.file,0);

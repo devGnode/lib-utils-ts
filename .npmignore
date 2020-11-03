@@ -6,6 +6,7 @@
 .vscode/
 node_modules/
 logs/
+test/
 
 # test
 Test*.js
@@ -17,3 +18,8 @@ Test*.js.map
 *.p12
 *.crt
 *.pem
+
+# all mounted file
+*.d.ts
+*.js
+*.js.map
