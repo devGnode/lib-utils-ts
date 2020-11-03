@@ -431,6 +431,11 @@ export interface ArrayStream<T> extends StreamAble<number,T>{
      */
     getList() :  ArrayList<T>
 }
+/***
+ */
+export interface objectStream<K extends string|number,V> extends StreamAble<K,V>{
+    valueOfOptional( ): Optional<MapType<K,V>>
+}
 /****
  * <Definer null value>
  * */
@@ -560,11 +565,73 @@ export interface fileStream {
  * Interface net/
  */
 export interface restHttp{
+    /***
+     * Get protocol used in string value http or http(s)
+     */
     getProto( ): string
+    /***
+     * get http headers like an object
+     */
     getHeaderAsObject( ) : HashMap<string,any>
+    /***
+     *  GetDataAsObject return the response body request like an anonymous
+     *  object. This method follow response query.
+     */
     getDataAsObject( ) :any
+    /***
+     * GetData return the response body like a string value. This method follow
+     * response query.
+     */
     getData( ): string
+    /***
+     */
     setData( data : string ) :void
+    /***
+     *
+     */
     setHeader( header: HashMap<string,any> ):void
+    /***
+     * Allow to send the http request
+     */
     request( ) : Promise<Response>
+    /***
+     * Allows to define how the block buffer should be encoding to output
+     */
+    setEncoding( encoding:BufferEncoding):restHttp
+    /***
+     */
+    getEncoding( ):BufferEncoding
+    /***
+     *
+     */
+    setLoader( pipe:loader): restHttp
+    /***
+     */
+    getLoader( ):loader
+}
+/***
+ *
+ */
+export interface wrapHeader<T> {
+    build( ) : T
+}
+/***
+ *
+ */
+export interface loader{
+    /***
+     */
+    setSizeOf( size:number ): loader
+    /***
+     */
+    start( endingMessage : string ): loader
+    /***
+     */
+    add( value:number ):void
+    /***
+     */
+    end():void
+    /***
+     */
+    error( message:string ):void
 }

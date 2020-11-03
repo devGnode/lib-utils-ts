@@ -26,7 +26,7 @@
 import * as http from "http";
 import * as https from "https";
 import {RuntimeException} from '../Exception';
-import {restHttp, streamLambdaTo} from "../Interface";
+import {loader, restHttp, streamLambdaTo, wrapHeader} from "../Interface";
 import {ArrayList, HashMap} from "../List";
 import {Proxy} from "./Proxy";
 import {Cookie} from "./Cookie";
@@ -40,12 +40,6 @@ export type httpMethodType = "HEAD"|"GET"|"PUT"|"POST"|"DELETE"|"CONNECT"|"TRACE
 export type httpMimeType   = "text/plain"|"text/html"|"text/xml"|"text/csv"|"application/octet-stream"|"application/xml"|
                              "application/json"|"application/javascript"|"multipart/form-data"|"application/x-www-form-urlencoded"|
                              "application/xhtml+xml"|"application/ld+json" //...
-/***
- *
- */
-export interface wrapHeader<T> {
-    build( ) : T
-}
 /***
  * I keep this static class in private for this moment,
  * but... it is only used to send requests
@@ -65,15 +59,20 @@ class httpEvent{
             handle = httpA.request(
                     rest.getHeaderAsObject().toJson(),
                     response=>{
-                        let chunk = "";
-                        response.on("data",data=>chunk+=Buffer.from(data,"utf-8").toString());
-                        response.on("end",()=>httpEvent.pack(resolve,response,chunk));
+                        let chunk = [];
+                       if(rest.getLoader()&&response.statusCode!==200)rest.getLoader().error(`Failed to download resources, status code : ${response.statusCode}`);
+                       else if(rest.getLoader()&&response.statusCode===200) {
+                            let s:number = parseInt(new Response({headers: response.headers}).getHeader("content-length"))||0;
+                            rest.getLoader().setSizeOf(s);
+                        }
+                        response.on("data",data=>{ chunk.push(data); if(rest.getLoader()&&response.statusCode===200)rest.getLoader().add(data.length); });
+                        response.on("end",()=>{httpEvent.pack(resolve,response,Buffer.concat(chunk).toString(rest.getEncoding()));});
                 }).on("error",error=>{
                     reject(new Response({ errorno:1,error:error }));
                 });
                 if(rest.getData()){
                     try{ handle.write(rest.getData());}catch (e) {
-                        reject(new Response( { errorno:1, error:e }));
+                        reject(new Response( { errorno:1,error:e }));
                     }
                 }
             handle.end();
@@ -185,10 +184,14 @@ export class Response {
  *
  */
 abstract class AbstractRestHttp implements restHttp{
-
-    protected proto : httpProtoType = null;
-    protected header : HashMap<string,any> = null;
-    protected data : string  = null;
+    /***
+     *
+     */
+    protected encoding:BufferEncoding      = "utf-8";
+    protected proto :httpProtoType         = null;
+    protected header :HashMap<string,any>  = null;
+    protected data :string                 = null;
+    private loader:loader              = null;
     /***
      *
      */
@@ -213,7 +216,10 @@ abstract class AbstractRestHttp implements restHttp{
      * @async
      */
     public async request( ) : Promise<Response>{
-        try{return await httpEvent.send(this);} catch (Exception) {
+        try{
+            if(this.loader) this.loader.start("Download was successful !");
+            return await httpEvent.send(this);
+        } catch (Exception) {
             return Exception;
         }
     }
@@ -221,6 +227,14 @@ abstract class AbstractRestHttp implements restHttp{
     public setData(data: string): void { this.data = data; }
 
     public setHeader(header: HashMap<string, any>): void { this.header = header}
+
+    public setEncoding( encoding:BufferEncoding):restHttp{this.encoding = encoding; return  this;}
+
+    public getEncoding( ):BufferEncoding{ return this.encoding;}
+
+    public setLoader( pipe:loader): restHttp { this.loader = pipe; return this; }
+
+    public getLoader( ): loader{ return this.loader; }
 }
 export class RestHttp extends AbstractRestHttp{
     /***
@@ -231,7 +245,7 @@ export class RestHttp extends AbstractRestHttp{
      * @param header
      * @param data
      */
-    constructor( header : HashMap<string,any>, data : string) {
+    constructor( header : HashMap<string,any> = null, data : string = null) {
         super();
         this.header = header;
         this.data   = data;
@@ -240,7 +254,7 @@ export class RestHttp extends AbstractRestHttp{
      * Constructor
      */
     public static options( ) : HttpOptions<RestHttp>{
-        return new HttpOptions<RestHttp>( new RestHttp(null,null) );
+        return new HttpOptions<RestHttp>( new RestHttp() );
     }
 }
 
@@ -465,7 +479,7 @@ export class HttpOptions<T extends restHttp> implements wrapHeader<T>{
    /***
     * @constructor
     */
-   public build() : any{
+   public build() : T{
        if(!this.params.isEmpty()) this.options.put("path", (this.options.get("path")||"/")+this.params );
        this.value.setHeader(this.options);
        this.value.setData(JSON.stringify(this.data))
