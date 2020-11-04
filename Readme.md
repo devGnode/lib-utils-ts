@@ -4,7 +4,8 @@
   
 This framework has been created only for Typescript projects, it's possible to use it for javascript project but is not really adapted for this, cause generics is not support by the native javascript.  
   
-  
+Lucas and Eric both are developer. Lucas use lib-utils-ts :registered:, and on the other hand Eric use basic javascript in his web browser. Development codes of Luca's are clean and structured, Lucas wins much precious times and can eat a little cake with a cup of tea :cowboy_hat_face::tea:. When with him Eric is a labyrinth developer, his code look like foam ball, result he is lost and upset :confused:. Lucas use power of the stream object, He optimize his code and boost this performances. Actually, Eric read a big book how Javascript bêta work ed. 1995 for dummies, that grandfather gave him, but he has a lot of trouble understanding subtlety of javascript in all these pages :sweat:. Today Lucas has wins the better coding champion league of the world :sunglasses:, Eric resign finally oneself to give up and pass to HTML :disappointed:.  Don't be like Eric make rather  like Lucas and use `lib-utils-ts` :registered:. A career may be played on a byt\(e\), Let's reveal together the power of your development.   \( * \) You come from to Java, you want improve your javascript structure, learn object language easily with little framework below, it implements some Java7 & 8 classes like ArrayList, Properties, lombok. \:P :sweat_smile:
+
 ## Set up  
   
 `npm i lib-utils-ts`  
@@ -529,7 +530,9 @@ prop.setProperty("foo",true);
 prop.store(new FileWriter("./foo/bar.json"));
 ```
 
-## FLombok 
+## :checkered_flag: FLombok 
+
+A testing feature, be careful when using this method. make sure you have defined "experimentalDecorators" property to "true" in your tsconfig.json. This functionality may be changed in a future version.
 
 - version `0.0.1`
 
@@ -571,6 +574,45 @@ console.log( test.getFooS( ) );
 let mo  : MyObjectInterface = test.getFooMO( );
 
 ```
+## RestHttp
+
+Public Interface restHttp :
+
+ - `getProto( ): string`
+- `getHeaderAsObject( ) : HashMap<string,any>`
+- `getDataAsObject( ) :any`
+- `getData( ): string`
+- `setData( data : string ) :void`
+- `setHeader( header: HashMap<string,any> ):void`
+- `request( ) : Promise<Response>`
+- `setEncoding( encoding:BufferEncoding):restHttp`
+- `getEncoding( ):BufferEncoding`
+- `setLoader( pipe:loader): restHttp`
+- `getLoader( ):loader`
+
+#### RestHttp & RestHttps
+
+- static `options( ) : HttpOptions<RestHttp>`
+
+````typescript
+
+import {Response,RestHttp} from "lib-utls-ts/src/net/Http";
+import {Cookie} from "lib-utls-ts/src/net/Cookie";
+
+let q : Response = RestHttp.options()
+    .widthEndpoint("/end/point")
+    .widthHostname("host")
+    .get()
+    .build()
+    .setEncoding("utf-8")
+    .request();
+
+let cookie: Cookie = q.getCookies()
+            .stream()
+            .filter(value=> value.getName().equals("foo"))
+            .findFirst()
+            .get();
+````
 
 
 ## Feature 
@@ -579,3 +621,4 @@ let mo  : MyObjectInterface = test.getFooMO( );
 - 1.2.1-beta : 
     + Implementation of `Properties` class and wrap file class `FileReader` and `FileWriter`
     + Featured flombok decorator annotation version 0.0.1 `Test version`, cause the decoration annotation is an experimental feature of TypeScript.
+    + Implementation of `RestHttp` and `RestHttps` feature
