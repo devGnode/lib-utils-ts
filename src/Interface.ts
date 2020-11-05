@@ -29,9 +29,9 @@ export type MapType<K extends ListKey,V>    = { [J in K] : V };
  * in this version predication
  * look like to Comparator
  */
-export type predicateFnA<T> = ( value : T, key? : ascii )=> Boolean;
+export type predicateFnA<T> = ( value : T, key? : ascii )=> boolean;
 export type predicateFn<T> = predicateFnA<T> & Function
-export type predicationKA<K,V> = ( value :V, key : K, ) => Boolean
+export type predicationKA<K,V> = ( value :V, key : K, ) => boolean
 export type predicationK<K,V> = predicationKA<K,V> & Function
 export type predication<T> = predicateFn<T> | Predication<T> | PredicationConstructor<T>
 /**/

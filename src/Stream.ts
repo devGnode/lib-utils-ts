@@ -74,7 +74,7 @@ export class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<
      *
      * @param callback
      */
-   public filter( callback : predication<T> = (()=> void 0)): Stream<T> {
+   public filter( callback : predication<T> ): Stream<T> {
        let out : array<T> = [], i : number = 0;
 
         this.each((value,key)=>{
