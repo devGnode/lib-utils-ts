@@ -1,6 +1,10 @@
 /***
  * Exception Area
  */
+export class Exception extends Error{
+    public name = Exception["name"];
+    constructor( message : string = null, code : number = 0 ) {super(message);}
+}
 export class RuntimeException extends Error{
     public name = RuntimeException["name"];
     constructor( message : string = null, code : number = 0 ) {super(message);}
@@ -24,4 +28,8 @@ export class IOException extends Error{
 export class JSONException extends Error{
     public name = IOException["name"];
     constructor( message : string = null ) {super(message);}
+}
+export class SecurityException extends Error{
+    public name = SecurityException["name"];
+    constructor( message : string = null, code : number = 0 ) {super(message);}
 }
