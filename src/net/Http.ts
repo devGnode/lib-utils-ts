@@ -25,7 +25,7 @@
  */
 import * as http from "http";
 import * as https from "https";
-import {RuntimeException} from '../Exception';
+import {JSONException} from '../Exception';
 import {loader, restHttp, streamLambdaTo, wrapHeader} from "../Interface";
 import {ArrayList, HashMap} from "../List";
 import {Proxy} from "./Proxy";
@@ -148,7 +148,7 @@ export class Response {
      */
     public getBodyAsObject():any{
         try{return JSON.parse(this.response.body);}catch (e) {
-            throw new RuntimeException(e);
+            throw new JSONException(e);
         }
     }
     /***

@@ -1,30 +1,46 @@
-import {List, PredicateInterfaces, predication} from "./Interface";
-import {ArrayList} from "./List";
+import {predicate, predicateFn} from "./Interface";
+import {Define} from "./Define";
+import {NullPointerException} from "./Exception";
+/****
+ * Predicate class :
+ */
+export class Predication<T> implements predicate<T>{
 
+    public test: predicateFn<T>;
 
-export class Predication<T> implements PredicateInterfaces<T>{
-
-    protected plist : List<predication<String>> = new ArrayList<predication<String>>();
-
-    public and(Predicate ) : Predication<T>{
-       throw new Error("no predicate implemented");
+    public and( other :  predicate<T> ) : predicate<T>{
+        Define.of(other).orThrow(new NullPointerException("[ other ] argument is null !"));
+        let p: predicate<T> = new Predication(),
+            q: predicateFn<T> = (value)=> this.test(value)&& Define.of<predicateFn<T>>(other.test).orNull(()=>false).call(other,value);
+        p.test = q;
+        return p;
     }
 
-    public or(Predicate ) : Predication<T>{
-        throw new Error("no predicate implemented");
+    public or( other : predicate<T> ) : predicate<T>{
+        Define.of(other).orThrow(new NullPointerException("[ other ] argument is null !"));
+        let p: predicate<T> = new Predication(),
+            q: predicateFn<T> =  (value) =>this.test(value)||Define.of<predicateFn<T>>(other.test).orNull(()=>false).call(other,value);
+        p.test = q;
+        return p;
     }
 
-    public test(value: T): boolean {
-        return this.plist
-            .stream()
-            .mapTo<Boolean>((v)=>{
-
-                if(v instanceof Predication) return v.test(String(value));
-                else{
-                    return v(String(value));
-                }
-            })
-            .allMatch(value=>value===true);
+    public negate(): predicate<T> {
+        let p: predicate<T> = new Predication();
+        p.test = (value)=> !this.test(value);
+        return p;
     }
 
+    public static isEqual<T>(object: Object): predicate<T> {
+        let p: predicate<T> = new Predication();
+        p.test = object===null?
+            () => false :
+            (value)=> object === value;
+        return p;
+    }
+
+    public static of<T>( test: predicateFn<T> ): predicate<T> {
+        return new class extends Predication<T>{
+            test: predicateFn<T> = test;
+        };
+    }
 }

@@ -29,8 +29,10 @@ export type MapType<K extends ListKey,V>    = { [J in K] : V };
  * in this version predication
  * look like to Comparator
  */
-export type predicateFn<T> = ( value : T, key? : ascii )=> Boolean;
-export type predicationK<K,V> = ( value :V, key : K, ) => Boolean
+export type predicateFnA<T> = ( value : T, key? : ascii )=> Boolean;
+export type predicateFn<T> = predicateFnA<T> & Function
+export type predicationKA<K,V> = ( value :V, key : K, ) => Boolean
+export type predicationK<K,V> = predicationKA<K,V> & Function
 export type predication<T> = predicateFn<T> | Predication<T> | PredicationConstructor<T>
 /**/
 export type streamLambda<T>     = ( value : T, key?: ascii ) => T | void
@@ -91,31 +93,40 @@ declare global {
 /***
  *
  */
-export interface PredicationConstructor<T> {
+export interface PredicationConstructor<T> extends Function{
     /***
      */
     ( value : T, key? : ascii ) : boolean
     /***
      */
-    test?( value : T ) : boolean
+    test( value : T ) : boolean
     /***
      */
-    and?( Predicate : predication<T>) : Predication<T>
+    and( Predicate : predicate<T>) : predicate<T>
+    /**
+     */
+    or( other : predicate<T> ) : predicate<T>
+    /**
+     */
+    negate(): predicate<T>
 }
 /**
  *
  */
-export interface PredicateInterfaces<T> {
+export interface predicate<T> {
     /***
-     *
      * @param value
      */
-    test( value : T ) : boolean
+    test : predicateFn<T>
     /***
-     *
-     * @param Predicate
+     * @param other
      */
-    and( Predicate : predication<T>) : Predication<T>
+    and( other : predicate<T> ) : predicate<T>
+    
+    or( other: predicate<T> ): predicate<T>
+
+    negate( ): predicate<T>
+
 }
 /***
  */
