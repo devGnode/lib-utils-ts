@@ -8,6 +8,12 @@ ads :
 Lucas and Eric both are developer. Lucas use lib-utils-ts :registered:, and on the other hand Eric use basic javascript in his web browser. Development codes of Luca's are clean and structured, Lucas wins much precious times and can eat a little cake with a cup of tea :cowboy_hat_face::tea:. When with him Eric is a labyrinth developer, his code look like foam ball, result he is lost and upset :confused:. Lucas use power of the stream object, He optimize his code and boost this performances. Actually, Eric read a big book how Javascript bêta work ed. 1995 for dummies, that grandfather gave him, but he has a lot of trouble understanding subtlety of javascript in all these pages :sweat:. Today Lucas has wins the better coding champion league of the world :sunglasses:, Eric resign finally oneself to give up and pass to HTML :disappointed:.  Don't be like Eric make rather  like Lucas and use `lib-utils-ts` :registered:. A career may be played on a byt\(e\), Let's reveal together the power of your development.   \( * \) You come from to Java, you want improve your javascript structure, learn object language easily with little framework below, it implements some Java7 & 8 classes like ArrayList, Properties, lombok. \:P :sweat_smile:
 
 This framework has been created only for Typescript projects, it's possible to use it for javascript project but is not really adapted for this, cause generics is not support by the native javascript.  
+
+Difficulty new Dev : :star::star::star::star::star:
+
+Difficulty junior  : :star::star::star:
+
+Difficulty senior  : 
  
 ## Set up  
   
@@ -15,75 +21,69 @@ This framework has been created only for Typescript projects, it's possible to u
   
 # Native Extension  
   
-These objects `Number`, `String`, `Date`, `Boolean` ... have been extended. Below their prototype :
-
-`import "lib-utils-ts/src/globalUtils"`
-
-##### Number
-
-+ **equals**( value : number ) : boolean 
-
-Static : 
-
-+ **of**( value: Object) : number
-
-#### String
-
-+ **equals**( value :string  ) : boolean
-+ **equalsIgnoreCase**( value : string ): boolean
-+ **contains**( value: string ) : boolean
-+ **isEmpty**( ) : boolean
-+ **regExp**( regExp : RegExp, callback : Function ) : string
-+ **repeatString**( char : String\[0\], loop : number ) : string
-+ **format**( ... args : any\[\] ) : string
-+ **exec**( regExp : RegExp ) : String\[\]
-+ **explodeAsList**( ) : ArrayList\<string\>
-+ **orDefault**( value : string ): string
-
-#### Date
-
-+ **plusDays**( days : number ) : Date
-+ **lessDays**( days : number) : Date
-+ **plusYears**( years : number ): Date
-+ **lessYears**( years : number ) :Date 
-+ **dateFormat**( pattern : string ) : Date
-+ **elapsedTime**( date : Date ) : number
-
-Static : 
-+ **dateFormat**( pattern : string ) : Date
+Importation : `import "lib-utils-ts/src/globalUtils"`
   
-#### Boolean
-
-+ **state**( expectTrue : any, orElse : any ) : any
-+ **equals**( value: boolean ) : boolean  
-
-Static : 
-
-+ **of**( value: Object) : Boolean
+This import provides access to the methods of these native objects that have been extended `Object`, `Function`, `Number`, `String`, `Date`, `Boolean`. Below their prototype :
 
 #### Object
 
-+ **getClass**\<T\>(): Class\<T\>
+Instanced Object :
+
++ `getClass<T>(): Class<T>`
++ `equals( object: Object ): boolean`
 
 Static :
 
-+ **isNull**() : boolean
-+ **requireNotNull**\<T\>( other: T, message?: string ) :T 
-+ **nonNull**(obj:Object):boolean
-
-#### Object
-
-+ **getClass**\<T\>(): Class\<T\>
-
-Static :
-
-+ **isNull**() : boolean
-+ **requireNotNull**\<T\>( other: T, message?: string ) :T 
++ `isNull() : boolean`
++ `requireNotNull<T>( other: T, message?: string ) :T `
+    - NullPointerException
++ `nonNull(obj:Object):boolean`
 
 #### Function
 
-+ **getClass**\<T\>(): Constructor\<T\>
++ `class<T>(): Constructor<T>`
 
+##### Number
+
++ `equals( value : number ) : boolean `
+
+Static : 
+
++ `of( value: Object) : number`
+
+#### String
+
++ `quals( value :string  ) : boolean`
++ `equalsIgnoreCase( value : string ): boolean`
++ `contains( value: string ) : boolean`
++ `isEmpty( ) : boolean`
++ `regExp( regExp : RegExp, callback : Function ) : string`
++ `repeatString( char : String, loop : number ) : string`
++ `format( ... args : any[] ) : string`
++ `exec( regExp : RegExp ) : String[]`
++ `explodeAsList( ) : ArrayList<string>`
++ `orDefault( value : string ): string`
+
+#### Date
+
++ `plusDays( days : number ) : Date`
++ `lessDays( days : number) : Date`
++ `plusYears( years : number ): Date`
++ `lessYears( years : number ) :Date `
++ `dateFormat( pattern : string ) : Date`
++ `elapsedTime( date : Date ) : number`
+
+Static : 
++ `dateFormat( pattern : string ) : Date`
+  
+#### Boolean
+
++ `*state( expectTrue : any, orElse : any ) : any`
++ `equals( value: boolean ) : boolean`
+
+Static : 
+
++ `of( value: Object) : Boolean`
 
 ## Constructor\<T\>
 
