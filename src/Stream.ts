@@ -11,6 +11,7 @@ import {
 } from "./Interface";
 import {Optional} from "./Optional";
 import {Iterator, ListIterator} from "./Iterator";
+import {RuntimeException} from "./Exception";
 /***
  *
  */
@@ -126,7 +127,7 @@ export class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<
         return this.anyMatch(  <T>(value,key)=> value%2===0 );
     }
 
-    public count(): number { return this.list?.length; }
+    public count(): number { return this.list.length; }
 
     public sum( ) : Optional<Number> {
         let sum : Number = 0;
@@ -178,7 +179,7 @@ export abstract class AbstractObjectStream<K extends string|number,V> implements
     public each(callback: streamLambdaK<V,K> ): objectStream<K, V> {
         let tmp : any,ret : any;
         try{for(tmp in this.list)if((ret = callback(this.list[tmp],tmp)))break;}catch (e) {
-            console.warn(e)
+            throw new RuntimeException(e);
         }
         return new ObjectStream(ret);
     }

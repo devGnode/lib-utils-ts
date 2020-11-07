@@ -57,4 +57,31 @@ export module flombok{
             });
         };
     }
+
+    /**
+     * @enumerable decorator that sets the enumerable property of a class field to false.
+     * @param enumerable
+     * @param defaultValue true|false
+     */
+    export function ENUMERABLE( enumerable: boolean, defaultValue: any = null ) {
+        return (target: any, propertyKey: string) => {
+            let descriptor: PropertyDescriptor;
+            if (( descriptor = Object.getOwnPropertyDescriptor(target, propertyKey) || {}) != defaultValue) {
+                descriptor.enumerable = enumerable;
+                descriptor.writable   = true;
+                descriptor.value      = defaultValue;
+                Object.defineProperty(target, propertyKey, descriptor);
+                return void 0;
+            }
+        };
+    }
+    /**
+     * @enumerable
+     * @param enumerable
+     */
+    export function ENUMERABLEFUNC( enumerable: boolean) {
+        return function(target: any, propertyKey: string, descriptor: PropertyDescriptor ) :void {
+            if (( descriptor.enumerable ) != enumerable) descriptor.enumerable = enumerable;
+        };
+    }
 }

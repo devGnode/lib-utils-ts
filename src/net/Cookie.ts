@@ -72,7 +72,7 @@ export class Cookie{
     }
 
     public setExpiry(expire: Date ): Cookie{
-        this.expiry = Define.of(expire?.toDateString());
+        this.expiry = Define.of(expire.toDateString());
         return this;
     }
 

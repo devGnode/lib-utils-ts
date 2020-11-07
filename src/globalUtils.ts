@@ -1,7 +1,10 @@
 import {Utils} from "./Utils";
 import {ArrayList, HashMap} from "./List";
 import {format} from "util";
-import exp = require("constants");
+import {Define} from "./Define";
+import {Class} from "./Class";
+import {NullPointerException} from "./Exception";
+import {Constructor} from "./Constructor";
 /****
  * Native Object extension area
  *
@@ -64,4 +67,22 @@ Boolean.of = function(  value : Object ) : boolean {return value===true||value =
  Array extension
  */
 Array.asList = function<T>( value : T[] ): ArrayList<T> {return new ArrayList<T>(value);};
-
+/***
+ Object extension
+ */
+Object.nonNull = function(obj:Object):boolean{
+    return HashMap.of<string,Object>(obj)
+        .stream()
+        .anyMatch(value=> value !== null && value !== undefined );
+};
+Object.isNull = ( value : Object):boolean=> Define.of<Object>(value).isNull();
+Object.requireNotNull = <T>( other: T, message?: string ) :T => Define.of<T>(other).orElseThrow(new NullPointerException(message||''));
+Object.prototype.getClass = function<T>():Class<T> { return new Class<T>(this); };
+Object.defineProperty(Object.prototype,"getClass",{enumerable: false, writable: true, configurable: true});
+Object.prototype.equals = function(object:Object):boolean{ return this.constructor === object.constructor && (<any>this).prototype === (<any>object).prototype; }
+Object.defineProperty(Object.prototype,"equals",{enumerable: false, writable: true, configurable: true});
+/***
+ Function extension
+ */
+Function.prototype.class = function<T extends Object>(): Constructor<T>{return new Constructor<T>(this);};
+Object.defineProperty(Function.prototype,"class",{enumerable: false, writable: true, configurable: true});

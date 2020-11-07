@@ -15,9 +15,12 @@ This framework has been created only for Typescript projects, it's possible to u
   
 # Native Extension  
   
-These objects `Number`, `String`, `Date`, `Boolean` have been extended. Below their prototype :
+These objects `Number`, `String`, `Date`, `Boolean` ... have been extended. Below their prototype :
+
+`import "lib-utils-ts/src/globalUtils"`
 
 ##### Number
+
 + **equals**( value : number ) : boolean 
 
 Static : 
@@ -25,6 +28,7 @@ Static :
 + **of**( value: Object) : number
 
 #### String
+
 + **equals**( value :string  ) : boolean
 + **equalsIgnoreCase**( value : string ): boolean
 + **contains**( value: string ) : boolean
@@ -57,6 +61,116 @@ Static :
 
 + **of**( value: Object) : Boolean
 
+#### Object
+
++ **getClass**\<T\>(): Class\<T\>
+
+Static :
+
++ **isNull**() : boolean
++ **requireNotNull**\<T\>( other: T, message?: string ) :T 
++ **nonNull**(obj:Object):boolean
+
+#### Object
+
++ **getClass**\<T\>(): Class\<T\>
+
+Static :
+
++ **isNull**() : boolean
++ **requireNotNull**\<T\>( other: T, message?: string ) :T 
+
+#### Function
+
++ **getClass**\<T\>(): Constructor\<T\>
+
+
+## Constructor\<T\>
+
+As in javascript an object is also a function, this class depict a next future instanced object
+
+- `getName( ):string` 
+- `getType( ):string`  
+- ` getEntries( ): [any, string ][]`  
+- `getKeys( ): string[]`  
+- `cast( other: Object ):T`  
+- `newInstance( ...args : Object[] ) :T`  
+- `getResourcesAsStream( name: string): InputStreamReader` 
+
+Static :
+
+- `forname<? extends Object>( ...args : Object[] ) :T`
+
+````typescript  
+
+class foo{
+    public value:string;
+
+    constructor( value:string ){
+        this.value = value;
+    }
+
+    public getValue( ):string{ /*...*/ }
+}
+
+let a: foo = new foo(125); // Ok
+
+let b: Constructor<foo> = new Constructor(foo);
+let c: foo = b.newInstance( 125 ); // OK
+console.log( c.getValue( ) ); // 125
+
+let d:  Constructor<foo> =  foo.class();
+let e: foo = d.newInstance( 255 );
+console.log( e.getValue() );
+
+let f: foo = foo.class<foo>().newInstance(80);
+console.log( f.getValue() );
+
+````
+    
+## Class\<T\>
+
+- `getEntries( ): [any, string ][]`  
+- `getType( ):string`  
+- `getKeys( ): string[]`  
+- `getInstance( ):T`  
+- `cast( other: Object ):T`  
+- `notNullProperties( ) : MapType<string, Object>`  
+- `newInstance( ...args : Object[] ) :T`  
+- `getResourcesAsStream( name: string): InputStreamReader`  
+
+````typescript
+
+class foo{
+    public value:string;
+
+    constructor( value:string ){
+        this.value = value;
+    }
+
+    public getValue( ):string{ return this.value; }
+}
+
+let a: foo = new foo(125); // Ok
+
+a.getClass().getType( ); // => foo
+
+````
+
+Class for name :
+
+````typescript
+
+import {Constructor} from "./Class"; 
+
+interface IMyInter{
+    value:string,
+    getValue( ):string    
+}
+
+Class.forName<IMyInter>("src.package.Class").newInstance(12).getValue();
+
+````
 ## Iterator\<E\>  
   
 **Methods**  
@@ -586,7 +700,10 @@ A testing feature, be careful when using this method. make sure you have defined
 
 FakeLombok is a decorator annotation, for use this 
 
-### usage 
+### usage getter & setter properties annotation
+
+- `GETTER( )`
+- `SETTER( )`
 
 ```typescript  
 
@@ -622,6 +739,33 @@ console.log( test.getFooS( ) );
 let mo  : MyObjectInterface = test.getFooMO( );
 
 ```
+
+### usage enumerable properties/method annotation
+
+
+- `ENUMERABLE( enumerable: boolean, defaultValue: any = null )`
+    - For apply this annotation to your class good way to use it is to no define value, but define 'defaultValue' in your annotation
+ - `ENUMERABLEFUNC( enumerable: boolean)`
+
+```typescript  
+
+class Test{
+    
+    @flombok.ENUMERABLE( flase, "foo" ) 
+    public fooS :string;
+    
+    @flombok.ENUMERABLE( true, 5 ) 
+    protected fooN : number;
+
+    @flombok.ENUMERABLE( flase ) // default null
+    protected fooMO : MyObjectInterface;
+
+}
+
+console.log( ( new Test() ).getClass().getEntries() ); // []
+
+```
+
 ## RestHttp
 
 Public Interface restHttp :

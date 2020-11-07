@@ -9,6 +9,8 @@ import {Iterator, ListIterator} from "./Iterator";
 import {InputStreamReader, OutputStreamWriter} from "./file/IOStream";
 import {Define} from "./Define";
 import {Response} from "./net/Http";
+import {Class} from "./Class";
+import {Constructor} from "./Constructor";
 /**
  * typeOf
  */
@@ -40,6 +42,8 @@ export type streamLambdaK<V,K>  = ( value : V, key?: K ) => V | void
 export type streamLambdaTo<T,U> = ( value : T, key?: ascii ) => U | void
 export type lambdaType<T,U>     = streamLambdaTo<T,U> | streamLambda<T> | streamLambdaK<T,U>
 export type asyncStreamLambdaTo<T,U> = ( value : T, key?: ascii ) => Promise<U>
+/**/
+export type constructorFunction = Function
 /***
  * Global Extended native object prototype
  */
@@ -89,6 +93,67 @@ declare global {
         asList<T>(value: T[]): ArrayList<T>
     }
 
+    /****
+     * Test implementation
+     */
+    interface ObjectConstructor {
+        isNull( value : Object ):boolean
+        requireNotNull<T>( other: T, message?: string ) :T
+        nonNull( obj: Object ): boolean
+    }
+    interface Object {
+        getClass<T extends Object>(): Class<T>
+        equals(object:Object):boolean
+    }
+    
+    interface Function {
+        class<T extends Object>(): Constructor<T>
+    }
+}
+export interface constructor<T> {
+    /***
+     * @getName : return name of Class
+     */
+    getName():string
+    /***
+     * @getType
+     */
+    getType(): string
+    /***
+     * @getEntries : get Array of Object (this)
+     */
+    getEntries( ): [any, string ][]
+    /***
+     * @getKeys
+     */
+    getKeys( ): string[]
+    /***
+     * @newInstance return new Instance
+     * @args : Object[]
+     */
+    newInstance(...args: Object[]): T
+    /***
+     * @getResourcesAsStream
+     * @param name
+     */
+    getResourcesAsStream( name: string): InputStreamReader
+}
+/***
+ * @interface : classA
+ */
+export interface classA<T> extends constructor<T>{
+    /***
+     * @getInstance : give back instance of T
+     */
+    getInstance( ):T
+    /***
+     * @cast
+     */
+    cast( other: Object ):T
+    /***
+     * @notNull : return an anonymous object without any null value
+     */
+    notNullProperties( ) : MapType<string, Object>
 }
 /***
  *
@@ -402,6 +467,9 @@ export interface StreamAble<K extends string|number,V> {
     /***
      */
     findFirst( ) : Optional<V>
+    /***
+     */
+   // findLast( ) : Optional<V>
     /***
      */
     findAny( ) : Optional<V>
