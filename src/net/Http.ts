@@ -32,6 +32,7 @@ import {Proxy} from "./Proxy";
 import {Cookie} from "./Cookie";
 import "../globalUtils"
 import {Define} from "../Define";
+import {Constructor} from "../Constructor";
 /**
  *
  */
@@ -254,7 +255,7 @@ export class RestHttp extends AbstractRestHttp{
      * Constructor
      */
     public static options( ) : HttpOptions<RestHttp>{
-        return new HttpOptions<RestHttp>( new RestHttp() );
+        return new HttpOptions<RestHttp>( RestHttp );
     }
 }
 
@@ -272,7 +273,7 @@ export class RestHttps extends RestHttp{
      * Constructor
      */
     public static options( ) : HttpOptions<RestHttps>{
-        return new HttpOptions<RestHttps>( new RestHttps(null,null) );
+        return new HttpOptions<RestHttps>( RestHttps );
     }
 }
 /***
@@ -284,10 +285,10 @@ export class HttpOptions<T extends restHttp> implements wrapHeader<T>{
     private options : HashMap<string,any> = new HashMap<string,any>({});
     private data : object|string   = null;
     private params : string        = "";
-    private  readonly value : T    = null;
+    private Class : Constructor<T>;
 
-    constructor( value : T  ){
-        this.value=value;
+    constructor( value : Function  ){
+        this.Class = value.class();
         this.options.put("headers",new HashMap<string,string>({}));
         this.withEndPoint("/");
     }
@@ -481,8 +482,6 @@ export class HttpOptions<T extends restHttp> implements wrapHeader<T>{
     */
    public build() : T{
        if(!this.params.isEmpty()) this.options.put("path", (this.options.get("path")||"/")+this.params );
-       this.value.setHeader(this.options);
-       this.value.setData(JSON.stringify(this.data))
-        return this.value;
+        return this.Class.newInstance(this.options,JSON.stringify(this.data));
    }
 }
