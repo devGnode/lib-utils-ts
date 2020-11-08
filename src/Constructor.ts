@@ -14,18 +14,18 @@ function ClassCast<T>( Class: newConstructor<T> ) : newConstructorA<T>{
 /***
  * @Constructor : in Js an Object it's just a function with an object prototype
  */
-export class Constructor<T extends Object> implements constructor<T> {
+export class Constructor<T extends Object> extends Function implements constructor<T> {
     /***
      */
     @flombok.ENUMERABLE(false)
-    private readonly value: constructorFunction;
+    protected value: constructorFunction;
     /***
      * @param value
      */
-    constructor( value : constructorFunction ) { this.value = value;}
+    constructor( value : constructorFunction ) { super(); this.value = value;}
     /***
      */
-    public getName():string{return this.value.name; }
+    public getName():string{return this.value.name||this.value.prototype.constructor.name||null; }
     /***
      */
     public getType(): string {return this.getName();}
@@ -46,5 +46,4 @@ export class Constructor<T extends Object> implements constructor<T> {
      *
      */
     public getKeys( ): string[]{return Object.keys(this.value.prototype);}
-
 }

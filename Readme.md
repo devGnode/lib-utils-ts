@@ -23,13 +23,13 @@ Difficulty senior  :
   
 Importation : `import "lib-utils-ts/src/globalUtils"`
   
-This import provides access to the methods of these native objects that have been extended `Object`, `Function`, `Number`, `String`, `Date`, `Boolean`. Below their prototype :
+This import provides access to the methods of these native objects that have been extended `Object`, `FunctionA`, `Number`, `String`, `Date`, `Boolean`. Below their prototype :
 
 #### Object
 
 Instanced Object :
 
-+ `getClass<T>(): Class<T>`
++ `getClass<T>(): Class<T>` : [see](https://github.com/devGnode/lib-utils-ts#constructort)
 + `equals( object: Object ): boolean`
 
 Static :
@@ -39,9 +39,9 @@ Static :
     - NullPointerException
 + `nonNull(obj:Object):boolean`
 
-#### Function
+#### FunctionA
 
-+ `class<T>(): Constructor<T>`
++ `class<T>(): Constructor<T>` : [see](https://github.com/devGnode/lib-utils-ts#constructort)
 
 ##### Number
 
@@ -57,7 +57,7 @@ Static :
 + `equalsIgnoreCase( value : string ): boolean`
 + `contains( value: string ) : boolean`
 + `isEmpty( ) : boolean`
-+ `regExp( regExp : RegExp, callback : Function ) : string`
++ `regExp( regExp : RegExp, callback : FunctionA ) : string`
 + `repeatString( char : String, loop : number ) : string`
 + `format( ... args : any[] ) : string`
 + `exec( regExp : RegExp ) : String[]`
@@ -78,7 +78,7 @@ Static :
   
 #### Boolean
 
-+ `*state( expectTrue : any, orElse : any ) : any`
++ `state( expectTrue : any, orElse : any ) : any`
 + `equals( value: boolean ) : boolean`
 
 Static : 
@@ -87,11 +87,11 @@ Static :
 
 ## Constructor\<T\>
 
-As in javascript an object is also a function, this class depict a next future instanced object
+As in javascript an object is also a function, these class depict a next future instanced object
 
 - `getName( ):string` 
 - `getType( ):string`  
-- ` getEntries( ): [any, string ][]`  
+- `getEntries( ): [any, string ][]`  
 - `getKeys( ): string[]`  
 - `cast( other: Object ):T`  
 - `newInstance( ...args : Object[] ) :T`  
@@ -127,7 +127,51 @@ let f: foo = foo.class<foo>().newInstance(80);
 console.log( f.getValue() );
 
 ````
-    
+
+Another example :
+
+ ````typescript 
+
+ let str : Constructor<String> = new Constructor<String>(String);
+ 
+ console.log( str.newInstance("hello").toUpperCase() )
+
+ ````
+
+## FunctionA\<T\>
+
+Public class FunctionA\<T\> extends Constructor\<T\> implements functionA\<T\> 
+
+constructor : 
+
+- ( name: string, constructor: Function ) : FunctionA
+
+Interface `IFunction<T>` : 
+
+- `setPrototype(proto: Function | Object): FunctionA<T>`
+- `instance(...argArray: Object[]): T`
+
+Usage :
+
+````typescript
+
+interface MyInterfaces{
+    getValue():string
+}
+
+let fc : FunctionA<MyInterfaces> = new FunctionA("MyInterfaces", function(s){      
+    this.value= s||"success";
+});
+
+fc.setPrototype({
+    getValue: function(){ return this.value; }
+});
+
+fc.instance("Hello world !").getValue();
+fc.class<MyInterfaces>().newInstance().getValue();
+
+````
+
 ## Class\<T\>
 
 - `getEntries( ): [any, string ][]`  
@@ -810,8 +854,9 @@ let cookie: Cookie = q.getCookies()
 ## Feature 
 
 - 1.2.0-beta : Implementation and stabilisation of `ArrayList<E>`, `HashMap<E>`, `Stream<E>` ..
-- 1.2.1-beta : 
+- 1.3.0-beta : 
     + Implementation of `Properties` class and wrap file class `FileReader` and `FileWriter`
     + Featured flombok decorator annotation version 0.0.1 `Test version`, cause the decoration annotation is an experimental feature of TypeScript.
     + Implementation of `RestHttp` and `RestHttps` feature
     + Stabilisation of predicate class : `Predication<T>`
+    + Implementation of `Class`, `Constructor`,`FunctionA` class
