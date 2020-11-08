@@ -9,7 +9,7 @@ export class Predication<T> implements predicate<T>{
     public test: predicateFn<T>;
 
     public and( other :  predicate<T> ) : predicate<T>{
-        Define.of(other).orThrow(new NullPointerException("[ other ] argument is null !"));
+        Object.requireNotNull(other,"[ other ] argument is null !");
         let p: predicate<T> = new Predication(),
             q: predicateFn<T> = (value)=> this.test(value)&& Define.of<predicateFn<T>>(other.test).orNull(()=>false).call(other,value);
         p.test = q;
@@ -17,7 +17,7 @@ export class Predication<T> implements predicate<T>{
     }
 
     public or( other : predicate<T> ) : predicate<T>{
-        Define.of(other).orThrow(new NullPointerException("[ other ] argument is null !"));
+        Object.requireNotNull(other,"[ other ] argument is null !");
         let p: predicate<T> = new Predication(),
             q: predicateFn<T> =  (value) =>this.test(value)||Define.of<predicateFn<T>>(other.test).orNull(()=>false).call(other,value);
         p.test = q;

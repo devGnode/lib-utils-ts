@@ -1,16 +1,6 @@
 import {flombok} from "./flombok";
 import {constructorFunction, constructor} from "./Interface";
 import {FileReader, InputStreamReader} from "./file/IOStream";
-
-export type newConstructor<E> = { new( ... args: Object[ ] ) :E }
-export type newConstructorFunc<E> = { (... args: Object[ ] ): E }
-export type newConstructorA<E> = newConstructor<E> & newConstructorFunc<E>
-
-function ClassCast<T>( Class: newConstructor<T> ) : newConstructorA<T>{
-    return new Proxy(Class,{
-        apply : (target: newConstructor<T>, thisArg: any, argArray?: any): any => new (<any>target)(... argArray)
-    }) as newConstructorA<T>;
-}
 /***
  * @Constructor : in Js an Object it's just a function with an object prototype
  */

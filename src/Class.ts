@@ -70,27 +70,31 @@ export class Class<T extends Object> implements classA<T>{
 
     public getConstructor( ):Constructor<T>{return new Constructor<T>(this.value.constructor);}
     /**
-     * @param value
+     * @param pattern : pattern
      * @param typeScript : is typescript file otherwise js
+     * @param isPackage : is an package that come from to node_modules directory
+     *
+     * Throwable :
+     *  NullPointerException : if pattern is null or object wished was not been found
+     *  ClassNotFoundException : require return an exception not found module
      */
-    public static forName<T extends Object>( value: string, typeScript : boolean = true ): Constructor<T>{
-        let element:List<string>=String(value)
-            .explodeAsList(/\./),
-            p:string=value, getter:string;
+    public static forName<T extends Object>( pattern: string, typeScript : boolean = true, isPackage = false ): Constructor<T>{
+        let p:string=pattern, getter:string, path:string,
+            element:List<string>=String(pattern)
+            .explodeAsList(/\./);
 
         let tmp :List<string>;
-        Object.requireNotNull(value,"package name is null !");
+        Object.requireNotNull(pattern,"package name is null !");
         if( (tmp = element.get(element.size()-1).explodeAsList(/\//)).size().equals(1) ) getter = tmp.get(0);
         else{
             // package.src.Class/node
             getter = tmp.get(1);
             element.set(element.size()-1,element.get(element.size()-1).replace(new RegExp(`\/${getter}`),""));
         }
-        value = element.toArray().join('/');
+        pattern = element.toArray().join('/');
         try{
-            let callback = require(`${process.cwd()}/${value}.${typeScript?'ts':'js'}`);
-            callback = callback[getter];
-            return new Constructor<T>(Define.of<any>(callback).orElseThrow(new NullPointerException(`Element not found ${getter} is Null from [${p}] !`)));
+            let callback = require(isPackage?pattern:`${process.cwd()}/${pattern}.${typeScript?'ts':'js'}`);
+            return new Constructor<T>(Define.of<any>(callback[getter]).orElseThrow(new NullPointerException(`Element not found ${getter} is Null from [${p}] !`)));
         }catch (e) {
             throw new ClassNotFoundException(`'${getter}' : class not found from package [${p}]`);
         }
