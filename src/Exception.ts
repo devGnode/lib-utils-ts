@@ -33,3 +33,7 @@ export class SecurityException extends Error{
     public name = SecurityException["name"];
     constructor( message : string = null, code : number = 0 ) {super(message);}
 }
+export class ClassNotFoundException extends Error{
+    public name = ClassNotFoundException["name"];
+    constructor( message : string = null, code : number = 0 ) {super(message);}
+}

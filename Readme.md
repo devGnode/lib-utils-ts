@@ -29,7 +29,7 @@ This import provides access to the methods of these native objects that have bee
 
 Instanced Object :
 
-+ `getClass<T>(): Class<T>` : [see](https://github.com/devGnode/lib-utils-ts#constructort)
++ `getClass<T>(): Class<T>` : [see](https://github.com/devGnode/lib-utils-ts#classt)
 + `equals( object: Object ): boolean`
 
 Static :
@@ -170,6 +170,18 @@ fc.setPrototype({
 fc.instance("Hello world !").getValue();
 fc.class<MyInterfaces>().newInstance().getValue();
 
+````
+
+- class( ) : Constructor\<T\>
+
+````typescript
+Object.class().newInstance(); // Object
+
+Number.class().newInstance(255); // Object
+
+String.class<String>().newInstance("foo").equals("bar"); // with generic
+
+(<MyObj>MyObj.class().newInstance()); // cast
 ````
 
 ## Class\<T\>

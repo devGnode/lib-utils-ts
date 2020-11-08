@@ -4,6 +4,8 @@ import {HashMap} from "./List";
 import {FileReader, InputStreamReader} from "./file/IOStream";
 import "./globalUtils";
 import {Constructor} from "./Constructor";
+import {ClassNotFoundException, NullPointerException} from "./Exception";
+import {Define} from "./Define";
 /***
  * @Class :  Hook class Object accessor: (new MyAnyClass()).getClass()
  *
@@ -66,21 +68,31 @@ export class Class<T extends Object> implements classA<T>{
      */
     public getResourcesAsStream( name: string): InputStreamReader{return new FileReader(name);}
 
+    public getConstructor( ):Constructor<T>{return new Constructor<T>(this.value.constructor);}
     /**
      * @param value
+     * @param typeScript : is typescript file otherwise js
      */
-    public static forName<T extends Object>( value: string ): Constructor<T>{
+    public static forName<T extends Object>( value: string, typeScript : boolean = true ): Constructor<T>{
         let element:List<string>=String(value)
-            .explodeAsList(/\./);
+            .explodeAsList(/\./),
+            p:string=value, getter:string;
 
-            value = value
-                .replace(`.${element.get(element.size()-1)}`,"")
-                .replace(/\./gi,"/");
-        console.log(`${process.cwd()}/${value}.ts`,element,element.get(element.size()-1));
-        String(value).explodeAsList(/./)
-        let callback = require(`${process.cwd()}/${value}.ts`)[element.get(element.size()-1)];
-        console.log(callback,`${process.cwd()}/${value}.ts`)
-        console.log("eee ",callback.name)
-        return new Constructor<T>(callback);
+        let tmp :List<string>;
+        Object.requireNotNull(value,"package name is null !");
+        if( (tmp = element.get(element.size()-1).explodeAsList(/\//)).size().equals(1) ) getter = tmp.get(0);
+        else{
+            // package.src.Class/node
+            getter = tmp.get(1);
+            element.set(element.size()-1,element.get(element.size()-1).replace(new RegExp(`\/${getter}`),""));
+        }
+        value = element.toArray().join('/');
+        try{
+            let callback = require(`${process.cwd()}/${value}.${typeScript?'ts':'js'}`);
+            callback = callback[getter];
+            return new Constructor<T>(Define.of<any>(callback).orElseThrow(new NullPointerException(`Element not found ${getter} is Null from [${p}] !`)));
+        }catch (e) {
+            throw new ClassNotFoundException(`'${getter}' : class not found from package [${p}]`);
+        }
     }
 }
