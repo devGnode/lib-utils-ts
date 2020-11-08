@@ -1,11 +1,11 @@
-<img src="https://img.shields.io/npm/v/lib-utils-ts"/> <img src="https://img.shields.io/snyk/vulnerabilities/npm/lib-utils-ts"/> <img src="https://img.shields.io/npm/l/lib-utils-ts"/> <img src="https://img.shields.io/github/languages/top/devGnode/lib-utils-ts"/><img src="https://img.shields.io/node/v/lib-utils-ts"/> <img src="https://ci.appveyor.com/api/projects/status/github/devGnode/lib-utils-ts?svg=true&branch=develop"/>
-
+<img src="https://img.shields.io/npm/v/lib-utils-ts"/> <img src="https://img.shields.io/snyk/vulnerabilities/npm/lib-utils-ts"/> <img src="https://img.shields.io/npm/l/lib-utils-ts"/> <img src="https://img.shields.io/github/languages/top/devGnode/lib-utils-ts"/><img src="https://img.shields.io/node/v/lib-utils-ts"/> <img src="https://ci.appveyor.com/api/projects/status/github/devGnode/lib-utils-ts?svg=true&branch=develop"/> <img src="https://img.shields.io/badge/tsconfig@target-ES2020-blue"/>
+ 
 # Utils-ts
 
 <img src="https://i.ibb.co/tKdfYNv/libutilstsicon128.png" alt="lib-utils-ts" border="0" />
 
 ads :   
-Lucas and Eric both are developer. Lucas use lib-utils-ts :registered:, and on the other hand Eric use basic javascript in his web browser. Development codes of Luca's are clean and structured, Lucas wins much precious times and can eat a little cake with a cup of tea :cowboy_hat_face::tea:. When with him Eric is a labyrinth developer, his code look like foam ball, result he is lost and upset :confused:. Lucas use power of the stream object, He optimize his code and boost this performances. Actually, Eric read a big book how Javascript bêta work ed. 1995 for dummies, that grandfather gave him, but he has a lot of trouble understanding subtlety of javascript in all these pages :sweat:. Today Lucas has wins the better coding champion league of the world :sunglasses:, Eric resign finally oneself to give up and pass to HTML :disappointed:.  Don't be like Eric make rather  like Lucas and use `lib-utils-ts` :registered:. A career may be played on a byt\(e\), Let's reveal together the power of your development.   \( * \) You come from to Java, you want improve your javascript structure, learn object language easily with little framework below, it implements some Java7 & 8 classes like ArrayList, Properties, lombok. \:P :sweat_smile:
+Lucas and Eric both are developer. Lucas use lib-utils-ts :registered:, and on the other hand Eric use basic javascript in his web browser. Development codes of Luca's are clean and structured, Lucas wins much precious times and can eat a little cake with a cup of tea :cowboy_hat_face::tea:. When with him Eric is a labyrinth developer, his code look like foam ball, result he is lost and upset :confused:. Lucas use power of the stream object, He optimizes his code and boost these performances. Actually, Eric read a big book how Javascript bêta work ed. 1995 for dummies, that grandfather gave him, but he has a lot of trouble understanding subtlety of javascript in all these pages :sweat:. Today Lucas has wins the better coding champion league of the world :sunglasses:, Eric resign finally oneself to give up and pass to HTML :disappointed:.  Don't be like Eric make rather  like Lucas and use `lib-utils-ts` :registered:. A career may be played on a byt\(e\), Let's reveal together the power of your development.   \( * \) You come from to Java, you want improve your javascript structure, learn object language easily with little framework below, it implements some Java7 & 8 classes like ArrayList, Properties, lombok. \:P :sweat_smile:
 
 This framework has been created only for Typescript projects, it's possible to use it for javascript project but is not really adapted for this, cause generics is not support by the native javascript.  
 
@@ -213,7 +213,10 @@ a.getClass().getType( ); // => foo
 
 ````
 
-Class for name :
+Class forname :
+
+Package pattern `package.name.src.Class` replace all `/` or `\\` character by `.` dot character in your package path.
+If your Class file contain several class, the package pattern will look like:  `packe.name.src.Class/pointer`
 
 ````typescript
 
