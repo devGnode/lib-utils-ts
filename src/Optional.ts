@@ -1,10 +1,12 @@
 import {lambdaType, OptionalInterface, OptionalMapInterface, predication, streamLambda} from "./Interface";
 import {Predication} from "./Predication";
 import {NullPointerException} from "./Exception";
+import {flombok} from "./flombok";
 
 export class Optional<T> implements OptionalInterface<T>,OptionalMapInterface<T,Optional<T>>{
 
-    protected value : T = null;
+    @flombok.ENUMERABLE(false)
+    protected value : T;
 
     constructor( value : T ) {this.value = value;}
 
@@ -43,4 +45,5 @@ export class Optional<T> implements OptionalInterface<T>,OptionalMapInterface<T,
 
     public static ofNullable<T>(  value : T ): Optional<T>{return new Optional<T>( value );}
 
+    public valueOf( ):Object{return <Object>this.value; }
 }

@@ -91,7 +91,7 @@ export abstract class AbstractCollection<E> implements Collection<E>{
     /****
      *
      */
-    public size( ) : number {return this.value?.length; }
+    public size( ) : number {return this.value.length; }
     /**
      * @param
      */
