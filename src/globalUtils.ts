@@ -82,7 +82,7 @@ Object.defineProperty(Object.prototype,"getClass",{enumerable: false, writable: 
 Object.prototype.equals = function(object:Object):boolean{ return this.constructor === object.constructor && (<any>this).prototype === (<any>object).prototype; }
 Object.defineProperty(Object.prototype,"equals",{enumerable: false, writable: true, configurable: true});
 /***
- Function extension
+ FunctionA extension
  */
 Function.prototype.class = function<T extends Object>(): Constructor<T>{return new Constructor<T>(this);};
 Object.defineProperty(Function.prototype,"class",{enumerable: false, writable: true, configurable: true});

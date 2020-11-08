@@ -11,6 +11,7 @@ import {Define} from "./Define";
 import {Response} from "./net/Http";
 import {Class} from "./Class";
 import {Constructor} from "./Constructor";
+import {FunctionA} from "./FunctionA";
 /**
  * typeOf
  */
@@ -43,7 +44,8 @@ export type streamLambdaTo<T,U> = ( value : T, key?: ascii ) => U | void
 export type lambdaType<T,U>     = streamLambdaTo<T,U> | streamLambda<T> | streamLambdaK<T,U>
 export type asyncStreamLambdaTo<T,U> = ( value : T, key?: ascii ) => Promise<U>
 /**/
-export type constructorFunction = Function
+export type functionAConstructor = (... args : Object[] ) => void
+export type constructorFunction  = Function
 /***
  * Global Extended native object prototype
  */
@@ -110,6 +112,22 @@ declare global {
         class<T extends Object>(): Constructor<T>
     }
 }
+/***
+ *
+ */
+export interface functionA<T> {
+    /***
+     *
+     */
+    setPrototype(proto: Function | Object): FunctionA<T>
+    /***
+     *
+     */
+    instance(...argArray: Object[]): T
+}
+/***
+ *
+ */
 export interface constructor<T> {
     /***
      * @getName : return name of Class
