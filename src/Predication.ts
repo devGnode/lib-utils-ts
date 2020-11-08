@@ -33,8 +33,8 @@ export class Predication<T> implements predicate<T>{
     public static isEqual<T>(object: Object): predicate<T> {
         let p: predicate<T> = new Predication();
         p.test = object===null?
-            () => false :
-            (value)=> object === value;
+            Object.isNull :
+            (value)=> value.equals(Object);
         return p;
     }
 
