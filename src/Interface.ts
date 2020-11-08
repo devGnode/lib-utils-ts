@@ -44,6 +44,9 @@ export type streamLambdaTo<T,U> = ( value : T, key?: ascii ) => U | void
 export type lambdaType<T,U>     = streamLambdaTo<T,U> | streamLambda<T> | streamLambdaK<T,U>
 export type asyncStreamLambdaTo<T,U> = ( value : T, key?: ascii ) => Promise<U>
 /**/
+export type newConstructor<E>    = { new( ... args: Object[ ] ) :E }
+export type newConstructorFunc<E> = { (... args: Object[ ] ): E }
+export type newConstructorA<E>   = newConstructor<E> & newConstructorFunc<E>
 export type functionAConstructor = (... args : Object[] ) => void
 export type constructorFunction  = Function
 /***
