@@ -3,7 +3,7 @@ import {Predication} from "./Predication";
 import {
     array,
     ArrayStream,
-    ascii, asyncStreamLambdaTo,
+    ascii, asyncStreamLambdaTo, comparator,
     lambdaType, MapType, objectStream,
     OptionalMapInterface,
     predication, StreamAble,
@@ -12,6 +12,7 @@ import {
 import {Optional} from "./Optional";
 import {Iterator, ListIterator} from "./Iterator";
 import {RuntimeException} from "./Exception";
+import {Collection} from "./Collection";
 /***
  *
  */
@@ -149,8 +150,13 @@ export class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<
         return new Optional<Number>(max);
     }
 
-    sorted() : void {
-        throw new Error("Method not implemented.");
+    public sorted( compareFn: (a: T, b: T) => number ) : Stream<T> {
+       return new Stream<T>(this.list.sort(compareFn));
+    }
+
+    public sort( comparatorFn: comparator<T>):Stream<T>{
+        Collection.sortA<T>(this.getList(),comparatorFn);
+        return this;
     }
 
     public getList( ) : ArrayList<T> {return ArrayList.of<T>(this.list);}

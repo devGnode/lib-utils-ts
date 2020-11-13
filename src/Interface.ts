@@ -12,12 +12,14 @@ import {Response} from "./net/Http";
 import {Class} from "./Class";
 import {Constructor} from "./Constructor";
 import {FunctionA} from "./FunctionA";
+import {Comparator} from "./Comparator";
 /**
  * typeOf
  */
 export type NullType       = null | undefined
 export type Null<T>        = T | NullType
 type PrimAscii             = number|string
+export type int            = number
 export type ascii          = Number|String|PrimAscii
 export type lambda         = ((value : any ,key?: ascii)=> void ) | Function /*...*/;
 /***
@@ -44,11 +46,14 @@ export type streamLambdaTo<T,U> = ( value : T, key?: ascii ) => U | void
 export type lambdaType<T,U>     = streamLambdaTo<T,U> | streamLambda<T> | streamLambdaK<T,U>
 export type asyncStreamLambdaTo<T,U> = ( value : T, key?: ascii ) => Promise<U>
 /**/
-export type newConstructor<E>    = { new( ... args: Object[ ] ) :E }
+export type newConstructor<E>     = { new( ... args: Object[ ] ) :E }
 export type newConstructorFunc<E> = { (... args: Object[ ] ): E }
-export type newConstructorA<E>   = newConstructor<E> & newConstructorFunc<E>
-export type functionAConstructor = (... args : Object[] ) => void
-export type constructorFunction  = Function
+export type newConstructorA<E>    = newConstructor<E> & newConstructorFunc<E>
+export type functionAConstructor  = (... args : Object[] ) => void
+export type constructorFunction   = Function
+/**/
+export type comparatorFunc<T>                       = ( other1: T, other2: T ) => number
+export type comparatorFn<T,V extends comparable<T>> = ( other1: T, other2: T ) => V
 /***
  * Global Extended native object prototype
  */
@@ -66,23 +71,27 @@ declare global {
         exec( regExp :  RegExp ) : string[]
         orDefault( value : string ): string
         stripSlashes() :string
+        compareTo( another: string ): number
     }
     interface StringConstructor{
         repeatString(char : string, loop : number ) : string
     }
     interface Number {
         equals( value : number ) : boolean
+        compareTo( another : number ): number
     }
     interface NumberConstructor{
         of( value: Object) : number
+        compare( x:number, y:number):number
     }
-    interface Date {
+    interface Date{
         plusDays( days : number ) : Date
         lessDays( days : number ) : Date
         plusYears( years : number ) : Date
         lessYears( years : number ) : Date
         dateFormat( patter : string ) : String
         elapsedTime( date : Date ) : number
+        compareTo( date: Date ): number
     }
     interface DateConstructor {
         dateFormat( patter : string ) : String
@@ -105,6 +114,7 @@ declare global {
         isNull( value : Object ):boolean
         requireNotNull<T>( other: T, message?: string ) :T
         nonNull( obj: Object ): boolean
+        toString( o: Object ): string
     }
     interface Object {
         getClass<T extends Object>(): Class<T>
@@ -114,6 +124,12 @@ declare global {
     interface Function {
         class<T extends Object>(): Constructor<T>
     }
+}
+/***
+ *
+ */
+export interface supplier<T> {
+    get():T
 }
 /***
  *
@@ -318,14 +334,16 @@ export interface ArrayListInterfaceA<E> {
      * Extend ArrayList
      */
 }
-
 /***
  *
  */
-export interface Sortable<T> {
-    compareTo( obj : T )
+export interface comparable<T> {
+    compareTo( obj : T ) :number
 }
-
+export interface comparator<T> {
+    compare(o1: T, o2: T ): number
+    equals(o:Object):boolean
+}
 /***
  * Iterator interfaces
  * E => array<T> => T[] | Array<T>
@@ -347,6 +365,9 @@ export interface listIteratorInterface<E> {
     /***
      */
     nextIndex( ) : number
+    /***
+     */
+    previousIndex() : number
     /***
      */
     previous( ) : E
@@ -516,8 +537,13 @@ export interface ArrayStream<T> extends StreamAble<number,T>{
      */
     max() : Optional<Number>
     /***
+     * @sorted : use native sort method of Array
      */
-    sorted( ) : void
+    sorted( compareFn : (a: T, b: T) => number ) : Stream<T>
+    /***
+     *
+     */
+    sort( comparatorFn: Comparator<T> ): Stream<T>
     /***
      */
     iterator() : Iterator<T>

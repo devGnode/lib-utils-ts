@@ -46,6 +46,7 @@ Static :
 ##### Number
 
 + `equals( value : number ) : boolean `
++ `compareTo( other : number ): number`
 
 Static : 
 
@@ -63,6 +64,7 @@ Static :
 + `exec( regExp : RegExp ) : String[]`
 + `explodeAsList( ) : ArrayList<string>`
 + `orDefault( value : string ): string`
++ `compareTo( other : string ): number`
 
 #### Date
 
@@ -146,7 +148,7 @@ constructor :
 
 - ( name: string, constructor: Function ) : FunctionA
 
-Interface `IFunction<T>` : 
+Interface `functionA<T>` : 
 
 - `setPrototype(proto: Function | Object): FunctionA<T>`
 - `instance(...argArray: Object[]): T`
@@ -159,7 +161,7 @@ interface MyInterfaces{
     getValue():string
 }
 
-let fc : FunctionA<MyInterfaces> = new FunctionA("MyInterfaces", function(s){      
+let fc : FunctionA<MyInterfaces> = new FunctionA(function(s){      
     this.value= s||"success";
 });
 
@@ -172,7 +174,7 @@ fc.class<MyInterfaces>().newInstance().getValue();
 
 ````
 
-- class( ) : Constructor\<T\>
+- class\<T extends Object\>( ) : Constructor\<T\>
 
 ````typescript
 Object.class().newInstance(); // Object
@@ -230,6 +232,113 @@ interface IMyInter{
 Class.forName<IMyInter>("src.package.Class").newInstance(12).getValue();
 
 ````
+
+## Comparator<\T\>
+
+Public interface comparable\<T\>
+
+- `compareTo( obj : T ) :number`
+
+Public interface comparator\<T\>
+
+- `compare(o1: T, o2: T ): number`
+- `equals(o:Object):boolean`
+
+Public static Collection
+
+- `static sort<T extends comparable<T>>( list : List<T> ): void`
+- `static sortA<T>( list : List<T>, comparator: comparator<T> ): void`
+- `static swap<T>( list: List<T>,i : int, j: int ): void`
+- `static shuffle<T>( list: List<T>, rand: Random ): void`
+- `static replaceAll<T>( list: List<T>, oldVal : T, newVal: T ): void`
+
+Public class Comparator\<T\> implements comparator\<T\>
+
+- `compare(o1: T, o2: T) : number`
+- `equals(o: Object): boolean`
+
+- `static comparing<T,U extends comparable<T>>( comparatorFn: comparatorFn<T,U> ): Comparator<T>`
+- `static comparingA<T,U extends comparable<T>>( comparatorFn: comparatorFn<T,U>, comparator: comparator<T> ): Comparator<T>`
+
+##### Usage
+
+````typescript
+import {comparable} from "lib-utils-ts/src/Interface"
+
+class Test implements comparable<Test>{
+
+    public n: number = 0;
+    public str:string;
+
+    constructor(n:number,value:string) {this.n = n; this.str=value;}
+
+    public compareTo(o: Test): number {
+        return this.n - o.n;
+    }
+
+}
+
+let l: List<Test> = new ArrayList();
+l.add(new Test(55,"aaa"));
+l.add(new Test(5,"aa"));
+l.add(new Test(1,"z"));
+l.add(new Test(125,"zzzzzzzz"));
+l.add(new Test(0,"def"));
+l.add(new Test(56,"lkjhg"));
+l.add(new Test(2,"lkmlpolo"));
+l.add(new Test(255,"aztgrbcekielflflf"));
+Collection.sort(l);
+console.log(l.stream().toArray());
+
+````
+
+output 
+
+````log
+  Test { s: 0, str: 'def' },
+  Test { s: 1, str: 'z' },
+  Test { s: 5, str: 'aa' },
+  Test { s: 55, str: 'aaa' },
+  Test { s: 2, str: 'lkmlpolo' },
+  Test { s: 56, str: 'lkjhg' },
+  Test { s: 125, str: 'zzzzzzzz' },
+  Test { s: 255, str: 'aztgrbcekielflflf' }
+````
+
+````typescript
+import {comparable} from "lib-utils-ts/src/Interface"
+
+class Test implements comparable<Test>{
+
+    public n: number = 0;
+    public str:string;
+
+    constructor(n:number,value:string) {this.n = n; this.str=value;}
+
+    public compareTo(o: Test): number {
+        return this.str.compareTo( o.str );
+    }
+
+}
+
+/* .... */
+
+Collection.sort(l);
+console.log(l.stream().toArray());
+
+````
+
+````log
+  Test { s: 1, str: 'z' },
+  Test { s: 5, str: 'aa' },
+  Test { s: 55, str: 'aaa' },
+  Test { s: 0, str: 'def' },
+  Test { s: 56, str: 'lkjhg' },
+  Test { s: 2, str: 'lkmlpolo' },
+  Test { s: 125, str: 'zzzzzzzz' },
+  Test { s: 255, str: 'aztgrbcekielflflf' }
+````
+
 ## Iterator\<E\>  
   
 **Methods**  
@@ -385,6 +494,14 @@ let p : PredicationConstructor<String> = value => value.equals("azertyuiop");
 ````  
   
 # List 
+
+### Collection
+
+- `static sort<T extends comparable<T>>( list : List<T> ): void`
+- `static sortA<T>( list : List<T>, comparator: comparator<T> ): void`
+- `static swap<T>( list: List<T>,i : int, j: int ): void`
+- `static shuffle<T>( list: List<T>, rand: Random ): void`
+- `static replaceAll<T>( list: List<T>, oldVal : T, newVal: T ): void`
 
 ### Interface Iterable\<E\>
 
@@ -634,6 +751,8 @@ Public  class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream
 - `count(): number`  
 - `sum( ) : Optional<Number>`
 - `count(): number`  
+- `sort( comparatorFn: comparator<T>):Stream<T>`
+- `sorted( compareFn: (a: T, b: T) => number ) : Stream<T>`
 - `min(): Optional<Number>`  
 - `max() : Optional<Number>`  
 - `getList( ) : ArrayList<T>`  
@@ -875,3 +994,4 @@ let cookie: Cookie = q.getCookies()
     + Implementation of `RestHttp` and `RestHttps` feature
     + Stabilisation of predicate class : `Predication<T>`
     + Implementation of `Class`, `Constructor`,`FunctionA` class
+    + Implementation of `comparator`, `static Collection` class
