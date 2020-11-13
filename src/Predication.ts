@@ -34,7 +34,7 @@ export class Predication<T> implements predicate<T>{
         let p: predicate<T> = new Predication();
         p.test = object===null?
             Object.isNull :
-            (value)=> value.equals(Object);
+            (value)=> value.equals(object);
         return p;
     }
 

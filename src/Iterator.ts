@@ -78,6 +78,14 @@ export class ListIterator<E> extends Iterator<E> implements listIteratorInterfac
     /***
      *
      */
+    public previousIndex() : number {
+        try{this.get(this.iteration-1);return this.iteration-1;}catch (e) {
+            return null;
+        }
+    };
+    /***
+     *
+     */
     public previous() :E{
         this.iteration--;
         return this.get(this.iteration);
@@ -86,7 +94,7 @@ export class ListIterator<E> extends Iterator<E> implements listIteratorInterfac
      *
      * @param e
      */
-    set (e: E) : void{
+    public set (e: E) : void{
         this.list[this.iteration-1]= e;
     }
 }

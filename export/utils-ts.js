@@ -13,6 +13,15 @@ const {
     SetList, MapEntry, AbstractMap,ArrayList, HashMap
 } = require('../src/List');
 
+const {Random} = require('../src/Random');
+const {Predication} = require('../src/Predication');
+const {Class} = require('../src/Class')
+const {Constructor} = require('../src/Constructor')
+const {FunctionA} = require('../src/FunctionA')
+const {Collection} = require('../src/Collection')
+const {Comparator} = require('../src/Comparator')
+
+
 module.exports = {
     AbstractCollection:AbstractCollection,
     AbstractList:AbstractList,
@@ -50,6 +59,15 @@ module.exports = {
     HttpOptions:HttpOptions,
 
     flombok:flombok,
+
+    Random:Random,
+
+    Predication:Predication,
+    Class:Class,
+    Constructor:Constructor,
+    FunctionA:FunctionA,
+    Collection:Collection,
+    Comparator:Comparator,
 
     IndexOfBoundException:IndexOfBoundException,
     NullPointerException:NullPointerException,
