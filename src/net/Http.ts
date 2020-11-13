@@ -291,6 +291,7 @@ export class HttpOptions<T extends restHttp> implements wrapHeader<T>{
         this.Class = value.class();
         this.options.put("headers",new HashMap<string,string>({}));
         this.withEndPoint("/");
+        this.withPort(this.Class.newInstance().getProto().equals("https") ? 443 : 80 );
     }
     /***
      *
@@ -435,11 +436,12 @@ export class HttpOptions<T extends restHttp> implements wrapHeader<T>{
 
    public withProxy( proxy : Proxy ) : HttpOptions<T>{
        let url : string;
-       this.withEndPoint((this.options.get("hostname")||this.options.get("host"))+this.options.get("path"));
+       this.withEndPoint(this.Class.newInstance().getProto()+"://"+(this.options.get("hostname")||this.options.get("host"))+this.options.get("path"));
        if( proxy.getHttpProxy().explodeAsList(":").size()===2){
-          this.withPort(Number( proxy.getHttpProxy().explodeAsList(":").get(1) ));
+          this.withPort(Number( proxy.getHttpProxy().explodeAsList(":").get(1).orDefault("80") ));
           url = proxy.getHttpProxy().replace(/:\d+$/,"");
        }
+       this.withHeader("Referer",this.options.get("path"));
        this.withHostname(url||proxy.getHttpProxy());
        return this;
    }
