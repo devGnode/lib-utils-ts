@@ -26,7 +26,7 @@
 import * as http from "http";
 import * as https from "https";
 import {JSONException} from '../Exception';
-import {loader, restHttp, streamLambdaTo, wrapHeader} from "../Interface";
+import {List, loader, restHttp, streamLambdaTo, wrapHeader} from "../Interface";
 import {ArrayList, HashMap} from "../List";
 import {Proxy} from "./Proxy";
 import {Cookie} from "./Cookie";
@@ -433,18 +433,49 @@ export class HttpOptions<T extends restHttp> implements wrapHeader<T>{
         this.options.put("sigalgs",value);
         return this;
     }
+    /***
+     * @withProxy :
+     * httpProxy has [http_proxy_port] ->  [http_proxy_port] who reflect => 80
+     * httpsProxy has [https_proxy_port] -> [http_proxy_port] who reflect => 443
+     * now query :
+     *  httpProxy -> with httpsQuery -> gotta reverse redirect protocol, otherwise follow same proto than proxy
+     *      port has defined in the redirect url : port !== ( [http_proxy_port] & 80 )
+     *
+     *          + can be an reverse redirect protocol or simply an another server with no https,
+     *            just a another service hosted under a other port than 80 or [http_proxy_port].
+     *
+     *  httpsProxy : same than httpProxy
+     * @param proxy
+     * @param noReverseProtocolFor
+     */
+    public withProxy( proxy : Proxy, noReverseProtocolFor: List<number> = new ArrayList() ) : HttpOptions<T>{
+        let url:string = proxy.getHttpProxy(),
+            host:string = this.options.get("hostname")||this.options.get("host"),
+            proto:string = this.Class.newInstance().getProto(),
+            originalPort:number = <number>proto.equals("http").state(80,443),
+            port:number, tmp:List<string>;
 
-   public withProxy( proxy : Proxy ) : HttpOptions<T>{
-       let url : string;
-       this.withEndPoint(this.Class.newInstance().getProto()+"://"+(this.options.get("hostname")||this.options.get("host"))+this.options.get("path"));
-       if( proxy.getHttpProxy().explodeAsList(":").size()===2){
-          this.withPort(Number( proxy.getHttpProxy().explodeAsList(":").get(1).orDefault("80") ));
-          url = proxy.getHttpProxy().replace(/:\d+$/,"");
-       }
-       this.withHeader("Referer",this.options.get("path"));
-       this.withHostname(url||proxy.getHttpProxy());
-       return this;
-   }
+        if(proto.equals("https")) url = proxy.getHttpsProxy();
+        // define proxy port => url:port
+        if((tmp=url.explodeAsList(":")).size().equals(2)){
+            port = Number( tmp.get(1).orDefault(proto.equals("https").state("8443","8080")) );
+            url = tmp.get(0);
+        }else // no port defined may be properties is defined withPort method
+            // otherwise default port 8080 & 8443
+            port = Define.of<number>(this.options.get("port"))
+                .orNull(proto.equals("http").state(8080,8443))
+
+        if((tmp=host.explodeAsList(/:(\d+)$/)).size().equals(3)){
+            if(!Number(tmp.get(1)).equals(originalPort)&&noReverseProtocolFor.indexOf(<Object>Number(tmp.get(1))).equals(-1))
+                proto = proto.equals("http")?"https":"http";
+        }
+
+        return this.withEndPoint(proto+"://"+host+this.options.get("path"))
+            .withPort( port )
+            .withHeader("Referer",this.options.get("path"))
+            .withHeader("Host",host)
+            .withHostname(url);
+    }
     /***
      *
      * @param params
