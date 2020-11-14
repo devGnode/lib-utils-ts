@@ -44,7 +44,7 @@ export class Class<T extends Object> implements classA<T>{
      * @notNull : return a new anonymous object without any null property value
      */
     public notNullProperties( ) : MapType<string, Object>{
-        return HashMap.of<string,Object>(this.newInstance())
+        return HashMap.of<string,Object>(this.value)
             .stream()
             .filter(value=> value !== null && value !== undefined )
             .valueOfOptional()
