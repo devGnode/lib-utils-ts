@@ -108,9 +108,9 @@ export class OutputStreamWriter extends AbstractIOFile implements writer{
 
     public write( data :string|Buffer, truncate:boolean = true,encoding: BufferEncoding = "utf8", create: boolean = true ): void{
         try{
-            if(!OutputStreamWriter.exists( new Path(this.file) )&&create) mkdirSync(new Path(this.file).getPath(),{recursive:true});
-            if(truncate) fs.truncateSync(this.file,0);
-            writeFileSync(this.file,data,{ encoding:encoding, flag:this.flag});
+            if(!OutputStreamWriter.exists( new Path(this.file) )&&create)mkdirSync(new Path(this.file).getPath(),{recursive:true});
+            if((truncate||this.truncate)&&OutputStreamWriter.exists( new Path(this.file) ))fs.truncateSync(this.file,0);
+            writeFileSync(this.file,data,{encoding:encoding, flag:this.flag});
         }catch (e) {
             throw new IOException(`Something wrong : ${e.message}`);
         }
