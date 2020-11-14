@@ -20,6 +20,7 @@ export class Proxy {
     private proxyAutoConfigUrl : string = null;
     private ftpProxy : string           = null;
     private httpProxy : string          = null;
+    private httpsProxy : string         = null;
     private sslProxy : string           = null;
     private socksProxy : string         = null;
     private socksVersion : string       = null;
@@ -45,6 +46,11 @@ export class Proxy {
 
     public setHttpProxy(proxy : string) : Proxy{
         this.httpProxy = proxy;
+        return this;
+    }
+
+    public setHttpsProxy(proxy : string) : Proxy{
+        this.httpsProxy = proxy;
         return this;
     }
 
@@ -77,6 +83,8 @@ export class Proxy {
     public getFtpProxy() : string{return this.ftpProxy;}
 
     public getHttpProxy() : string{return this.httpProxy;}
+
+    public getHttpsProxy() : string{return this.httpsProxy;}
 
     public getSslProxy() : string{return this.sslProxy;}
 
