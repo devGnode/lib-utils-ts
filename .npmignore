@@ -2,6 +2,7 @@
 *.yml
 
 #
+.git/
 .idea/
 .vscode/
 node_modules/
@@ -20,6 +21,4 @@ Test*.js.map
 *.pem
 
 # all mounted file
-*.d.ts
-*.js
 *.js.map

@@ -3,7 +3,6 @@
  */
 import {Constructor} from "./Constructor";
 import {functionA, functionAConstructor} from "./Interface";
-import {Define} from "./Define";
 /***
  *
  */

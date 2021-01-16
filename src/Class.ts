@@ -80,7 +80,7 @@ export class Class<T extends Object> implements classA<T>{
      */
     public static forName<T extends Object>( pattern: string, typeScript : boolean = true, isPackage = false ): Constructor<T>{
         let p:string=pattern, getter:string, path:string,
-            element:List<string>=String(pattern)
+            element:List<string> = String(pattern)
             .explodeAsList(/\./);
 
         let tmp :List<string>;
