@@ -91,6 +91,7 @@ Static :
 
 As in javascript an object is also a function, these class depict a next future instanced object
 
+- getter access `name`: string
 - `getName( ):string` 
 - `getType( ):string`  
 - `getEntries( ): [any, string ][]`  
@@ -98,6 +99,12 @@ As in javascript an object is also a function, these class depict a next future 
 - `cast( other: Object ):T`  
 - `newInstance( ...args : Object[] ) :T`  
 - `getResourcesAsStream( name: string): InputStreamReader` 
+
+`>=1.3.1` : getType method return native type of a variable, before this version getType return the name of the constructor
+bad interpretation.
+
+- `< 1.3.1` class `MyObj` . getType &rarr; MyObj
+- `>= 1.3.1` class `MyObj` . getType &rarr; Object
 
 Static :
 
@@ -233,7 +240,7 @@ Class.forName<IMyInter>("src.package.Class").newInstance(12).getValue();
 
 ````
 
-## Comparator<\T\>
+## Comparator\<T\>
 
 Public interface comparable\<T\>
 
@@ -995,3 +1002,7 @@ let cookie: Cookie = q.getCookies()
     + Stabilisation of predicate class : `Predication<T>`
     + Implementation of `Class`, `Constructor`,`FunctionA` class
     + Implementation of `comparator`, `static Collection` class
+- 1.3.2-beta :
+    + Fix some error in net/Http, add FollowRedirect method
+    + Fix getType in Class & Constructor classes
+    + Implementation Json class

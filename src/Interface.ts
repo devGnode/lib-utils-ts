@@ -20,6 +20,7 @@ export type NullType       = null | undefined
 export type Null<T>        = T | NullType
 type PrimAscii             = number|string
 export type int            = number
+export type double         = number
 export type ascii          = Number|String|PrimAscii
 export type lambda         = ((value : any ,key?: ascii)=> void ) | Function /*...*/;
 /***
@@ -45,6 +46,7 @@ export type streamLambdaK<V,K>  = ( value : V, key?: K ) => V | void
 export type streamLambdaTo<T,U> = ( value : T, key?: ascii ) => U | void
 export type lambdaType<T,U>     = streamLambdaTo<T,U> | streamLambda<T> | streamLambdaK<T,U>
 export type asyncStreamLambdaTo<T,U> = ( value : T, key?: ascii ) => Promise<U>
+export type asyncStreamLambda<T>     = ( value : T, key?: ascii ) => Promise<T> | void
 /**/
 export type newConstructor<E>     = { new( ... args: Object[ ] ) :E }
 export type newConstructorFunc<E> = { (... args: Object[ ] ): E }
@@ -734,6 +736,9 @@ export interface restHttp{
     /***
      */
     getLoader( ):loader
+    /***
+     */
+    withFollowRedirect(state:boolean):restHttp
 }
 /***
  *

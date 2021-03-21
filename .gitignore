@@ -3,7 +3,6 @@
 .vscode/
 node_modules/
 logs/
-test/
 
 # test
 test.*
