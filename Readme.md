@@ -240,7 +240,7 @@ Class.forName<IMyInter>("src.package.Class").newInstance(12).getValue();
 
 ````
 
-## Comparator<\T\>
+## Comparator\<T\>
 
 Public interface comparable\<T\>
 
