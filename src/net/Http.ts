@@ -61,7 +61,7 @@ class httpEvent{
                     rest.getHeaderAsObject().toJson(),
                     response=>{
                         let chunk = [];
-                       if(rest.getLoader()&&response.statusCode!==200)rest.getLoader().error(`Failed to download resources, status code : ${response.statusCode}`);
+                       if(rest.getLoader()&&(response.statusCode!==200&&!rest.getFollowRedirect()))rest.getLoader().error(`Failed to download resources, status code : ${response.statusCode}`);
                        else if(rest.getLoader()&&response.statusCode===200) {
                             let s:number = parseInt(new Response({headers: response.headers}).getHeader("content-length"))||0;
                             rest.getLoader().setSizeOf(s);
@@ -149,6 +149,7 @@ export class Response {
      */
     public getBodyAsObject():any{
         try{return JSON.parse(this.response.body);}catch (e) {
+            console.log("446646", this.response.body);
             throw new JSONException(e);
         }
     }
@@ -192,6 +193,7 @@ abstract class AbstractRestHttp implements restHttp{
     protected proto :httpProtoType         = null;
     protected header :HashMap<string,any>  = null;
     protected data :string                 = null;
+    protected followRedirect:boolean       = false;
     private loader:loader              = null;
     /***
      *
@@ -219,10 +221,44 @@ abstract class AbstractRestHttp implements restHttp{
     public async request( ) : Promise<Response>{
         try{
             if(this.loader) this.loader.start("Download was successful !");
+            if(this.followRedirect)return this.redirect(await httpEvent.send(this));
             return await httpEvent.send(this);
         } catch (Exception) {
             return Exception;
         }
+    }
+    /****
+     */
+    private async redirect(response: Response): Promise<Response> {
+        let codes: List<number> = new ArrayList([301, 302]);
+        // follow 'location' header value
+        if (codes.stream().noneMatch(value => value.equals(<number>response.getStatusCode()))) return new Promise<Response>(resolve => resolve(response));
+            if (codes.indexOf(response.getStatusCode())>-1) {
+            let url: URL = new URL(response.getHeaders().get("location")),
+                q: HttpOptions<restHttp> = url.protocol.equals("http") ? RestHttp.options() : RestHttps.options();
+
+            let a: any = await (response.getStatusCode().equals(302) ?
+                q.withMethod("GET")
+                    .widthContentType("application/octet-stream")
+                    .widthAccept("application/octet-stream")
+                    .withHostname(url.hostname)
+                    .withEndPoint(url.pathname)
+                    .build()
+                    .setLoader(this.getLoader())
+                    .setEncoding("base64")
+                    .request() :
+                // 301
+                q.withMethod("GET")
+                    .withHostname(url.hostname)
+                    .withEndPoint(url.pathname)
+                    .build()
+                    .setLoader(this.getLoader())
+                    .withFollowRedirect(true)
+                    .request())
+
+            return this.redirect(a);
+        }
+
     }
 
     public setData(data: string): void { this.data = data; }
@@ -236,6 +272,10 @@ abstract class AbstractRestHttp implements restHttp{
     public setLoader( pipe:loader): restHttp { this.loader = pipe; return this; }
 
     public getLoader( ): loader{ return this.loader; }
+
+    public withFollowRedirect(state:boolean):restHttp{ this.followRedirect=state;return this;}
+
+    public getFollowRedirect():boolean{return this.followRedirect;}
 }
 export class RestHttp extends AbstractRestHttp{
     /***
