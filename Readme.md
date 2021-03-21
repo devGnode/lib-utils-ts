@@ -1002,7 +1002,7 @@ let cookie: Cookie = q.getCookies()
     + Stabilisation of predicate class : `Predication<T>`
     + Implementation of `Class`, `Constructor`,`FunctionA` class
     + Implementation of `comparator`, `static Collection` class
-- 1.3.1-beta :
+- 1.3.2-beta :
     + Fix some error in net/Http, add FollowRedirect method
     + Fix getType in Class & Constructor classes
     + Implementation Json class
