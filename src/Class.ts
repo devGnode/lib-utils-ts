@@ -20,7 +20,12 @@ export class Class<T extends Object> implements classA<T>{
      */
     constructor(value: T ) {this.value = value;}
     /***
+     */
+    get name():string{return this.value.constructor.name;}
+    /***
      * @getName : return name of Class
+     * so here there is one difference with real Java. getName give back package name & getSimpleName give back name of class,
+     * i dont't have want to change that, and make an hot fix
      */
     public getName():string{ return this.value.constructor.name; }
     /***
@@ -30,7 +35,7 @@ export class Class<T extends Object> implements classA<T>{
     /***
      * @getType
      */
-    public getType( ):string {return this.getName().toLowerCase();}
+    public getType( ):string {return (typeof this.value).toLowerCase();}
     /***
      * @getKeys
      */
