@@ -1,12 +1,20 @@
 /****
  * Really simply basic class
  */
-import {int} from "./Interface";
+import {double, int} from "./Interface";
 
 export class Random {
     constructor() {}
+    /**
+     @deprecated
+     */
+    public nextDouble( a: number = 100, b : number = 0  ):double{return (Math.random()*a)+b;}
 
-    public nextDouble( a: number = 100, b : number = 0  ):int{return (Math.random()*a)+b;}
-
+    public static nextDouble( a: number = 100, b : number = 0  ):double{return (Math.random()*a)+b;}
+    /**
+     @deprecated
+     */
     public nextInt( a: number = 100, b: number = 0 ):int{return Math.floor(this.nextDouble(a,b));}
+
+    public static nextInt( a: number = 100, b: number = 0 ):int{return Math.floor(Random.nextDouble(a,b));}
 }
