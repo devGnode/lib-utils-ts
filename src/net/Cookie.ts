@@ -35,7 +35,7 @@ export class Cookie{
         expiry:string           = null,
         samesite:cookieSameSite = null
     ){
-        this.name       = null;
+        this.name       = name;
         this.value      = value;
         this.path       = path;
         this.domain     = Define.of(domain);
@@ -45,8 +45,12 @@ export class Cookie{
         this.samesite   = Define.of(samesite);
     }
 
-    public setValue(name : String, value :String): Cookie{
+    public setName( name :string): Cookie{
         this.name  = name;
+        return this;
+    }
+
+    public setValue(value :string): Cookie{
         this.value = value;
         return this;
     }
@@ -122,7 +126,7 @@ export class Cookie{
         let cook : ArrayList<string> = cookie.explodeAsList(";"),
             tmp: ArrayList<string>, out : Cookie = new Cookie();
         tmp = cook.shift().explodeAsList("=");
-        out.setValue(tmp.get(0),tmp.get(1));
+        out.setName(tmp.get(0)).setValue(tmp.get(1));
         cook.stream().each(value=>{
             tmp = value.explodeAsList("=");
             switch (tmp.get(0)) {

@@ -20,10 +20,9 @@ export class Json {
            name = tmp.charAt(0).toUpperCase() + tmp.slice(1);
            d = Define.of<Function>(obj[`set${name}`]);
            if( d.isNull() ){
-               if(!quiet) d.orElseThrow(new NullPointerException(`Getter 'set${name}' not is defined from '${obj.getClass().getName()}' class`));
+               if(!quiet) d.orElseThrow(new NullPointerException(`Setter 'set${name}' not is defined from '${obj.getClass().getName()}' class`));
            }else {
                if(payload.hasOwnProperty(tmp)) {
-                   console.log(tmp, payload[tmp].getClass().getName());
                    if (payload[tmp].getClass().getName().equals("Array")) c = new ArrayList<any>(payload[tmp]);
                    if (payload[tmp].getClass().getName().equals("Object") && obj[`get${name}`].call(obj)) c = Json.toObject(payload[tmp], obj[`get${name}`].call(obj).getClass());
 

@@ -6,6 +6,7 @@ import "./globalUtils";
 import {Constructor} from "./Constructor";
 import {ClassNotFoundException, NullPointerException} from "./Exception";
 import {Define} from "./Define";
+import {Path} from "./file/Path";
 /***
  * @Class :  Hook class Object accessor: (new MyAnyClass()).getClass()
  *
@@ -78,27 +79,47 @@ export class Class<T extends Object> implements classA<T>{
      * @param pattern : pattern
      * @param typeScript : is typescript file otherwise js
      * @param isPackage : is an package that come from to node_modules directory
+     *  Linux :
+     *      /absolute.foo.bar
+     *      relative.foo.bar
+     * WINDOWS:
+     *      c:\\relative.foo.bar
+     *      relative.foo.bar
+     * Path :
+     *      - toForName : C:\\relative\\foo\\bar -> C:.relative.foo.bar
+     *                    /relative/foo/bar -> .relative.foo.bar
+     *
+     *  Specifique Object :
+     *      path/outputObject
      *
      * Throwable :
      *  NullPointerException : if pattern is null or object wished was not been found
      *  ClassNotFoundException : require return an exception not found module
      */
-    public static forName<T extends Object>( pattern: string, typeScript : boolean = true, isPackage = false ): Constructor<T>{
-        let p:string=pattern, getter:string, path:string,
-            element:List<string> = String(pattern)
-            .explodeAsList(/\./);
+    public static forName<T extends Object>( pattern: string|Path, typeScript : boolean = true, isPackage = false ): Constructor<T>{
+        let p:string, getter:string, classPath:string,
+            element:List<string>,
+            dir:string=`${process.cwd()}/`,tmp :List<string>;
 
-        let tmp :List<string>;
         Object.requireNotNull(pattern,"package name is null !");
+        if(pattern instanceof Path)classPath = pattern.toForNamePath();
+        else{
+            classPath=pattern;
+        }
+
+        element = String(classPath).explodeAsList(/\./);
+        p=classPath;
+
+        if(classPath.startsWith("/")||/^[A-Z]{1}\:/.test(classPath)) dir=""; // absolute path
         if( (tmp = element.get(element.size()-1).explodeAsList(/\//)).size().equals(1) ) getter = tmp.get(0);
         else{
             // package.src.Class/node
             getter = tmp.get(1);
             element.set(element.size()-1,element.get(element.size()-1).replace(new RegExp(`\/${getter}`),""));
         }
-        pattern = element.toArray().join('/');
+        classPath = element.toArray().join('/');
         try{
-            let callback = require(isPackage?pattern:`${process.cwd()}/${pattern}.${typeScript?'ts':'js'}`);
+            let callback = require(isPackage?classPath:`${dir}${classPath}.${typeScript?'ts':'js'}`);
             return new Constructor<T>(Define.of<any>(callback[getter]).orElseThrow(new NullPointerException(`Element not found ${getter} is Null from [${p}] !`)));
         }catch (e) {
             throw new ClassNotFoundException(`'${getter}' : class not found from package [${p}]`);
