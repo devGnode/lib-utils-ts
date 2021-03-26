@@ -1007,6 +1007,6 @@ let cookie: Cookie = q.getCookies()
     + Fix getType in Class & Constructor classes
     + Implementation Json class
 - 1.3.3-beta :
-    + Fix class.forName class importation
+    + Fix method of importation for an absolute path name for the class.forName method
     + Fix Cookie : add getter name
     + Add merge method to Properties class
