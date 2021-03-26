@@ -1,4 +1,4 @@
-import { List, properties, Set} from "../Interface";
+import { List, predicateFn, properties, Set} from "../Interface";
 import {FileReader, FileWriter, OutputStreamWriter,InputStreamReader} from "./IOStream";
 import {Define} from "../Define";
 import {JSONException, NullPointerException} from "../Exception";
@@ -124,6 +124,17 @@ export abstract class AbstractProperties<V> implements properties<V>{
             found=false;
         }
         new FileWriter(this.path).write(file.toArray().join("\n"))
+    }
+
+    public merge<T extends Object>( properties:AbstractProperties<V>,  exclude: predicateFn<T> = null ):void{
+        let key:Iterator<string> = properties.stringPropertiesName().iterator(),
+            value:string, pass:boolean=false,dexclude:Define<predicateFn<T>> = Define.of(exclude);
+        while( key.hasNext() ){
+            value = key.next();
+            if(dexclude.isNull()||(!dexclude.isNull()&&dexclude.get().call(null,value)))pass=true;
+            if(pass)this.setProperty(value,properties.getProperty(value));
+            pass=false;
+        }
     }
 }
 /***

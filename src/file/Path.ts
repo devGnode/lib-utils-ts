@@ -22,4 +22,7 @@ export class Path implements fileStream{
     public  getPath(): string {return this.path;}
 
     public  getFileName(): string {return "%s.%s".format(this.file,this.ext);}
+    /***
+     */
+    public toForNamePath( absolute:boolean = false ):string{return "%s.%s%s".format(this.path.replace(/\\|\//gi, "."), this.file, this.ext);}
 }
