@@ -1006,3 +1006,7 @@ let cookie: Cookie = q.getCookies()
     + Fix some error in net/Http, add FollowRedirect method
     + Fix getType in Class & Constructor classes
     + Implementation Json class
+- 1.3.3-beta :
+    + Fix class.forName class importation
+    + Fix Cookie : add getter name
+    + Add merge method to Properties class
