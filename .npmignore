@@ -9,6 +9,9 @@ node_modules/
 logs/
 test/
 
+# CD/CI
+jenkinsfile
+
 # test
 Test*.js
 Test*.ts
