@@ -8,8 +8,8 @@ import groovy.transform.Field;
 
 timestamps{
     parameters{
-        string(name: 'OLD_VERSION', defaultValue: '1.0.0-alpha', description:'Package version')
-        string(name: 'VERSION', defaultValue: '1.0.0-alpha', description:'Package version')
+        string(name: 'VERSION', defaultValue: '2.0.0-alpha', description:'Package version')
+        string(name: 'OLD_VERSION', defaultValue: '2.0.0-alpha', description:'Old package version')
         string(name: 'git_branch', defaultValue: 'develop', description:'branch to push commit')
     }
     node{
@@ -18,54 +18,63 @@ timestamps{
             cleanWs();
             deleteDir();
 
-            checkout scm
+          git branch: "develop",
+            credentialsId: "${git_credentials}",
+            url: "${lib_repo_url}"
         }
 
-        // soon sonar
         docker.image("alpine-nodejs:3.12").inside("-u root") {
 
             stage("Test build"){
-               	sh 'cat package.json'
-                sh 'npm install'
-                sh 'npm run build'
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
+                   	sh 'cat package.json'
+                    sh 'npm install'
+                    hasFailed = sh ( returnStatus: true, script: 'npm run build')
+                }
             }
 
-            stage("Build version"){
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
-                    def ret = "" as String
-
-                    sh 'Build version : ${VERSION}'
-                    sh "sed -ie 's/${OLD_VERSION}/${VERSION}/' package.json'"
-                    ret = sh( returnStdout: true, script: 'cat package.json | grep ${VERSION}')
-                    if( ret.lengt() == 0 ){
-                        error("Build version ${VERSION} not found into the package.json")
-                    }
+            stage("Version"){
+                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
+                     if(hasFailed != 0) error("Build Failed !")
+                   	sh 'cat package.json | grep version'
+                    sh "sed -e \"s/${OLD_VERSION}/${VERSION}/g\" package.json"
+                    sh 'cat package.json | grep version'
                 }
             }
 
             stage("NPM Publish"){
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
-                    sh 'npm whoami'
-                    //sh 'npm publish'
+                    if( hasFailed == 0 ){
+                        sh 'npm whoami'
+                       //hasFailed = sh( returnStatus: true, script: 'npm publish')
+                       if(hasFailed != 0 ) error("Failed to publish ${VERSION}")
+                    }else{
+                        error("Failed to publish ${VERSION}")
+                    }
                 }
             }
 
             stage("Git push version"){
                /* catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
 
-                    withCredentials([usernamePassword(credentialsId: "${git_credentials}", passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    withCredentials([usernamePassword(credentialsId: "${git_credentials}", passwordVariable: 'NPM_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
 
                         sh 'git add -f package.json'
                         sh 'git commit -m "upgrade version"'
-                      //  sh 'git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/devGnode/springboot-express.git develop'
+                        sh 'git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/devGnode/springboot-express.git develop'
                     }
                 }*/
             }
         }
 
        stage("Clean"){
+            def color = "#1C76A6" as String;
+
             cleanWs()
             deleteDir()
+
+            if( hasFailed != 0 )color = "#ff0000";
+            manager.addShortText("BUILD : ${VERSION}",'white',"${color}",'1px','blue')
        }
     }
 
