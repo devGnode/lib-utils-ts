@@ -25,6 +25,17 @@ timestamps{
 
         docker.image("alpine-nodejs:3.12").inside("-u root") {
 
+            stage("Version"){
+                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
+                    def value = "" as String;
+
+                   	sh 'cat package.json | grep version'
+                    value = sh( returnStdout: true, script: "sed -e \"s/${OLD_VERSION}/${VERSION}/g\" package.json" )
+                    sh "echo '${value}' > package.json"
+                    sh 'cat package.json | grep version'
+                }
+            }
+
             stage("Test build"){
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                    	sh 'cat package.json'
@@ -33,20 +44,12 @@ timestamps{
                 }
             }
 
-            stage("Version"){
-                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
-                     if(hasFailed != 0) error("Build Failed !")
-                   	sh 'cat package.json | grep version'
-                    sh "sed -e \"s/${OLD_VERSION}/${VERSION}/g\" package.json"
-                    sh 'cat package.json | grep version'
-                }
-            }
 
             stage("NPM Publish"){
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                     if( hasFailed == 0 ){
                         sh 'npm whoami'
-                       //hasFailed = sh( returnStatus: true, script: 'npm publish')
+                        hasFailed = sh( returnStatus: true, script: 'npm publish')
                        if(hasFailed != 0 ) error("Failed to publish ${VERSION}")
                     }else{
                         error("Failed to publish ${VERSION}")
@@ -54,17 +57,23 @@ timestamps{
                 }
             }
 
-            stage("Git push version"){
-               /* catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
+        }
 
-                    withCredentials([usernamePassword(credentialsId: "${git_credentials}", passwordVariable: 'NPM_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+        stage("Git push version"){
+               catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
 
-                        sh 'git add -f package.json'
-                        sh 'git commit -m "upgrade version"'
-                        sh 'git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/devGnode/springboot-express.git develop'
+                    if(hasFailed == 0 ){
+                       withCredentials([usernamePassword(credentialsId: "${git_credentials}", passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                            sh 'cat package.json'
+                            sh 'git status'
+                            sh 'git add -f package.json'
+                            sh 'git commit -m "upgrade version"'
+                            sh 'git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/devGnode/lib-utils-ts.git develop'
+                       }
+                    }else{
+                        error("Failed to publish ${VERSION}")
                     }
-                }*/
-            }
+                }
         }
 
        stage("Clean"){
