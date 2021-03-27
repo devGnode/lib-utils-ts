@@ -1010,3 +1010,7 @@ let cookie: Cookie = q.getCookies()
     + Fix method of importation for an absolute path name for the class.forName method
     + Fix Cookie : add getter name
     + Add merge method to Properties class
+  
+- 2.0.0-stable :
+    + Fix : Linux/Unix importation, Windows build some files in lowercase ( Stream &rarr; stream ), Now every release will be packaged in a Docker alpine:3.12 from a Jenkins pipeline
+    + Implement job jenkins
