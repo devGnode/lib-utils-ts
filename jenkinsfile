@@ -1,0 +1,72 @@
+import groovy.transform.Field;
+
+@Field def lib_repo_url = "https://github.com/devGnode/lib-utils-ts.git" as String
+@Field def git_credentials = "505ffe05-122c-499f-b83c-1aa544cc56e0" as String
+@Field def npm_credentials = "906cf641-7d13-452e-993b-76cfe2f527ec" as String
+@Field def hasFailed
+@Field def timestamp = "" as String
+
+timestamps{
+    parameters{
+        string(name: 'OLD_VERSION', defaultValue: '1.0.0-alpha', description:'Package version')
+        string(name: 'VERSION', defaultValue: '1.0.0-alpha', description:'Package version')
+        string(name: 'git_branch', defaultValue: 'develop', description:'branch to push commit')
+    }
+    node{
+
+        stage("Git Checkout SCM"){
+            cleanWs();
+            deleteDir();
+
+            checkout scm
+        }
+
+        // soon sonar
+        docker.image("alpine-nodejs:3.12").inside("-u root") {
+
+            stage("Test build"){
+               	sh 'cat package.json'
+                sh 'npm install'
+                sh 'npm run build'
+            }
+
+            stage("Build version"){
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
+                    def ret = "" as String
+
+                    sh 'Build version : ${VERSION}'
+                    sh "sed -ie 's/${OLD_VERSION}/${VERSION}/' package.json'"
+                    ret = sh( returnStdout: true, script: 'cat package.json | grep ${VERSION}')
+                    if( ret.lengt() == 0 ){
+                        error("Build version ${VERSION} not found into the package.json")
+                    }
+                }
+            }
+
+            stage("NPM Publish"){
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
+                    sh 'npm whoami'
+                    //sh 'npm publish'
+                }
+            }
+
+            stage("Git push version"){
+               /* catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
+
+                    withCredentials([usernamePassword(credentialsId: "${git_credentials}", passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+
+                        sh 'git add -f package.json'
+                        sh 'git commit -m "upgrade version"'
+                      //  sh 'git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/devGnode/springboot-express.git develop'
+                    }
+                }*/
+            }
+        }
+
+       stage("Clean"){
+            cleanWs()
+            deleteDir()
+       }
+    }
+
+}
