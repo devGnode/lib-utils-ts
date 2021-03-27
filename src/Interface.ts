@@ -2,7 +2,7 @@
  * Array
  */
 import {ArrayList, HashMap} from "./List";
-import {Stream} from "./stream";
+import {Stream} from "./Stream";
 import {Predication} from "./Predication";
 import {Optional} from "./Optional";
 import {Iterator, ListIterator} from "./Iterator";

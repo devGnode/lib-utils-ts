@@ -7,7 +7,7 @@ import {
     Set, streamLambdaK
 } from "./Interface";
 import {IndexOfBoundException, NullPointerException} from "./Exception";
-import {ObjectStream, Stream} from "./stream";
+import {ObjectStream, Stream} from "./Stream";
 import {Iterator, ListIterator} from "./Iterator";
 import {Define} from "./Define";
 /***
