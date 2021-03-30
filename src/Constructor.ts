@@ -25,7 +25,7 @@ export class Constructor<T extends Object> extends Function implements construct
     public getType(): string {return (typeof this.value).toLowerCase();}
     /***
      */
-    public 	getDeclaringClass(): Class<T>{ return new Class<T>(this.value.class<T>().newInstance()); }
+    public getDeclaringClass(): Class<T>{ return new Class<T>(this.value.class<T>().newInstance()); }
     /***
      */
     public newInstance(...args: Object[]): T {

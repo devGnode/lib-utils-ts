@@ -22,10 +22,10 @@ import {Comparator} from "./Comparator";
  */
 // @ts-ignore
 Boolean.prototype.equals = Number.prototype.equals = String.prototype.equals = function(value : string | number| boolean | Object ) : boolean {return this.valueOf()===value;};
-String.prototype.equalsIgnoreCase = function ( value : string ) : boolean {return this.toString().toLowerCase()===value.toLowerCase();};
+String.prototype.equalsIgnoreCase = function ( value : string ) : boolean {return Define.of(value).isNull() ? false : this.toString().toLowerCase()===value.toLowerCase();};
 String.prototype.regExp = function ( regExp : RegExp = /.+/, callback : Function ) : string{return Utils.regExp(regExp,this.toString(),callback);};
 // @ts-ignore
-String.repeatString = function( char : string, loop : number = 0 ) : String{return new Array<any>(loop).fill(char.charAt(0)).join("");};
+String.repeatString = function( char : string, loop : number = 0 ) : String{ if(loop<0)loop=0; return new Array<any>(loop).fill(char.charAt(0)).join("");};
 String.prototype.contains = function( value : string|RegExp ) :boolean{return new RegExp(value).test(this.valueOf());};
 String.prototype.format = function(  ... args : any[] ) :string{return format.apply(null,Array.from([this.valueOf()]).concat(args));};
 String.prototype.isEmpty = function(  ) : boolean{return this.valueOf().length===0;};
