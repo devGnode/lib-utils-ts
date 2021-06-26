@@ -24,8 +24,6 @@ Boolean.prototype.equals = Number.prototype.equals = String.prototype.equals = f
 /***
  * String extension
  */
-// @ts-ignore
-Boolean.prototype.equals = Number.prototype.equals = String.prototype.equals = (value : string | number| boolean | Object ) : boolean => this.valueOf()===value;
 String.prototype.equalsIgnoreCase   = StringA.prototype.equalsIgnoreCase;
 String.prototype.regExp             = StringA.prototype.regExp;
 // @ts-ignore
