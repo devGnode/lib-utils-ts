@@ -20,7 +20,7 @@ const {Constructor} = require('../src/Constructor')
 const {FunctionA} = require('../src/FunctionA')
 const {Collection} = require('../src/Collection')
 const {Comparator} = require('../src/Comparator')
-
+const {GetOpts} = require('../src/GetOpts')
 
 module.exports = {
     AbstractCollection:AbstractCollection,
@@ -59,6 +59,7 @@ module.exports = {
     HttpOptions:HttpOptions,
 
     flombok:flombok,
+    GetOpts:GetOpts,
 
     Random:Random,
 

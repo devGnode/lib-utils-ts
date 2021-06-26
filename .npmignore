@@ -1,19 +1,14 @@
-# CI/CD
-*.yml
-
-#
 .git/
 .idea/
-.vscode/
 node_modules/
 logs/
 test/
-
+# Typescript file
+src/*.ts
 # CD/CI
 jenkinsfile
-
+*.yml
 # test
-Test*.js
 Test*.ts
 test.*
 Test.*
@@ -22,6 +17,3 @@ Test*.js.map
 *.p12
 *.crt
 *.pem
-
-# all mounted file
-*.js.map
