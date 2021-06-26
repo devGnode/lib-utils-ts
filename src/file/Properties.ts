@@ -66,6 +66,8 @@ export abstract class AbstractProperties<V> implements properties<V>{
     public load( input : InputStreamReader ) : void{
         Define.of(input).orElseThrow(new NullPointerException("target is null !"));
         let chunk:string = null,chunkKey:string,push:boolean=false;
+
+        this.prop = new HashMap({});
         this.path = input.getPath();
         input.getLines()
             .stream()
@@ -126,7 +128,7 @@ export abstract class AbstractProperties<V> implements properties<V>{
         new FileWriter(this.path).write(file.toArray().join("\n"))
     }
 
-    public merge<T extends Object>( properties:AbstractProperties<V>,  exclude: predicateFn<T> = null ):void{
+    public merge<T extends V,Object>( properties:AbstractProperties<V>,  exclude: predicateFn<T> = null ):void{
         let key:Iterator<string> = properties.stringPropertiesName().iterator(),
             value:string, pass:boolean=false,dexclude:Define<predicateFn<T>> = Define.of(exclude);
         while( key.hasNext() ){

@@ -111,7 +111,7 @@ export class Response {
      */
     public getCookies() : ArrayList<Cookie> {
         let mapToCookie : streamLambdaTo<string,Cookie>=value=>Cookie.parse(value);
-        return ArrayList.of<string>( this.getHeader("set-cookie") )
+        return ArrayList.of<string>( this.getHeader("cookie") )
             .stream()
             .mapTo(mapToCookie)
             .getList();
@@ -122,7 +122,7 @@ export class Response {
     public getCookie( name :string ) : Cookie {
         return this.getCookies()
             .stream()
-            .filter(cookie=>cookie.getValue().equals(name))
+            .filter(cookie=>cookie.getValue().trim().equals(name))
             .findFirst()
             .orElse(null);
     }
