@@ -81,6 +81,7 @@ declare global {
     interface Number {
         equals( value : number ) : boolean
         compareTo( another : number ): number
+        isPrime():boolean
     }
     interface NumberConstructor{
         of( value: Object) : number
@@ -116,8 +117,8 @@ declare global {
         isNull( value : Object ):boolean
         requireNotNull<T>( other: T, message?: string ) :T
         nonNull( obj: Object ): boolean
-        toString( o: Object ): string
-    }
+            toString( o: Object ): string
+        }
     interface Object {
         getClass<T extends Object>(): Class<T>
         equals(object:Object):boolean
