@@ -2,7 +2,7 @@ import {ArrayList} from "../List";
 /***
  *
  */
-export abstract class ArrayA extends Array{
+export abstract class ArrayA<T> extends Array<T>{
     /***
      *
      */
