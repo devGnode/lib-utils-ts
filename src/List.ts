@@ -141,7 +141,7 @@ export abstract class AbstractList<E> extends AbstractCollection<E> implements L
      * @param element
      */
     public set(index: number, element: E): E {
-        Define.of<E>(element).orElseThrow(new NullPointerException("Element value is null"));
+        //Define.of<E>(element).orElseThrow(new NullPointerException("Element value is null"));
         this.get(index); // IndexOfBoundException
         return this.value[index] = element;
     }

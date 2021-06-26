@@ -40,7 +40,7 @@ export abstract class StringA extends String{
      */
     public orDefault( value : String|string ): string{return this.isEmpty()?String(value):this.valueOf();}
     /***
-     *
+     * https://stackoverflow.com/questions/5326165/use-javascript-to-stripslashes-possible/14623073
      */
     public stripSlashes() :string{return this.replace(/\\(.)/mg, "$1");}
     /***

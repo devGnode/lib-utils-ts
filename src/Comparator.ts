@@ -1,4 +1,5 @@
 import {comparable, comparator, comparatorFn} from "./Interface";
+import {Comparators} from "./Comparators";
 
 export class Comparator<T> implements comparator<T>{
 
@@ -22,11 +23,35 @@ export class Comparator<T> implements comparator<T>{
     public equals(o: Object): boolean {return this.value.equals(o);}
     /***
      *
+     */
+    public reversed(): Comparator<T>{
+        return <Comparator<T>>new Comparators.reversed<T>(this);
+    }
+    /***
+     *
+     */
+    public static nullsFirst<T>( comparator: comparator<T> ): Comparator<T>{
+        return <Comparator<T>>new Comparators.NullComparator<T>(true, comparator);
+    }
+    /***
+     *
+     */
+    public static nullsLast<T>( comparator: comparator<T> ): Comparator<T>{
+        return <Comparator<T>>new Comparators.NullComparator<T>(false, comparator);
+    }
+    /***
+     *
+     */
+    public static naturalOrder<T extends comparable<T>>( ): Comparator<T>{
+        return <Comparator<T>>Comparators.naturalOrder;
+    }
+    /***
+     *
      * @param comparatorFn
      */
-    public static comparing<T,U extends comparable<T>>( comparatorFn: comparatorFn<T,U> ): Comparator<T>{
+    public static comparing<T,U extends comparable<U>>( comparatorFn: comparatorFn<T,U> ): Comparator<T>{
         Object.requireNotNull(comparatorFn,"comparatorFn is Null !")
-        return new class extends Comparator<T>{
+        return new class extends Comparator<T> implements comparator<T>{
             constructor( ) {super();}
             // @override
             public compare(o1: T, o2: T): number {
@@ -39,10 +64,10 @@ export class Comparator<T> implements comparator<T>{
      * @param comparatorFn
      * @param comparator
      */
-    public static comparingA<T,U extends comparable<T>>( comparatorFn: comparatorFn<T,U>, comparator: comparator<T> ): Comparator<T>{
+    public static comparingA<T,U extends comparable<U>>( comparatorFn: comparatorFn<T,U>, comparator: comparator<T> ): Comparator<T>{
         Object.requireNotNull(comparatorFn,"comparatorFn is Null !");
         Object.requireNotNull(comparator,"comparator is Null !");
-        return new class extends Comparator<T>{
+        return new class extends Comparator<T> implements comparator<T>{
             constructor( ) {super();}
             // @override
             public compare(o1: T, o2: T): number {

@@ -17,6 +17,10 @@ import {StringA} from "./type/StringA";
  * ....
  *
  */
+/****
+ * equals method extended for all native Object
+ */
+Boolean.prototype.equals = Number.prototype.equals = String.prototype.equals = function(value : string | number| boolean | Object ) : boolean { return this.valueOf()===value; }
 /***
  * String extension
  */
@@ -32,7 +36,6 @@ String.prototype.isEmpty            = StringA.prototype.isEmpty;
 String.prototype.explodeAsList      = StringA.prototype.explodeAsList;
 String.prototype.exec               = StringA.prototype.exec;
 String.prototype.orDefault          = StringA.prototype.orDefault;
-//https://stackoverflow.com/questions/5326165/use-javascript-to-stripslashes-possible/14623073
 String.prototype.stripSlashes       = StringA.prototype.stripSlashes;
 String.prototype.compareTo          = StringA.prototype.compareTo;
 /***
@@ -61,6 +64,8 @@ Boolean.of                          = BooleanA.of;
  Array extension
  */
 Array.asList                        = ArrayA.prototype.asList;
+Array.newList                       = ArrayA.prototype.newList;
+Array.sum                           = ArrayA.prototype.sum;
 /***
  Object extension
  */

@@ -4,7 +4,8 @@ import {NullPointerException} from "../Exception";
 
 export abstract class ObjectA extends Object{
     /***
-     *
+     * @equals: condition check integrity of constructor & prototype of an Object.
+     *          This method will be override for Boolean, Number, String.
      */
     public equals(object:Object):boolean{ return this.constructor === object.constructor && (<any>this).prototype === (<any>object).prototype; }
     /***

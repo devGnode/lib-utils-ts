@@ -55,7 +55,7 @@ export type functionAConstructor  = (... args : Object[] ) => void
 export type constructorFunction   = Function
 /**/
 export type comparatorFunc<T>                       = ( other1: T, other2: T ) => number
-export type comparatorFn<T,V extends comparable<T>> = ( other1: T, other2: T ) => V
+export type comparatorFn<T,V extends comparable<V>> = ( other1: T, other2: T ) => V
 /***
  * Global Extended native object prototype
  */
@@ -108,7 +108,9 @@ declare global {
         of(value: Object) : boolean
     }
     interface ArrayConstructor {
-        asList<T>(value: T[]): ArrayList<T>
+        asList<T>( value: T[]): ArrayList<T>
+        newList<T>( ... value : T[] ): ArrayList<T>
+        sum( ): number
     }
 
     /****

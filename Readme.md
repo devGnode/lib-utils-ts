@@ -47,6 +47,7 @@ Static :
 
 + `equals( value : number ) : boolean `
 + `compareTo( other : number ): number`
++ `isPrime( ): boolean`
 
 Static : 
 
@@ -77,7 +78,12 @@ Static :
 
 Static : 
 + `dateFormat( pattern : string ) : Date`
-  
+
+#### Array
+
++ `asList<T>( value: T[] ) : ArrayList<T>`
++ `newList( ... value: T[] ) : ArrayList<T>`
+
 #### Boolean
 
 + `state( expectTrue : any, orElse : any ) : any`
@@ -249,6 +255,7 @@ Public interface comparable\<T\>
 Public interface comparator\<T\>
 
 - `compare(o1: T, o2: T ): number`
+- `reversed( ) : Compartor<T>`
 - `equals(o:Object):boolean`
 
 Public static Collection
@@ -1013,4 +1020,8 @@ let cookie: Cookie = q.getCookies()
   
 - 2.0.0-stable :
     + Fix : Linux/Unix importation, Windows build some files in lowercase ( Stream &rarr; stream ), Now every release will be packaged in a Docker alpine:3.12 from a Jenkins pipeline
-    + Implement job jenkins
+    + Implement job jenkins  
+- 2.0.1-stable :
+    + add : GetOpts class
+    + add : isPrime method in the native Number prototype
+    + Fix : http getCookie method 

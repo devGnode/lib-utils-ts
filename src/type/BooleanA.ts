@@ -6,5 +6,5 @@ export abstract class BooleanA extends Boolean{
     /***
      *
      */
-    public static of(  value : Object ) : boolean {return value===true||value === "true"||value===1;};
+    public static of(  value : Object ) : boolean {return value===true||value === "true"||value===1;}
 }
