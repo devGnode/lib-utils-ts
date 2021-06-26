@@ -81,6 +81,7 @@ declare global {
     interface Number {
         equals( value : number ) : boolean
         compareTo( another : number ): number
+        compare( x :number, y:number):number
         isPrime():boolean
     }
     interface NumberConstructor{

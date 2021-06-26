@@ -13,10 +13,13 @@ export class GetOpts{
      *      -abcd
      */
     protected static REG_EXP : RegExp = /(\-\-(\w{2,})?(\=|))\s*(((\+|\-)\d+)([^\'\"\- ]+)|\'([^\']*)\'|([^ ]+))*|(\-(\w{1,}))\s*(((\+|\-)\d+)|([^\'\"\- ]+)|\'([^\']*)\'|([^ ]+))*/;
-    protected static DIR_REG: RegExp = /^(([a-zA-Z]{1}\:?((\/|\\)[\w-_ ]+)*\.[a-z]{1,}$)|((\/[\w-_ ]+)*\.[a-z]{1,}$))/;
     /***
      *
-     * @param argv
+     */
+    protected static DIR_REG: RegExp = /^(([a-zA-Z]{1}\:?((\/|\\)[\w-_ ]+)*\.[a-z]{1,}$)|((\/[\w-_ ]+)*\.[a-z]{1,}$))/;
+    /***
+     * @get :
+     *
      */
     public static get( argv: string[] = null ) : MapType<string, string|number> {
         let i : number = 0, dir:boolean = true, out  : Object = {};
