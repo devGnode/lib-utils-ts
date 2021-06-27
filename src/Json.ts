@@ -1,9 +1,9 @@
 import {Class} from "./Class";
-import {Optional} from "./Optional";
 import {Define} from "./Define";
 import {NullPointerException} from "./Exception";
 import {ArrayList} from "./List";
 import {MapType} from "./Interface";
+import {Constructor} from "./Constructor";
 
 export class Json {
 
@@ -23,9 +23,11 @@ export class Json {
                if(!quiet) d.orElseThrow(new NullPointerException(`Setter 'set${name}' not is defined from '${obj.getClass().getName()}' class`));
            }else {
                if(payload.hasOwnProperty(tmp)) {
-                   if (payload[tmp].getClass().getName().equals("Array")) c = new ArrayList<any>(payload[tmp]);
-                   if (payload[tmp].getClass().getName().equals("Object") && obj[`get${name}`].call(obj)) c = Json.toObject(payload[tmp], obj[`get${name}`].call(obj).getClass());
-
+                   if(!Define.of(payload[tmp]).isNull()) {
+                       if (payload[tmp].getClass().getName().equals("Array")) c = new ArrayList<any>(payload[tmp]);
+                       if (payload[tmp].getClass().getName().equals("Object") && obj[`get${name}`].call(obj)) c = Json.toObject(payload[tmp], obj[`get${name}`].call(obj).getClass());
+                       //new Constructor(obj[`get${name}`].call(obj)).getDeclaringClass().cast(payload[tmp]);
+                   }
                    obj[`set${name}`].call(obj, c || payload[tmp]);
                    c = null;
                }
