@@ -58,7 +58,7 @@ class TestSorting {
         //sort by age
         let cmp: Comparator<Developer> = new class extends Comparator<Developer>{
             // @override
-            public compare(o1: Developer, o2: Developer): number {
+            public compare = (o1: Developer, o2: Developer): number =>{
                 return o1.getAge().compareTo(o2.getAge());
             }
         };

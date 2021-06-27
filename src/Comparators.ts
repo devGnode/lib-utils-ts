@@ -40,7 +40,7 @@ export abstract class Comparators<T> {
     /****
      *
      */
-    public static NullComparator:NullComparator = class NullComparators<T> implements comparator<T>{
+    public static NullComparator:NullComparator<Object> = class NullComparators<T> implements comparator<T>{
 
         private readonly nullFirst:boolean;
         private readonly comparator: Comparator<T>;

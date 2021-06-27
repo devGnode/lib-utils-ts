@@ -104,7 +104,7 @@ let arr:List<string> = Array.newList("1","2",null,"1",null);
 
 Collection.sortA(arr, Comparator.nullsLast(new class extends Comparator<string> {
 
-    public compare(o1:string,o2: string) :number{
+    public compare = (o1: string, o2: string): number =>{
         return o1.compareTo( o2 );
     }
 }))

@@ -109,22 +109,24 @@ declare global {
     }
     interface ArrayConstructor {
         asList<T>( value: T[]): ArrayList<T>
+        list<T>( ... value : T[] ): ArrayList<T>
         newList<T>( ... value : T[] ): ArrayList<T>
         sum( ): number
     }
-
     /****
      * Test implementation
      */
     interface ObjectConstructor {
         isNull( value : Object ):boolean
         requireNotNull<T>( other: T, message?: string ) :T
+        equals(o1:Object, o2:Object):boolean
         nonNull( obj: Object ): boolean
             toString( o: Object ): string
         }
     interface Object {
         getClass<T extends Object>(): Class<T>
-        equals(object:Object):boolean
+        equals(o1:Object):boolean
+        compare( o1: Object, o2: Object ) : number
     }
     
     interface Function {
@@ -347,8 +349,18 @@ export interface comparable<T> {
     compareTo( obj : T ) :number
 }
 export interface comparator<T> {
+    /***
+     *
+     */
     compare(o1: T, o2: T ): number
+    /***
+     *
+     */
     equals(o:Object):boolean
+    /***
+     *
+     */
+    //reversed(): comparator<T>
 }
 /***
  * Iterator interfaces

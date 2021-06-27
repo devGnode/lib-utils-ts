@@ -51,7 +51,7 @@ class TestSorting {
         //sort by age
        Collection.sortA(listDevs, new class extends Comparator<Developer> {
 
-                public compare(o1:Developer,o2: Developer) :number{
+                public compare = (o1: Developer, o2: Developer): number =>{
                     return o1.getAge().compareTo( o2.getAge() )
                     //return o1.getAge() - o2.getAge();
                     //return o1.getSalary().compareTo(o2.getSalary())

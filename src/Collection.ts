@@ -2,6 +2,8 @@ import {comparable, comparator, int, List} from "./Interface";
 import {ArrayList} from "./List";
 import {Random} from "./Random";
 import {ListIterator} from "./Iterator";
+import {Comparator} from "./Comparator";
+
 /***
  *  I don't extends more this class, i think javascript already implemented much of
  *  static method, This is useless to re-write universe.
@@ -27,7 +29,9 @@ export abstract class Collection {
             });
         });
     }
-
+    /****
+     *
+     */
     public static sortA<T>( list : List<T>, comparator: comparator<T> ): void{
         let tmp:any,l : List<T>;
         (l = ArrayList.of( list.stream().toArray() ))
@@ -37,14 +41,18 @@ export abstract class Collection {
             });
         });
     }
-
+    /****
+     *
+     */
     public static swap<T>( list: List<T>,i : int, j: int ): void{
         Object.requireNotNull(list,"list instance is null");
         let tmp: T = list.get(i);
         list.set(i,list.get(j));
         list.set(j,tmp);
     }
-
+    /****
+     *
+     */
     public static shuffle<T>( list: List<T>, rand: Random = new Random() ): void{
         Object.requireNotNull(rand,"Random instance is null");
         let itr: ListIterator<T> = list.listIterator();
@@ -53,10 +61,29 @@ export abstract class Collection {
             Collection.swap<T>(list, itr.previousIndex(), rand.nextInt(list.size()));
         }
     }
-
+    /****
+     *
+     */
     public static replaceAll<T>( list: List<T>, oldVal : T, newVal: T ): void{
         let itr: ListIterator<T> = list.listIterator();
         while (itr.hasNext())if(itr.next().equals(oldVal)) list.set(itr.previousIndex(),newVal);
+    }
+    /****
+     * @ReverseOrder : sub static class
+     */
+    protected static ReverseOrder:comparator<comparable<Object>> = new class ReverseOrder implements comparator<comparable<Object>>{
+
+        public compare(o1: comparable<Object>, o2: comparable<Object>): number {
+            return o2.compareTo(o1);
+        }
+
+        public reversed(): comparator<comparable<Object>> {return Comparator.naturalOrder();}
+    }
+    /****
+     * @reverseOrder sort by natural order a list.
+     */
+    public static reverseOrder<T extends comparable<T>>():Comparator<T>{
+        return <Comparator<T>>Collection.ReverseOrder;
     }
 
 }
