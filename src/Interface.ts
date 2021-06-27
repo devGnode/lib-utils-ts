@@ -127,6 +127,7 @@ declare global {
         getClass<T extends Object>(): Class<T>
         equals(o1:Object):boolean
         compare( o1: Object, o2: Object ) : number
+        deepEquals( o1: Object, o2:Object ):boolean
     }
     
     interface Function {

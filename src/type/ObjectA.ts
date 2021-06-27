@@ -61,4 +61,26 @@ export abstract class ObjectA extends Object implements comparator<Object>{
             o1.constructor.prototype === o2.constructor.prototype &&
             o1.constructor.name === o2.constructor.name;
     }
+    /****
+     * @deepEquals
+     * @param o1
+     * @param o2
+     */
+    @flombok.ENUMERABLEFUNC(false)
+    public static deepEquals( o1: Object, o2:Object ):boolean{
+       if(Object.equals(o1, o2)) {
+           let tmp: string;
+           for (tmp in o1) {
+               if(( typeof o1[tmp] !== "function" && typeof o2[tmp] === "function") || typeof o1[tmp] === "function" && typeof o2[tmp] !== "function" ) return false;
+               else if (typeof o1[tmp] !== "function" && typeof o2[tmp] !== "function") {
+                   if (o1[tmp] !== o2[tmp]) return false;
+               }
+               if( typeof o1[tmp]!=="object"&&typeof o1[tmp]==="object"||typeof o1[tmp]==="object"&&typeof o1[tmp]!=="object" ) return false;
+               else if(typeof o1[tmp]==="object"&&typeof o1[tmp]==="object") ObjectA.deepEquals(o1[tmp],o2[tmp]);
+               // other
+           }
+           return true;
+       }
+       return false;
+    }
 }

@@ -1,91 +1,113 @@
 import "../src/globalUtils"
 import {Comparator} from "../src/Comparator";
-import {flombok} from "../src/flombok";
-import getStringFunc = flombok.getStringFunc;
-import setNumberFunc = flombok.setNumberFunc;
-import getNumberFunc = flombok.getNumberFunc;
-
 import {Collection} from "../src/Collection";
-import {ArrayList} from "../src/List";
-import {comparable, comparator, List} from "../src/Interface";
-import {Iterator} from "../src/Iterator";
-import accessorGetFunc = flombok.accessorGetFunc;
-import accessorSetFunc = flombok.accessorSetFunc;
-import {Comparators} from "../src/Comparators";
+import assert = require("assert");
+import {List} from "../src/Interface";
+import {Define} from "../src/Define";
+import {RuntimeException} from "../src/Exception";
+import {Optional} from "../src/Optional";
 
-let arr:List<string> = Array.newList("6","2",null,"4",null,"3");
+let arrN: List<number> = Array.newList(6,3,20,4,1,3);
 
-Collection.sortA(arr, Comparator.nullsLast(new class extends Comparator<string> {
+Collection.sortA(arrN,
+    Collection.reverseOrder<number>().reversed()
+)
 
-    public compare(o1:string,o2: string) :number{
-        return o1.compareTo( o2 );
-    }
-}));
-console.log(arr);
-Collection.sortA(arr, Comparator.nullsFirst(new class extends Comparator<string> {
+let er:Comparator<string> = new Comparator();
+//er.reversed().thenComparing()
+console.log(arrN)
 
-    public compare(o1:string,o2: string) :number{
-        return o1.compareTo( o2 );
-    }
-}));
-console.log(arr);
-
-Collection.sortA(arr,Comparator.nullsFirst(Comparator.naturalOrder()));
-
-/***
- * https://www.geeksforgeeks.org/comparator-naturalorder-method-in-java-with-examples/
- * First
+/****
+ *
+ * @param a
  */
-// POJO
-class User implements comparable<User> {
-    public name:string;
-    public age:number;
+function a( a  ){this.a =  0;}
+a.prototype.c = function( ){};
 
-    constructor( name:string, age:number) {
-        this.name = name;
-        this.age = age;
+let bn:any = new a(0), bk = new a(0);
+let ao= {a:0}, ap= {a:0};
+
+class abc{
+    a:number = 0;
+
+    constructor(a:number, b:string = null, c:string = "foo") {
+        this.a = a;
     }
 
-    public compareTo( u1:User ):number {
-        return this.name.compareTo(u1.name);
+    public ac(){
+
     }
 
-    public getName():string {return this.name;}
+    static d(){}
 
-    public setName(name:string):void{this.name = name;}
-
-    public getAge():number {return this.age;}
-
-    public setAge( age:number ):void {this.age = age;}
-
-    //@Override
-    public toString():string{ return "User [name=" + this.name + ", age=" + this.age + "]"; }
 }
 
-// MAIN
-class GFG {
+let Co : abc = new abc(12), Co1:abc = new abc(12);
+/****
+ * JSON
+ */
+// let ao= {a:0}, ap= {a:0};
+assert.strictEqual( Object.equals(ao,ap), true )
+console.log(  Object.equals(ao,ap));
+ao= {a:1};
+ap= {a:0};
+assert.strictEqual( Object.equals(ao,ap), true )
+assert.strictEqual( Object.deepEquals(ao,ap), false )
+console.log(  Object.deepEquals(ao,ap));
+console.log(  Object.equals(ao,ap));
+/****
+ * Function Object
+ */
+assert.strictEqual( Object.equals(bn,bk), true )
+console.log(  Object.equals(bn,bk) );
+/****
+ * Class
+ */
+assert.strictEqual( Object.equals(Co,Co1), true )
+console.log( Object.equals(Co,Co1));
+assert.strictEqual( Object.deepEquals(Co,Co1), true )
+console.log(  Object.deepEquals(Co,Co1));
+Co1.a = 25;
+assert.strictEqual( Object.deepEquals(Co,Co1), false )
+console.log(  Object.deepEquals(Co,Co1));
+/****
+ * String
+ */
+assert.strictEqual( "abcd".compareTo("abcd"), 0 )
+assert.strictEqual( "abcd".compareTo("abcde"), -1 )
+assert.strictEqual( "abcde".compareTo("abcd"), 1 )
+console.log(  "abcd".compareTo("abcd"), "abcd".compareTo("abcdd"),"abcde".compareTo("abcd") );
+/****
+ * Number
+ */
+assert.strictEqual( Number(12).compareTo(12), 0 )
+assert.strictEqual( Number(12).compareTo(15), -3 )
+assert.strictEqual( Number(15).compareTo(12), 3 )
+console.log(  Number(12).compareTo(12), Number(12).compareTo(15), Number(15).compareTo(12) );
 
-    public static main(args: String[] ): void {
-
-        // Create some user objects
-        let u1:User = new User("Aaman", 25);
-        let u2:User = new User("Joyita", 22);
-        let u3:User = new User("Suvam", 28);
-        let u4:User = new User("mahafuj", 25);
-
-        console.log("One null Objects");
-        let list:List<User> = Array.newList(u1, u2, u3, null, u4);
-
-        Collection.sortA(list, Comparator.nullsFirst( Comparator.comparing(User.prototype.getName)));
-        list.stream().each((user:User)=> console.log(user));
-
-        console.log("\nMore than One null Objects");
-        list = Array.newList(u1, u4, null, u2, u3, null, null);
-
-        Collection.sortA(list, Comparator.nullsFirst( Comparator.comparing( User.prototype.getName )));
-        list.stream().each((user:User)=> console.log(user));
+let array1: List<number> = Array.newList(2,95,2,55,11,45,30,15,8 ), ctrl:number=Number.MAX_VALUE;
+Collection.sortA(array1,Comparator.naturalOrder());
+array1.stream().each(v=>{
+    console.log(v)
+    if( v < ctrl ) ctrl = v;
+    else{
+        assert.strictEqual( v < ctrl, false )
     }
+})
+
+assert.strictEqual( Define.of(null).isNull(), true );
+assert.strictEqual( Define.of(null).orNull("foo"), "foo");
+assert.strictEqual( Define.of(null).orElse("bar"), "bar");
+try{
+    Define.of(null).orThrow(new RuntimeException("Test Exception"));
+}catch (e) {
+    console.log(e)
+    assert.strictEqual( true, true );
 }
-
-
-GFG.main([]);
+Optional.ofNullable(null).orElse(null);
+try {
+    Optional.of(null).orElse(null);
+}catch (e) {
+    console.log(e)
+    assert.strictEqual( true, true );
+}
