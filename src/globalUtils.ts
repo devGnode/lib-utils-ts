@@ -75,6 +75,7 @@ Object.toString                     = ObjectA.toString;
 Object.prototype.equals             = ObjectA.prototype.equals;
 Object.equals                       = ObjectA.equals;
 Object.compare                      = ObjectA.compare;
+Object.deepEquals                   = ObjectA.deepEquals;
 Object.prototype.getClass           = function<T>():Class<T> { return new Class<T>(this); };
 Object.defineProperty(Object,"nonNull",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"isNull",{enumerable: false, writable: true, configurable: true});
@@ -82,6 +83,7 @@ Object.defineProperty(Object.prototype,"requireNotNull",{enumerable: false, writ
 Object.defineProperty(Object,"toString",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"getClass",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"equals",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"deepEquals",{enumerable: false, writable: true, configurable: true});
 /***
  FunctionA extension
  */
