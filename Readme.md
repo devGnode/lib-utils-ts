@@ -38,6 +38,8 @@ Static :
 + `requireNotNull<T>( other: T, message?: string ) :T `
     - NullPointerException
 + `nonNull(obj:Object):boolean`
++ `compare( o1:Object, o2: Object ): number`
++ `equals( o1: Object, o2: Object ): number`
 
 #### FunctionA
 
@@ -52,6 +54,7 @@ Static :
 Static : 
 
 + `of( value: Object) : number`
++ `compare( o1: number, o2: number ): number`
 
 #### String
 
@@ -83,6 +86,8 @@ Static :
 
 + `asList<T>( value: T[] ) : ArrayList<T>`
 + `newList( ... value: T[] ) : ArrayList<T>`
++ `list( ... value: T[] ) : ArrayList<T>`
++ `sum(  ) : number`
 
 #### Boolean
 
@@ -248,6 +253,8 @@ Class.forName<IMyInter>("src.package.Class").newInstance(12).getValue();
 
 ## Comparator\<T\>
 
+- `test/`
+
 Public interface comparable\<T\>
 
 - `compareTo( obj : T ) :number`
@@ -265,14 +272,21 @@ Public static Collection
 - `static swap<T>( list: List<T>,i : int, j: int ): void`
 - `static shuffle<T>( list: List<T>, rand: Random ): void`
 - `static replaceAll<T>( list: List<T>, oldVal : T, newVal: T ): void`
+- `static reverseOrder<T extends comparable<T>>():Comparator<T>`
 
 Public class Comparator\<T\> implements comparator\<T\>
 
-- `compare(o1: T, o2: T) : number`
+- `compare(o1: T, o2: T) => number`
 - `equals(o: Object): boolean`
+- `reversed(): Comparator<T>`
 
-- `static comparing<T,U extends comparable<T>>( comparatorFn: comparatorFn<T,U> ): Comparator<T>`
-- `static comparingA<T,U extends comparable<T>>( comparatorFn: comparatorFn<T,U>, comparator: comparator<T> ): Comparator<T>`
+static
+
+- `nullsFirst<T>( comparator: comparator<T> ): Comparator<T>`
+- `nullsLast<T>( comparator: comparator<T> ): Comparator<T>`
+- `naturalOrder<T extends comparable<T>>( ): Comparator<T>`
+- `comparing<T,U extends comparable<T>>( comparatorFn: comparatorFn<T,U> ): Comparator<T>`
+- `comparingA<T,U extends comparable<T>>( comparatorFn: comparatorFn<T,U>, comparator: comparator<T> ): Comparator<T>`
 
 ##### Usage
 
@@ -1017,11 +1031,11 @@ let cookie: Cookie = q.getCookies()
     + Fix method of importation for an absolute path name for the class.forName method
     + Fix Cookie : add getter name
     + Add merge method to Properties class
-  
 - 2.0.0-stable :
     + Fix : Linux/Unix importation, Windows build some files in lowercase ( Stream &rarr; stream ), Now every release will be packaged in a Docker alpine:3.12 from a Jenkins pipeline
     + Implement job jenkins  
-- 2.0.1-stable :
+- 2.1.0-stable :
+    + Big refactoring of Comparator classes 
     + add : GetOpts class
     + add : isPrime method in the native Number prototype
     + Fix : http getCookie method 
