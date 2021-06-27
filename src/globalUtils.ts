@@ -17,11 +17,13 @@ import {StringA} from "./type/StringA";
  * ....
  *
  */
+/****
+ * equals method extended for all native Object
+ */
+Boolean.prototype.equals = Number.prototype.equals = String.prototype.equals = function(value : string | number| boolean | Object ) : boolean { return this.valueOf()===value; }
 /***
  * String extension
  */
-// @ts-ignore
-Boolean.prototype.equals = Number.prototype.equals = String.prototype.equals = (value : string | number| boolean | Object ) : boolean => this.valueOf()===value;
 String.prototype.equalsIgnoreCase   = StringA.prototype.equalsIgnoreCase;
 String.prototype.regExp             = StringA.prototype.regExp;
 // @ts-ignore
@@ -32,7 +34,6 @@ String.prototype.isEmpty            = StringA.prototype.isEmpty;
 String.prototype.explodeAsList      = StringA.prototype.explodeAsList;
 String.prototype.exec               = StringA.prototype.exec;
 String.prototype.orDefault          = StringA.prototype.orDefault;
-//https://stackoverflow.com/questions/5326165/use-javascript-to-stripslashes-possible/14623073
 String.prototype.stripSlashes       = StringA.prototype.stripSlashes;
 String.prototype.compareTo          = StringA.prototype.compareTo;
 /***
@@ -61,6 +62,9 @@ Boolean.of                          = BooleanA.of;
  Array extension
  */
 Array.asList                        = ArrayA.prototype.asList;
+Array.list                          = ArrayA.prototype.list;
+Array.newList                       = ArrayA.prototype.newList;
+Array.sum                           = ArrayA.prototype.sum;
 /***
  Object extension
  */
@@ -69,7 +73,12 @@ Object.isNull                       = ObjectA.isNull;
 Object.requireNotNull               = ObjectA.requireNotNull;
 Object.toString                     = ObjectA.toString;
 Object.prototype.equals             = ObjectA.prototype.equals;
+Object.equals                       = ObjectA.equals;
+Object.compare                      = ObjectA.compare;
 Object.prototype.getClass           = function<T>():Class<T> { return new Class<T>(this); };
+Object.defineProperty(Object,"nonNull",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"isNull",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"requireNotNull",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object,"toString",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"getClass",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"equals",{enumerable: false, writable: true, configurable: true});

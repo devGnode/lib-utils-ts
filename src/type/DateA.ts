@@ -1,8 +1,13 @@
 import {HashMap} from "../List";
+import {comparable, comparator} from "../Interface";
 
 const local_round = value=>value.length%2===0?"0"+value:value;
-
-export abstract class DateA extends Date{
+/***
+ * @DateA : Proxy class, allow to extend the prototype of the native Object.
+ * Dont forget to implement your method in global interface ObjectConstructor,
+ * Location of this interface is in Interfaces.ts
+ */
+export abstract class DateA extends Date implements comparable<Date>{
     /***
      *
      */
@@ -22,11 +27,19 @@ export abstract class DateA extends Date{
     /***
      *
      */
-    public elapsedTime( date : Date ) : number{return this.getTime()- date.getTime();}
+    public elapsedTime( date : Date ) : number{return this.getTime()-date.getTime();}
+    /***
+    *
+    */
+    private static compareDate: comparator<Date> = new class implements comparator<Date>{
+        public compare(o1:Date, o2: Date): number {
+            return o1.elapsedTime( o2 );
+        }
+    }
     /***
      *
      */
-    public compareTo( date:Date): number{ return this.elapsedTime(date); }
+    public compareTo( date:Date): number{ return DateA.compareDate.compare(this,date); }
     /***
      *
      */

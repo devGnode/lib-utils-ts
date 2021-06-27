@@ -1,6 +1,11 @@
 import {Comparator} from "../Comparator";
-
-export abstract class NumberA extends Number{
+import {comparable, comparator} from "../Interface";
+/***
+ * @NumberA : Proxy class, allow to extend the prototype of the native Number Object.
+ * Dont forget to implement your method in global interface ObjectConstructor,
+ * Location of this interface is in Interfaces.ts
+ */
+export abstract class NumberA extends Number implements comparator<number>,comparable<number>{
     /***
      *
      */
@@ -8,7 +13,15 @@ export abstract class NumberA extends Number{
     /***
      *
      */
-    public compare( x :number, y:number):number{ return new Comparator<number>().compare(x,y); }
+    private static compareNumber:comparator<number> = new class implements comparator<number>{
+        public compare(o1: number, o2: number): number {
+            return o1 - o2;
+        }
+    }
+    /***
+     *
+     */
+    public compare( x :number, y:number):number{ return NumberA.compareNumber.compare(x,y); }
     /***
      *
      */

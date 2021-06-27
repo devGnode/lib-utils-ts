@@ -2,54 +2,64 @@ import {Define} from "../Define";
 import {Utils} from "../Utils";
 import {format} from "util";
 import {ArrayList} from "../List";
-import {Comparator} from "../Comparator";
+import {comparable, comparator} from "../Interface";
 /***
- *
+ * @StringA : Proxy class, allow to extend the prototype of the native String or string
+ * Object. Dont forget to implement your method in global interface ObjectConstructor,
+ * Location of this interface is in Interfaces.ts
  */
-export abstract class StringA extends String{
+export abstract class StringA extends String implements comparable<string>{
     /***
-     *
+     * @equalsIgnoreCase :
      */
     public equalsIgnoreCase( value : string ) : boolean {return Define.of(value).isNull() ? false : this.toString().toLowerCase()===value.toLowerCase();}
     /***
-     *
+     * @regExp
      */
     public regExp( regExp : RegExp = /.+/, callback : Function ) : string{return Utils.regExp(regExp,this.toString(),callback);}
     /***
-     *
+     * @contains
      */
     public contains( value : string|RegExp ) :boolean{return new RegExp(value).test(this.valueOf());}
     /***
-     *
+     * @format
      */
     public format(  ... args : any[] ) :string{return format.apply(null,Array.from([this.valueOf()]).concat(args));}
     /***
-     *
+     * @isEmpty
      */
     public isEmpty(  ) : boolean{return this.valueOf().length===0;}
     /***
-     *
+     * @explodeAsList
      */
     public explodeAsList( separator : string|RegExp ) : ArrayList<string>{return ArrayList.of<string>(this.valueOf().split(separator));}
     /***
-     *
+     * @exec
      */
     public exec( regExp : RegExp ) : string[]{return regExp.exec(this.valueOf());}
     /***
-     *
+     * @orDefault
      */
     public orDefault( value : String|string ): string{return this.isEmpty()?String(value):this.valueOf();}
     /***
-     *
+     * https://stackoverflow.com/questions/5326165/use-javascript-to-stripslashes-possible/14623073
      */
     public stripSlashes() :string{return this.replace(/\\(.)/mg, "$1");}
     /***
      *
      */
-    public compareTo(another:string):number {return new Comparator<string>().compare(this.valueOf(),another);}
+    private static compareString: comparator<string> = new class implements comparator<string>{
+        public compare(o1: string, o2: string): number {
+            return o1.length - o2.length;
+        }
+    }
     /***
-     *
+     * @compareTo : compare to string each other.
      */
-    public static repeatStringA( char : string, loop : number = 0 ) : String{ if(loop<0)loop=0; return new Array<any>(loop).fill(char.charAt(0)).join("");}
+    public compareTo(another:string):number {return StringA.compareString.compare(this.valueOf(),another);}
+    /***
+     * @repeatStringA
+     */
+    public static repeatStringA( char : string, loop : number = 0 ) : String{ return new Array<any>(loop<0?0:loop).fill(char.charAt(0)).join("");}
 
 }
