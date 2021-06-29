@@ -115,7 +115,7 @@ declare global {
         sum( ): number
     }
     interface Array<T>{
-        equals(o:ArrayList<T>|Array<T>)
+        equals(o:Array<T>)
     }
     /****
      * Test implementation

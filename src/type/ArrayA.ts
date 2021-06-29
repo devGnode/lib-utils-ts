@@ -27,8 +27,7 @@ export abstract class ArrayA<T> extends Array<T> implements comparator<T>{
      *
      */
     public equals(o: Array<T>): boolean {
-        let current: Array<T> = <Array<T>>this.valueOf(),
-            i:number=0;
+        let current: Array<T> = <Array<T>>this.valueOf(), i:number=0;
         for(; i < current.length; i++)if(!o[i].equals(current[i])) return false;
         return true;
     }

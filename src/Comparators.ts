@@ -52,21 +52,19 @@ export abstract class Comparators<T> {
             return Define.of(this.comparator).isNull() ? 0 : -this.comparator.compare(o1,o2);
         }
 
-        reversed(): Comparator<T> {
-            return null; //<comparator<T>>Comparators.naturalOrder;
-        }
+        public reversed<T>(): comparator<T>{return <comparator<Object>>Comparators.naturalOrder;}
 
     }
     /***
      *
      */
-    public static naturalOrder:comparator<comparable<Object>> = new class implements comparator<comparable<Object>>{
+    public static naturalOrder:comparator<comparable<Object>> = new class NaturalOrder<T> implements comparator<comparable<Object>>{
 
         public compare(o1: comparable<Object>, o2: comparable<Object>): number {
             return o1.compareTo(o2);
         }
 
-        public reversed(): Comparator<comparable<Object>> {return Collection.reverseOrder();}
+        public reversed<T>(): Comparator<comparable<Object>> {return Collection.reverseOrder();}
     };
     /****
      *
@@ -92,10 +90,15 @@ export abstract class Comparators<T> {
             }
         }
 
+        public reversed<U extends T>(): comparator<T> {
+            return new NullComparators<T>(!this.nullFirst, Object.isNull(this.comparator) ? null : this.comparator.reversed());
+        }
+
         public thenComparing<T>( other: Comparator<T> ):NullComparators<T>{
              Object.requireNotNull(other);
-            return new NullComparators(this.nullFirst, other );
+            return new NullComparators<T>(this.nullFirst, other );
         }
+
     }
     /***/
 }
