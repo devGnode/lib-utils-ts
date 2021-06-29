@@ -52,6 +52,10 @@ export abstract class Comparators<T> {
             return Define.of(this.comparator).isNull() ? 0 : -this.comparator.compare(o1,o2);
         }
 
+        reversed(): Comparator<T> {
+            return null; //<comparator<T>>Comparators.naturalOrder;
+        }
+
     }
     /***
      *
@@ -61,6 +65,8 @@ export abstract class Comparators<T> {
         public compare(o1: comparable<Object>, o2: comparable<Object>): number {
             return o1.compareTo(o2);
         }
+
+        public reversed(): Comparator<comparable<Object>> {return Collection.reverseOrder();}
     };
     /****
      *
