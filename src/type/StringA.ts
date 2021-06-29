@@ -50,7 +50,8 @@ export abstract class StringA extends String implements comparable<string>{
      */
     private static compareString: comparator<string> = new class implements comparator<string>{
         public compare(o1: string, o2: string): number {
-            return o1.length - o2.length;
+            let res:number = Object.compare(o1,o2);
+            return res === 0 ? res : o1.length - o2.length;
         }
     }
     /***

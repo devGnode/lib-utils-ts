@@ -59,6 +59,7 @@ export abstract class ObjectA extends Object implements comparator<Object>{
     @flombok.ENUMERABLEFUNC(false)
     public static equals( o1: Object, o2:Object ):boolean{
         if(Object.isNull(o1)&&Object.isNull(o2)) return true;
+        if(Object.isNull(o1)||Object.isNull(o2)) return false;
         return o1.constructor === o2.constructor &&
             o1.constructor.prototype === o2.constructor.prototype &&
             o1.constructor.name === o2.constructor.name;
