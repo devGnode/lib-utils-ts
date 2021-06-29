@@ -12,7 +12,7 @@ export abstract class StringA extends String implements comparable<string>{
     /***
      * @equalsIgnoreCase :
      */
-    public equalsIgnoreCase( value : string ) : boolean {return Define.of(value).isNull() ? false : this.toString().toLowerCase()===value.toLowerCase();}
+    public equalsIgnoreCase( value : string ) : boolean {return Object.isNull(value) ? false : this.toString().toLowerCase()===value.toLowerCase();}
     /***
      * @regExp
      */
@@ -60,6 +60,6 @@ export abstract class StringA extends String implements comparable<string>{
     /***
      * @repeatStringA
      */
-    public static repeatStringA( char : string, loop : number = 0 ) : String{ return new Array<any>(loop<0?0:loop).fill(char.charAt(0)).join("");}
+    public static repeatStringA( char : string, loop : number = 0 ) : String{ return new Array<any>(Math.abs(Define.of(loop).orElse(0))).fill(char.charAt(0)).join("");}
 
 }
