@@ -16,6 +16,7 @@ import {Comparator} from "./Comparator";
 /**
  * typeOf
  */
+export type PrimitiveTypes = "function" |  "object" | "number" | "string"
 export type NullType       = null | undefined
 export type Null<T>        = T | NullType
 type PrimAscii             = number|string
@@ -113,6 +114,9 @@ declare global {
         newList<T>( ... value : T[] ): ArrayList<T>
         sum( ): number
     }
+    interface Array<T>{
+        equals(o:Array<T>)
+    }
     /****
      * Test implementation
      */
@@ -121,13 +125,14 @@ declare global {
         requireNotNull<T>( other: T, message?: string ) :T
         equals(o1:Object, o2:Object):boolean
         nonNull( obj: Object ): boolean
-            toString( o: Object ): string
+        toString( o: Object ): string
         }
     interface Object {
         getClass<T extends Object>(): Class<T>
         equals(o1:Object):boolean
         compare( o1: Object, o2: Object ) : number
         deepEquals( o1: Object, o2:Object ):boolean
+        typeof(o:Object):PrimitiveTypes
     }
     
     interface Function {

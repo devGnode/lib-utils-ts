@@ -1,7 +1,7 @@
-import {HashMap} from "../List";
+import { HashMap} from "../List";
 import {Define} from "../Define";
 import {NullPointerException} from "../Exception";
-import {comparator} from "../Interface";
+import {comparator, PrimitiveTypes} from "../Interface";
 import {flombok} from "../flombok";
 /***
  * @ObjectA : Proxy class, allow to extend the prototype of the native Object.
@@ -39,45 +39,62 @@ export abstract class ObjectA extends Object implements comparator<Object>{
      * @toString :
      */
     @flombok.ENUMERABLEFUNC(false)
-    public static toString( o :Object):string { console.log( o); return !Define.of(o).isNull() ? o.toString() : null; }
+    public static toString( o :Object):string { return !Object.isNull(o) ? o.toString() : null; }
     /***
      * @toString :
      */
     @flombok.ENUMERABLEFUNC(false)
     public static compare(o1: Object, o2: Object): number {
-        if(Define.of(o1).isNull()&&Define.of(o2).isNull()) return 0;
+        if(Object.isNull(o1)&&Object.isNull(o2)) return 0;
         return !ObjectA.equals(o1, o2) ? 0 : 1;
     }
     /****
      *  @equals : this method check equality between 2 objects
-     *  integrity between 2 object should have same constructor
+     *  integrity between 2 object should have same constructor.
+     *  because o1 == o2 return false, same if it share same prototype
+     *
      * @param o1
      * @param o2
      */
     @flombok.ENUMERABLEFUNC(false)
     public static equals( o1: Object, o2:Object ):boolean{
-        if(Define.of(o1).isNull()&&Define.of(o2).isNull()) return true;
+        if(Object.isNull(o1)&&Object.isNull(o2)) return true;
+        if(Object.isNull(o1)||Object.isNull(o2)) return false;
         return o1.constructor === o2.constructor &&
             o1.constructor.prototype === o2.constructor.prototype &&
             o1.constructor.name === o2.constructor.name;
     }
+
+    public static typeof( o: Object ):PrimitiveTypes{
+        return <PrimitiveTypes>typeof o;
+    }
     /****
-     * @deepEquals
+     * @deepEquals : This method will check properties of an object only.
+     *  If are both is null, it will return true. If one property of o1
+     *  is different to o2 property, it will return false.
+     *
      * @param o1
      * @param o2
      */
     @flombok.ENUMERABLEFUNC(false)
     public static deepEquals( o1: Object, o2:Object ):boolean{
+       let p:string, q:string;
+
        if(Object.equals(o1, o2)) {
            let tmp: string;
            for (tmp in o1) {
-               if(( typeof o1[tmp] !== "function" && typeof o2[tmp] === "function") || typeof o1[tmp] === "function" && typeof o2[tmp] !== "function" ) return false;
-               else if (typeof o1[tmp] !== "function" && typeof o2[tmp] !== "function") {
-                   if (o1[tmp] !== o2[tmp]) return false;
+               p = Object.typeof(o1[tmp]);
+               q = Object.typeof(o2[tmp]);
+
+               if(p.equals("object")&&q.equals("object")){
+                   if(!ObjectA.deepEquals(o1[tmp],o2[tmp])) return false;
                }
-               if( typeof o1[tmp]!=="object"&&typeof o1[tmp]==="object"||typeof o1[tmp]==="object"&&typeof o1[tmp]!=="object" ) return false;
-               else if(typeof o1[tmp]==="object"&&typeof o1[tmp]==="object") ObjectA.deepEquals(o1[tmp],o2[tmp]);
-               // other
+               else if(p.equals("function")&&q.equals("function")) void 0;
+               else if (!Object.typeof(o1[tmp]).equals("function") && !Object.typeof(o1[tmp]).equals("object")) {
+                   if (o1[tmp] !== o2[tmp]) return false;
+               }else {
+                   return false;
+               }
            }
            return true;
        }

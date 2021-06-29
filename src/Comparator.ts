@@ -1,12 +1,14 @@
 import {comparable, comparator, comparatorFn} from "./Interface";
 import {Comparators} from "./Comparators";
+import {Collection} from "./Collection";
 /***
  * @AComparator<T> : usage as proxy interface for add some method
  *
  */
 export interface AComparator<T> extends comparator<T>{
-    reversed(): comparator<T>
+    reversed<U extends T>(): comparator<T>
 }
+
 export abstract class AComparator<T>  implements AComparator<T>{
     /***
      *
@@ -23,8 +25,7 @@ export abstract class AComparator<T>  implements AComparator<T>{
      */
     public compare: (o1: T, o2: T) => number
 
-    reversed(): comparator<T> {return undefined;}
-
+    reversed<T extends comparable<T>>(): comparator<T> {return Collection.reverseOrder<T>();}
 
 }
 
@@ -33,12 +34,6 @@ export class Comparator<T> extends AComparator<T> implements AComparator<T>{
      *
      */
     constructor(value?:T) { super(value); }
-    /****
-     * @default
-     * @param o1
-     * @param o2
-     */
-    public compare: (o1: T, o2: T) => number
     /***
      *
      */

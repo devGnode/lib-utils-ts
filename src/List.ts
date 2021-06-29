@@ -173,6 +173,14 @@ export abstract class AbstractList<E> extends AbstractCollection<E> implements L
      *
      */
     public stream(): Stream<E> {return new Stream<E>(this.value);}
+
+    public equals(o: object): boolean {
+        let itr:Iterator<E>  = this.iterator(),
+            i:number=0;
+        for(; itr.hasNext(); i++)if(!itr.next().equals(this.value[i])) return false;
+
+        return true;
+    }
 }
 
 /***

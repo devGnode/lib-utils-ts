@@ -30,7 +30,7 @@ export abstract class NumberA extends Number implements comparator<number>,compa
             sqrt:number,i:number;
         if( n == 2 ) return true;
         else if( n%2 === 0 || n < 2 ) return false;
-        if( ( sqrt = Math.sqrt( n ) ) == parseInt( String(sqrt) ) ) return false;
+        if( ( sqrt = Math.sqrt( n ) ) == sqrt ) return false;
         try{for( i = 3; i < sqrt; i+=2 ) if( n%i == 0 ) return false; }catch(e){
             return false;
         }

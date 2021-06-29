@@ -65,6 +65,7 @@ Array.asList                        = ArrayA.prototype.asList;
 Array.list                          = ArrayA.prototype.list;
 Array.newList                       = ArrayA.prototype.newList;
 Array.sum                           = ArrayA.prototype.sum;
+Array.prototype.equals              = ArrayA.prototype.equals;
 /***
  Object extension
  */
@@ -76,6 +77,7 @@ Object.prototype.equals             = ObjectA.prototype.equals;
 Object.equals                       = ObjectA.equals;
 Object.compare                      = ObjectA.compare;
 Object.deepEquals                   = ObjectA.deepEquals;
+Object.typeof                       = ObjectA.typeof;
 Object.prototype.getClass           = function<T>():Class<T> { return new Class<T>(this); };
 Object.defineProperty(Object,"nonNull",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"isNull",{enumerable: false, writable: true, configurable: true});
@@ -84,6 +86,7 @@ Object.defineProperty(Object,"toString",{enumerable: false, writable: true, conf
 Object.defineProperty(Object.prototype,"getClass",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"equals",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"deepEquals",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"typeof",{enumerable: false, writable: true, configurable: true});
 /***
  FunctionA extension
  */
