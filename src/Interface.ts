@@ -151,11 +151,15 @@ export interface supplier<T> {
 /***
  * @deprecated
  */
-export interface functionA<T> {
+export interface classLoader<T> extends constructor<T>{
     /***
      *
      */
-    setPrototype(proto: Function | Object): FunctionA<T>
+    setPrototype(proto: Function | Object): classLoader<T>
+    /***
+     *
+     */
+    setMethod(name :string, proto: Function): classLoader<T>
     /***
      *
      */
