@@ -11,12 +11,10 @@ import {Define} from "./Define";
 import {Response} from "./net/Http";
 import {Class} from "./Class";
 import {Constructor} from "./Constructor";
-import {FunctionA} from "./FunctionA";
-import {Comparator} from "./Comparator";
 /**
  * typeOf
  */
-export type PrimitiveTypes = "function" |  "object" | "number" | "string"
+export type PrimitiveType = "function" |  "object" | "number" | "string"
 export type NullType       = null | undefined
 export type Null<T>        = T | NullType
 type PrimAscii             = number|string
@@ -57,6 +55,7 @@ export type constructorFunction   = Function
 /**/
 export type comparatorFunc<T>                       = ( other1: T, other2: T ) => number
 export type comparatorFn<T,V extends comparable<V>> = ( other1: T, other2: T ) => V
+export type comparatorFnA<T,V> = ( other1: T, other2: T ) => V
 /***
  * Global Extended native object prototype
  */
@@ -103,10 +102,12 @@ declare global {
     }
     interface Boolean {
         state( expectTrue : any, orElse : any ) : any
+        compareTo(obj: boolean): number
         equals( value: boolean ) : boolean
     }
     interface BooleanConstructor{
         of(value: Object) : boolean
+        compare(o1:boolean,o2:boolean):number
     }
     interface ArrayConstructor {
         asList<T>( value: T[]): ArrayList<T>
@@ -132,7 +133,7 @@ declare global {
         equals(o1:Object):boolean
         compare( o1: Object, o2: Object ) : number
         deepEquals( o1: Object, o2:Object ):boolean
-        typeof(o:Object):PrimitiveTypes
+        typeof(o:Object):PrimitiveType
     }
     
     interface Function {
