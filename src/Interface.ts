@@ -11,6 +11,8 @@ import {Define} from "./Define";
 import {Response} from "./net/Http";
 import {Class} from "./Class";
 import {Constructor} from "./Constructor";
+import {FunctionA} from "./FunctionA";
+import {Comparator} from "./Comparator";
 /**
  * typeOf
  */
@@ -147,7 +149,7 @@ export interface supplier<T> {
     get():T
 }
 /***
- *
+ * @deprecated
  */
 export interface functionA<T> {
     /***
