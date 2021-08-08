@@ -63,7 +63,7 @@ class TestSorting {
             }
         };
         //Collection.sortA(listDevs, cmp );
-        Collection.sortA(listDevs, cmp.reversed() );
+       // Collection.sortA(listDevs, cmp.reversed() );
 
         console.log("After Sort");
         listDevs.stream().each(console.log);

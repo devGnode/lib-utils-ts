@@ -65,9 +65,9 @@ class Student {
         while (custIterator.hasNext()) {
             console.log(custIterator.next());
         }
-        // sorting using Collections.sort(al, comparator);
-        //Collection.sortA(al, Comparator.comparing(Student.prototype.getAge));
-        Collection.sortA(al, Comparator.comparing<Student,number>(Student.prototype.getAge).reversed());
+         // sorting using Collections.sort(al, comparator);
+        Collection.sortA(al, Comparator.comparing(Student.prototype.getAge));
+       // Collection.sortA(al, Comparator.comparing<Student,number>(Student.prototype.getAge).reversed());
 
 
         console.log("After Sort");

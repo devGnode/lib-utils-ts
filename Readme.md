@@ -40,6 +40,8 @@ Static :
 + `nonNull(obj:Object):boolean`
 + `compare( o1:Object, o2: Object ): number`
 + `equals( o1: Object, o2: Object ): number`
++ `deepEquals( o1: Object, o2:Object ):boolean`
++ `typeof(o:Object):PrimitiveType`
 
 #### FunctionA
 
@@ -70,6 +72,9 @@ Static :
 + `orDefault( value : string ): string`
 + `compareTo( other : string ): number`
 
+Static : 
++ `compare(o1:String ,o2:String):number`
+
 #### Date
 
 + `plusDays( days : number ) : Date`
@@ -81,9 +86,13 @@ Static :
 
 Static : 
 + `dateFormat( pattern : string ) : Date`
++ `compare(o1:Date ,o2:Date):number`
 
 #### Array
 
++ `equals(o: Array<T>): boolean`
+
+Static : 
 + `asList<T>( value: T[] ) : ArrayList<T>`
 + `newList( ... value: T[] ) : ArrayList<T>`
 + `list( ... value: T[] ) : ArrayList<T>`
@@ -93,10 +102,12 @@ Static :
 
 + `state( expectTrue : any, orElse : any ) : any`
 + `equals( value: boolean ) : boolean`
++ `compareTo(obj: boolean): number`
 
 Static : 
 
 + `of( value: Object) : Boolean`
++ `compare(o1:boolean,o2:boolean):number`
 
 ## Constructor\<T\>
 
@@ -158,9 +169,11 @@ Another example :
 
  ````
 
-## FunctionA\<T\>
+## ClassLoader\<T\>
 
-Public class FunctionA\<T\> extends Constructor\<T\> implements functionA\<T\> 
+- class FunctionA<T> has been deprecated.
+
+Public class ClassLoader\<T\> extends Constructor\<T\> implements functionA\<T\> 
 
 constructor : 
 
@@ -168,7 +181,8 @@ constructor :
 
 Interface `functionA<T>` : 
 
-- `setPrototype(proto: Function | Object): FunctionA<T>`
+- `setPrototype(proto: Function | Object): ClassLoader<T>`
+- `setPrototype(proto: Function | Object): ClassLoader<T>`
 - `instance(...argArray: Object[]): T`
 
 Usage :
@@ -179,7 +193,7 @@ interface MyInterfaces{
     getValue():string
 }
 
-let fc : FunctionA<MyInterfaces> = new FunctionA(function(s){      
+let fc : ClassLoader<MyInterfaces> = new ClassLoader(function(s){      
     this.value= s||"success";
 });
 

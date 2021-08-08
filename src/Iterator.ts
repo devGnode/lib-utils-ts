@@ -1,9 +1,10 @@
-import {array, IteratorInterface, listIteratorInterface} from "./Interface";
+import {array, iterator, , listIteratorInterface} from "./Interface";
 import {NoSuchElementException} from "./Exception";
 /***
  * @Iterator
+ * @interface iterator<E>
  */
-export class Iterator<E> implements IteratorInterface<E>{
+export class Iterator<E> implements iterator<E>{
     /***
      *
      */

@@ -8,9 +8,9 @@ export class Random {
     /**
      @deprecated
      */
-    public nextDouble( a: number = 100, b : number = 0  ):double{return (Math.random()*a)+b;}
+    public nextDouble( a: number = 100, b : number = 0  ):double{return (Math.random()*b)+a;}
 
-    public static nextDouble( a: number = 100, b : number = 0  ):double{return (Math.random()*a)+b;}
+    public static nextDouble( a: number = 100, b : number = 0  ):double{return (Math.random()*b)+a;}
     /**
      @deprecated
      */

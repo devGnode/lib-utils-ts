@@ -68,8 +68,17 @@ export abstract class Collection {
         let itr: ListIterator<T> = list.listIterator();
         while (itr.hasNext())if(itr.next().equals(oldVal)) list.set(itr.previousIndex(),newVal);
     }
+    /***
+     *
+     */
+    public static reverse<T>(list:List<T> ):List<T> {
+        let middle: number = Math.floor(list.size() / 2), size: number = list.size();
+        for (let i: number = 0; i < middle; i++) Collection.swap(list, i, size - 1 - i);
+        return list;
+    }
     /****
      * @ReverseOrder : sub static class
+     *
      */
     protected static ReverseOrder:comparator<comparable<Object>> = new class ReverseOrder implements comparator<comparable<Object>>{
 

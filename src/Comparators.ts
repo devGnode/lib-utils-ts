@@ -1,6 +1,6 @@
 import {Define} from "./Define";
-import {comparable, comparator} from "./Interface";
-import {Comparator} from "./Comparator";
+import {comparable, comparator,comparatorFn} from "./Interface";
+import {AComparator} from "./Comparator";
 import {RuntimeException} from "./Exception";
 import {Collection} from "./Collection";
 /*
@@ -28,7 +28,7 @@ import {Collection} from "./Collection";
  * questions.
  */
 /****
- *
+ *  1 . By chance, I managed to see the source code so I have decided to stay ISO code
  */
 type reversed       = { new<T>(compare: comparator<T>): comparator<T> };
 type NullComparator<T> = {  new<T>(nullFirst:boolean, comparator: comparator<T>): comparator<T> };
@@ -43,17 +43,24 @@ export abstract class Comparators<T> {
     /****
      *
      */
-    public static reversed:reversed = class reversed<T> implements comparator<T>{
+    public static reversed:reversed = class Reversed<T> implements comparator<T>{
         private readonly comparator: comparator<T>;
 
-        constructor( compare: comparator<T>) {this.comparator = compare;}
+        constructor(comparator:comparator<T>) {this.comparator = comparator;}
 
         public compare(o1: T, o2: T): number {
-            return Define.of(this.comparator).isNull() ? 0 : -this.comparator.compare(o1,o2);
+            return Object.isNull(this.comparator) ? 0 : -this.comparator.compare(o1,o2);
         }
 
-        public reversed<T>(): comparator<T>{return <comparator<Object>>Comparators.naturalOrder;}
+        public reversed<T>(): comparator<T>{return <comparator<T>><comparator<Object>>Comparators.naturalOrder;}
 
+        public thenComparing<U extends T>( other: comparator<T> ):Reversed<T>{
+            return new Reversed<T>( Object.isNull(other) ? other : this.comparator );
+        }
+
+        public thenComparingFn<T, U extends comparable<U>>(comparatorFn: comparatorFn<T, U>, comparator: comparator<T>): comparator<T> {
+            return undefined;
+        }
     }
     /***
      *
@@ -64,7 +71,8 @@ export abstract class Comparators<T> {
             return o1.compareTo(o2);
         }
 
-        public reversed<T>(): Comparator<comparable<Object>> {return Collection.reverseOrder();}
+        public reversed<T extends comparable<T>>(): comparator<comparable<T>> {return Collection.reverseOrder<T>();}
+
     };
     /****
      *
@@ -72,9 +80,9 @@ export abstract class Comparators<T> {
     public static NullComparator:NullComparator<Object> = class NullComparators<T> implements comparator<T>{
 
         private readonly nullFirst:boolean;
-        private readonly comparator: Comparator<T>;
+        private readonly comparator: comparator<T>;
 
-        constructor(nullFirst:boolean, comparator: Comparator<T>) {
+        constructor(nullFirst:boolean, comparator:comparator<T>) {
             this.nullFirst  = nullFirst;
             this.comparator = comparator;
         }
@@ -90,13 +98,17 @@ export abstract class Comparators<T> {
             }
         }
 
-        public reversed<U extends T>(): comparator<T> {
-            return new NullComparators<T>(!this.nullFirst, Object.isNull(this.comparator) ? null : this.comparator.reversed());
+        /*public reversed<U extends T>(): comparator<T>{
+          //  return new NullComparators<T>(!this.nullFirst, Object.isNull(this.comparator) ? null : this.comparator.reversed());
+        }*/
+
+        public thenComparing<U extends T>( other: comparator<T> ):NullComparators<T>{
+             Object.requireNotNull(other);
+            return new NullComparators<T>(this.nullFirst, Object.isNull(other) ? other : this.comparator );
         }
 
-        public thenComparing<T>( other: Comparator<T> ):NullComparators<T>{
-             Object.requireNotNull(other);
-            return new NullComparators<T>(this.nullFirst, other );
+        public thenComparingFn<T, U extends comparable<U>>(comparatorFn: comparatorFn<T, U>, comparator: comparator<T>): comparator<T> {
+            return undefined;
         }
 
     }
