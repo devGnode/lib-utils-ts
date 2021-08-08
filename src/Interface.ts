@@ -188,6 +188,10 @@ export interface constructor<T> {
      * @param name
      */
     getResourcesAsStream( name: string): InputStreamReader
+    /***
+     *
+     */
+    getStaticEntries( ):string[]
 }
 /***
  * @interface : classA

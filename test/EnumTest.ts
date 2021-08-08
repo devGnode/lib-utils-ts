@@ -41,8 +41,8 @@ console.log( TestDevice.IOS.equals(TestDevice.valueOf("IOS")), "=== true ;" ,ios
  */
 console.log( TestDevice.IOS.equals(TestDevice.valueOf("WINDOW")),"=== false ;");
 
-window.switch()
+/*window.switch()
     .case(TestDevice.IOS)
     .accept(Consumer.of((value:Enum)=>{
 
-    }));
+    }));*/
