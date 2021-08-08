@@ -1,7 +1,7 @@
 import { HashMap} from "../List";
 import {Define} from "../Define";
 import {NullPointerException} from "../Exception";
-import {comparator, PrimitiveTypes} from "../Interface";
+import {comparator, PrimitiveType} from "../Interface";
 import {flombok} from "../flombok";
 /***
  * @ObjectA : Proxy class, allow to extend the prototype of the native Object.
@@ -65,8 +65,8 @@ export abstract class ObjectA extends Object implements comparator<Object>{
             o1.constructor.name === o2.constructor.name;
     }
 
-    public static typeof( o: Object ):PrimitiveTypes{
-        return <PrimitiveTypes>typeof o;
+    public static typeof( o: Object ):PrimitiveType{
+        return <PrimitiveType>typeof o;
     }
     /****
      * @deepEquals : This method will check properties of an object only.
