@@ -24,7 +24,7 @@ export abstract class StringA extends String implements comparable<string>{
     /***
      * @format
      */
-    public format(  ... args : any[] ) :string{return format.apply(null,Array.from([this.valueOf()]).concat(args));}
+    public format(  ... args : any[] ) :string{return format.apply(null,Array.from(args).concat([this.valueOf()]));}
     /***
      * @isEmpty
      */

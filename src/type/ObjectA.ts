@@ -85,7 +85,6 @@ export abstract class ObjectA extends Object implements comparator<Object>{
            for (tmp in o1) {
                p = Object.typeof(o1[tmp]);
                q = Object.typeof(o2[tmp]);
-
                if(p.equals("object")&&q.equals("object")){
                    if(!ObjectA.deepEquals(o1[tmp],o2[tmp])) return false;
                }
