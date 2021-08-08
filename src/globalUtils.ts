@@ -57,8 +57,10 @@ Date.dateFormat                     = DateA.prototype.dateFormat;
  Boolean extension
  */
 Boolean.prototype.state             = BooleanA.prototype.state;
+Boolean.prototype.compareTo        = BooleanA.prototype.compareTo;
 Boolean.of                          = BooleanA.of;
 Object.defineProperty(Boolean.prototype,"state",{enumerable: false, writable: true, configurable: true});
+Boolean.compare                     = BooleanA.compare;
 /***
  Array extension
  */
