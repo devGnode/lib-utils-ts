@@ -5,12 +5,22 @@ import {flombok} from "../flombok";
  * Dont forget to implement your method in global interface ObjectConstructor,
  * Location of this interface is in Interfaces.ts
  */
-export abstract class BooleanA extends Boolean{
+import {comparable, comparator} from "../Interface";
+
+export abstract class BooleanA extends Boolean implements comparator<boolean>, comparable<boolean>{
     /***
      *
      */
     @flombok.ENUMERABLEFUNC(false)
     public state(  expectTrue : any, orElse : any ) : any {return this.valueOf()? expectTrue : orElse;}
+    /***
+     *
+     */
+    public compareTo(obj: boolean): number {return this.compare(this.valueOf(),obj);}
+    /***
+     *
+     */
+    public static compare(o1: boolean, o2: boolean): number {return o1 === o2 ? 0  : ( o1? 1 : -1 )}
     /***
      *
      */
