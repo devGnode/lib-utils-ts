@@ -1,6 +1,5 @@
 import "../src/globalUtils"
 import {Enum} from "../src/Enum";
-import {Consumer} from "../src/Consumer";
 /***
  * ENUM
  */
