@@ -1,4 +1,4 @@
-import {array, iterator, , listIteratorInterface} from "./Interface";
+import {array, iterator, listIteratorInterface} from "./Interface";
 import {NoSuchElementException} from "./Exception";
 /***
  * @Iterator
