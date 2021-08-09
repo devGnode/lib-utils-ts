@@ -5,14 +5,17 @@ import {Enum} from "../src/Enum";
  */
 class TestDevice extends Enum{
 
-    static IOS:TestDevice       = TestDevice.Enum("cellphone",700,800);
-    static WINDOW:TestDevice    = TestDevice.Enum("desktop",1080,720);
+    @Enum.args("cellphone",200,300)
+    static IOS:TestDevice;
+
+    @Enum.args("desktop",1080,720)
+    static WINDOW:TestDevice;
 
     private readonly device:string;
     private readonly width:number;
     private readonly height:number;
 
-    constructor(device:string, width: number, height:number) {
+    private constructor(device:string, width: number, height:number) {
         super();
         this.device = device;
         this.width = width;
@@ -39,9 +42,3 @@ console.log( TestDevice.IOS.equals(TestDevice.valueOf("IOS")), "=== true ;" ,ios
  *
  */
 console.log( TestDevice.IOS.equals(TestDevice.valueOf("WINDOW")),"=== false ;");
-
-/*window.switch()
-    .case(TestDevice.IOS)
-    .accept(Consumer.of((value:Enum)=>{
-
-    }));*/
