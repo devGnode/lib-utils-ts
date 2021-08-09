@@ -5,9 +5,9 @@ import getStringFunc = flombok.getStringFunc;
 import setNumberFunc = flombok.setNumberFunc;
 import getNumberFunc = flombok.getNumberFunc;
 
-import {Collection} from "../src/Collection";
-import {ArrayList} from "../src/List";
+import {Collections} from "../src/Collections";
 import { List } from "../src/Interface";
+import {ArrayList} from "../src/ArrayList";
 
 /***
  * https://mkyong.com/java8/java-8-lambda-comparator-example/

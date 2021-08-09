@@ -1,7 +1,8 @@
 import "../src/globalUtils"
 import assert = require("assert");
 import {List} from "../src/Interface";
-import {ArrayList} from "../src/List";
+import {ArrayList} from "../src/ArrayList";
+
 
 // equals
 assert.strictEqual("abc".equals("abc"), true);
