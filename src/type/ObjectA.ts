@@ -1,7 +1,7 @@
 import { HashMap} from "../List";
 import {Define} from "../Define";
 import {NullPointerException} from "../Exception";
-import {comparator, PrimitiveType} from "../Interface";
+import {comparator, PrimitiveTypes} from "../Interface";
 import {flombok} from "../flombok";
 /***
  * @ObjectA : Proxy class, allow to extend the prototype of the native Object.
@@ -60,13 +60,19 @@ export abstract class ObjectA extends Object implements comparator<Object>{
     public static equals( o1: Object, o2:Object ):boolean{
         if(Object.isNull(o1)&&Object.isNull(o2)) return true;
         if(Object.isNull(o1)||Object.isNull(o2)) return false;
+        let tmp:string;
+        for (tmp in o1) {
+            if (!Object.typeof(o1[tmp]).equals("function") && !Object.typeof(o1[tmp]).equals("object")) {
+                if (o1[tmp] !== o2[tmp]) return false;
+            }
+        }
         return o1.constructor === o2.constructor &&
             o1.constructor.prototype === o2.constructor.prototype &&
             o1.constructor.name === o2.constructor.name;
     }
 
-    public static typeof( o: Object ):PrimitiveType{
-        return <PrimitiveType>typeof o;
+    public static typeof( o: Object ):PrimitiveTypes{
+        return <PrimitiveTypes>typeof o;
     }
     /****
      * @deepEquals : This method will check properties of an object only.
@@ -89,9 +95,7 @@ export abstract class ObjectA extends Object implements comparator<Object>{
                    if(!ObjectA.deepEquals(o1[tmp],o2[tmp])) return false;
                }
                else if(p.equals("function")&&q.equals("function")) void 0;
-               else if (!Object.typeof(o1[tmp]).equals("function") && !Object.typeof(o1[tmp]).equals("object")) {
-                   if (o1[tmp] !== o2[tmp]) return false;
-               }else {
+               else {
                    return false;
                }
            }
