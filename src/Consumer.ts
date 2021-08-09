@@ -38,7 +38,7 @@ export class IntConsumer implements IConsumer<number>{
     }
 }
 /****
- * @BiConsumer  jqkclsssssssssssssssssssssssssqsdlkfchosejflkezjflkjhsdkfjhlkdjfhl
+ * @BiConsumer
  * @Interface   : biConsumer<T,P>
  * @type        : biConsumerFn
  */
