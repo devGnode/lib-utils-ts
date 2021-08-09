@@ -2,6 +2,9 @@
  
 # !! Big Refactoring !! Framework not operational.
  
+ - clone realease 2.0.0-stable
+ - clone master => 2.0.0-stable
+ 
 # Utils-ts
 
 <img src="https://i.ibb.co/tKdfYNv/libutilstsicon128.png" alt="lib-utils-ts" border="0" />
