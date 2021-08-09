@@ -1,5 +1,7 @@
-import {array, iterator, listIteratorInterface} from "./Interface";
+import {iterator, listIteratorInterface,consumer} from "./Interface";
 import {NoSuchElementException} from "./Exception";
+import {Consumer} from "./Consumer";
+import {Arrays} from "./type/Arrays";
 /***
  * @Iterator
  * @interface iterator<E>
@@ -8,16 +10,16 @@ export class Iterator<E> implements iterator<E>{
     /***
      *
      */
-    protected iteration : number = 0;
+   protected iteration : number = 0;
     /***
      *
      */
-    protected list : array<E>    = [];
+    protected list : E[] = [];
     /***
      *
      * @param value
      */
-    constructor( value : array<E> ) {this.list = value;}
+    constructor( value : E[] ) {this.list = value;}
     /***
      *
      * @param key
@@ -30,29 +32,33 @@ export class Iterator<E> implements iterator<E>{
      *
      */
     public hasNext(): boolean {
-        return this.iteration+1<=this.list.length;
+        return this.iteration < this.list.length;
     }
     /***
      *
      */
     public next(): E {
-        let key : number = this.iteration;
-        this.iteration++;
-        return this.get(key);
+        return this.get(this.iteration++);
+    }
+    /***
+     *
+     */
+    public remove():void {
+        this.list = Arrays.remove(this.list, this.iteration-1);
+    }
+    /***
+     *
+     */
+    public forEachRemaining(consumer: consumer<E>): void {
+        Object.requireNotNull(consumer);
+        if(typeof consumer === "function") consumer = Consumer.of(consumer);
+        while(this.hasNext()) consumer.accept(this.next());
     }
 }
-
 /***
  * @ListIterator
  */
 export class ListIterator<E> extends Iterator<E> implements listIteratorInterface<E>{
-    /***
-     *
-     * @param listIterate
-     */
-    constructor( listIterate : array<E>) {
-        super(listIterate);
-    }
     /***
      *
      * @param e

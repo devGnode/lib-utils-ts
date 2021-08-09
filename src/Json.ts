@@ -1,9 +1,9 @@
 import {Class} from "./Class";
 import {Define} from "./Define";
 import {NullPointerException} from "./Exception";
-import {ArrayList} from "./List";
 import {MapType} from "./Interface";
 import {Constructor} from "./Constructor";
+import {ArrayList} from "./ArrayList";
 
 export class Json {
 

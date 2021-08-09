@@ -5,6 +5,7 @@ import {Class} from "./Class";
 import {ClassNotFoundException} from "./Exception";
 /***
  * @Constructor : in Js an Object it's just a function with an object prototype
+ * @Interface   : constructor<T>
  */
 export class Constructor<T extends Object> extends Function implements constructor<T> {
     /***
@@ -35,7 +36,7 @@ export class Constructor<T extends Object> extends Function implements construct
     public newInstance(...args: Object[]): T {
         let tmp : any = Object.create(Object.requireNotNull(this.value));
         tmp.constructor = this.value;
-        if(Object.isNull(tmp.constructor)) throw new ClassNotFoundException('Class constructor not foud !')
+        if(Object.isNull(tmp.constructor)) throw new ClassNotFoundException('Class constructor not found !');
         return <T>(new tmp.constructor(...args));
     }
     /***

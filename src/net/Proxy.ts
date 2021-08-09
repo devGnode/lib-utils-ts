@@ -1,3 +1,4 @@
+import { ArrayList } from "../ArrayList";
 /***
  * RestHttp(s) v1.0.0
  *
@@ -5,7 +6,6 @@
  * @date : 2020-10-09
  *
  */
-import {ArrayList} from "../List";
 import {List} from "../Interface";
 /****
  * ProxyType
