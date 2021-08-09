@@ -1,12 +1,11 @@
 import {Arrays} from "./type/Arrays";
-import {collection, IConsumer, iterator,List} from "./Interface";
+import {collection, IConsumer, iterator,List, spliterator} from "./Interface";
 import {Iterator, ListIterator} from "./Iterator";
-import {spliterator, Spliterators} from "./Spliterators";
+import {Spliterators} from "./Spliterators";
 import {IndexOfBoundException} from "./Exception";
 import {AbstractArrayList} from "./AbstractArrayList";
 import {Collections} from "./Collections";
 import {Consumer} from "./Consumer";
-import {AbstractCollection} from "./AbstractCollection";
 /***
  * @ArrayList<T>
  * @interface List<T>

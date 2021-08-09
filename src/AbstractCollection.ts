@@ -1,6 +1,5 @@
-import {collection, iterator, MapType, predicate} from "./Interface";
+import {collection, iterator, MapType, predicate, spliterator} from "./Interface";
 import {UnsupportedOperationException} from "./Exception";
-import { spliterator } from "./Spliterators";
 /***
  * @abstract
  * @AbstractCollection
