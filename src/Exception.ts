@@ -1,5 +1,16 @@
 /***
  * Exception Area
+ * @Exception
+ * @RuntimeException
+ * @IndexOfBoundException
+ * @NullPointerException
+ * @NoSuchElementException
+ * @IOException
+ * @JSONException
+ * @SecurityException
+ * @ClassNotFoundException
+ * @IllegalArgumentException
+ * @UnsupportedOperationException
  */
 export class Exception extends Error{
     public name:string = Exception.class().getName();
@@ -39,5 +50,9 @@ export class ClassNotFoundException extends Error{
 }
 export class IllegalArgumentException extends Error{
     public name:string = IllegalArgumentException.class().getName();
+    constructor( message : string = null) {super(message);}
+}
+export class UnsupportedOperationException extends Error{
+    public name:string = UnsupportedOperationException.class().getName();
     constructor( message : string = null) {super(message);}
 }
