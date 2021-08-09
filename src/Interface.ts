@@ -1,7 +1,6 @@
 /****
  * Array
  */
-import {ArrayList, HashMap} from "./List";
 import {Stream} from "./Stream";
 import {Predication} from "./Predication";
 import {Optional} from "./Optional";
@@ -11,22 +10,20 @@ import {Define} from "./Define";
 import {Response} from "./net/Http";
 import {Class} from "./Class";
 import {Constructor} from "./Constructor";
-import {FunctionA} from "./FunctionA";
 import {Comparator} from "./Comparator";
-import {IntStream} from "./IntStream";
-import {Consumer, IntConsumer} from "./Consumer";
-import exp = require("constants");
+import {Consumer} from "./Consumer";
 /**
  * typeOf
  */
-export type PrimitiveTypes = "function" |  "object" | "number" | "string"
-export type NullType       = null | undefined
-export type Null<T>        = T | NullType
-type PrimAscii             = number|string
-export type int            = number
-export type double         = number
-export type ascii          = Number|String|PrimAscii
-export type lambda         = ((value : any ,key?: ascii)=> void ) | Function /*...*/;
+export type primitiveArray          = number[]|string[]|boolean[]|Number[]|String[]|Boolean[]
+export type PrimitiveTypes          = "function" |  "object" | "number" | "string"
+export type NullType                = null | undefined
+export type Null<T>                 = T | NullType
+type PrimAscii                      = number|string
+export type int                     = number
+export type double                  = number
+export type ascii                   = Number|String|PrimAscii
+export type lambda                  = ((value : any ,key?: ascii)=> void ) | Function /*...*/;
 /***
  * List<T>
  */
@@ -39,25 +36,25 @@ export type MapType<K extends ListKey,V>    = { [J in K] : V };
  * in this version predication
  * look like to Comparator
  */
-export type predicateFnA<T> = ( value : T, key? : ascii )=> boolean;
-export type predicateFn<T> = predicateFnA<T> & Function
-export type predicationKA<K,V> = ( value :V, key : K, ) => boolean
-export type predicationK<K,V> = predicationKA<K,V> & Function
-export type predication<T> = predicateFn<T> | Predication<T> | PredicationConstructor<T>
-export type intPredicate =  predication<number>
+export type predicateFnA<T>          = ( value : T, key? : ascii )=> boolean;
+export type predicateFn<T>           = predicateFnA<T> & Function
+export type predicationKA<K,V>       = ( value :V, key : K, ) => boolean
+export type predicationK<K,V>        = predicationKA<K,V> & Function
+export type predication<T>           = predicateFn<T> | Predication<T> | PredicationConstructor<T>
+export type intPredicate             =  predication<number>
 /**/
-export type streamLambda<T>     = ( value : T, key?: ascii ) => T | void
-export type streamLambdaK<V,K>  = ( value : V, key?: K ) => V | void
-export type streamLambdaTo<T,U> = ( value : T, key?: ascii ) => U | void
-export type lambdaType<T,U>     = streamLambdaTo<T,U> | streamLambda<T> | streamLambdaK<T,U>
+export type streamLambda<T>          = ( value : T, key?: ascii ) => T | void
+export type streamLambdaK<V,K>       = ( value : V, key?: K ) => V | void
+export type streamLambdaTo<T,U>      = ( value : T, key?: ascii ) => U | void
+export type lambdaType<T,U>          = streamLambdaTo<T,U> | streamLambda<T> | streamLambdaK<T,U>
 export type asyncStreamLambdaTo<T,U> = ( value : T, key?: ascii ) => Promise<U>
 export type asyncStreamLambda<T>     = ( value : T, key?: ascii ) => Promise<T> | void
 /**/
-export type newConstructor<E>     = { new( ... args: Object[ ] ) :E }
-export type newConstructorFunc<E> = { (... args: Object[ ] ): E }
-export type newConstructorA<E>    = newConstructor<E> & newConstructorFunc<E>
-export type functionAConstructor  = (... args : Object[] ) => void
-export type constructorFunction   = Function
+export type newConstructor<E>        = { new( ... args: Object[ ] ) :E }
+export type newConstructorFunc<E>    = { (... args: Object[ ] ): E }
+export type newConstructorA<E>       = newConstructor<E> & newConstructorFunc<E>
+export type functionAConstructor     = (... args : Object[] ) => void
+export type constructorFunction      = Function
 /*3.0.0*/
 export type Func<A,R> = (...args:A[]) => R
 /*@comparatorFunc*/
@@ -66,7 +63,7 @@ export type comparatorFn<T,V extends comparable<V>> = ( other1: T, other2: T ) =
 export type comparatorFnA<T,V> = ( other1: T, other2: T ) => V
 /**/
 export type consumerFn<T> = ( o: T ) => void
-export type consumer<T> = consumerFn<T> | IConsumer<T> | Consumer<T>
+export type consumer<T> = IConsumer<T> |consumerFn<T> | Consumer<T>
 /*@biConsumerFn*/
 export type biConsumerFn<T,P> = (p:T, q:P ) => void;
 /*@supplierFn*/
@@ -85,7 +82,7 @@ declare global {
         contains( value : string|RegExp ): boolean
         format( ... args : any[] ) : string
         isEmpty( ) : boolean
-        explodeAsList( separator : string|RegExp ) : ArrayList<string>
+        explodeAsList( separator : string|RegExp ) : List<string>
         exec( regExp :  RegExp ) : string[]
         orDefault( value : string ): string
         stripSlashes() :string
@@ -126,9 +123,9 @@ declare global {
         compare(o1:boolean,o2:boolean):number
     }
     interface ArrayConstructor {
-        asList<T>( value: T[]): ArrayList<T>
-        list<T>( ... value : T[] ): ArrayList<T>
-        newList<T>( ... value : T[] ): ArrayList<T>
+        asList<T>( value: T[]):List<T>
+        list<T>( ... value : T[] ):List<T>
+        newList<T>( ... value : T[] ):List<T>
         sum( ): number
     }
     interface Array<T>{
@@ -156,37 +153,38 @@ declare global {
         class<T extends Object>(): Constructor<T>
     }
 }
-/***
- *
- */
+/***@Supplier*/
 export interface supplier<T> {
     get: supplierFn<T>
 }
-
+/***@biConsumer*/
 export interface biConsumer<T,P> {
     accept?(p:T, q:P ): void
 }
-
+/***@collector*/
 export interface collector<T, A, R>{
     supplier():supplier<A>
     accumulator():biConsumer<A, T>
     finisher( ):Func<A, R>
 }
-
-/***
- * @deprecated
- */
+/***@spliterator*/
+export interface spliterator<T> {
+    /***/
+    tryAdvance( action: consumer<T> ):boolean
+    /***/
+    forEachRemaining(action:  consumer<T>):void
+    /***/
+    trySplit():spliterator<T>
+}
+/***@classLoader<T>*/
 export interface classLoader<T> extends constructor<T>{
     /***
-     *
      */
     setPrototype(proto: Function | Object): classLoader<T>
     /***
-     *
      */
     setMethod(name :string, proto: Function): classLoader<T>
     /***
-     *
      */
     instance(...argArray: Object[]): T
 }
@@ -217,7 +215,7 @@ export interface constructor<T> {
     newInstance(...args: Object[]): T
     /***
      * @getResourcesAsStream
-     * @param name
+     * @args file path
      */
     getResourcesAsStream( name: string): InputStreamReader
     /***
@@ -226,7 +224,7 @@ export interface constructor<T> {
     getStaticEntries( ):string[]
 }
 /***
- * @interface : classA
+ * @interface: classA
  */
 export interface classA<T> extends constructor<T>{
     /***
@@ -251,33 +249,31 @@ export interface PredicationConstructor<T> extends Function{
     ( value : T, key? : ascii ) : boolean
     /***
      */
-    test( value : T ) : boolean
+    test?( value : T ) : boolean
     /***
      */
-    and( Predicate : predicate<T>) : predicate<T>
+    and?( Predicate : predicate<T>) : predicate<T>
     /**
      */
-    or( other : predicate<T> ) : predicate<T>
+    or?( other : predicate<T> ) : predicate<T>
     /**
      */
-    negate(): predicate<T>
+    negate?(): predicate<T>
 }
-/**
- *
- */
+/**@predicate<T>*/
 export interface predicate<T> {
     /***
-     * @param value
      */
     test : predicateFn<T>
     /***
-     * @param other
      */
-    and( other : predicate<T> ) : predicate<T>
-    
-    or( other: predicate<T> ): predicate<T>
-
-    negate( ): predicate<T>
+    and?( other : predicate<T> ) : predicate<T>
+    /***
+     */
+    or?( other: predicate<T> ): predicate<T>
+    /***
+     */
+    negate?( ): predicate<T>
 
 }
 /****
@@ -296,48 +292,45 @@ export interface intStream{
 
     collect<R>(supplier: supplier<number>): R
 }
-/****
- * @IConsumer
- */
+/***@IConsume*/
 export interface IConsumer<T>{
     accept:consumerFn<T>
 }
-
+/***@IntConsumerImpl*/
 export interface IntConsumerImpl extends IConsumer<number>{}
-
+/***@IStreamBuilder*/
 export interface IStreamBuilder<T,R> extends IConsumer<T>{
     add(t: T ): void
     build():R
 }
-
+/***@IntStreamBuilder*/
 export interface IntStreamBuilder extends IStreamBuilder<number,intStream>{
     add(t: number ): IntStreamBuilder
 }
-/***
- */
+/***@Iterable<T> */
 export interface Iterable<T> {
-    /**
-     * iterate object element
-     */
-    iterator( ): Iterator<T>
+    iterator( ): iterator<T>
 }
-export interface Collection<E> extends Iterable<E> {
+/**
+ * @V3.0.0
+ * @collection<E>
+ * */
+export interface collection<E> extends Iterable<E> {
     /***
      */
     add( value : E ) : boolean
     /***
      */
-    add(...value: E[]): boolean
-    /***
-     */
-    addAll( collection : Collection<E> ) : boolean
+    addAll( collection : collection<E> ) : boolean
     /***
      */
     clear( ) :void
-    contains( o : object  ) : boolean
+    /**
+     */
+    contains( o : Object  ) : boolean
     /***
      */
-    containsAll( collection : Collection<E> ) : boolean
+    containsAll( collection : collection<E> ) : boolean
     /***
      */
     equals( o : object ) : boolean
@@ -346,77 +339,75 @@ export interface Collection<E> extends Iterable<E> {
     remove( value : E ) : boolean
     /***
      */
+    removeAll(value: Object):boolean
+    /***
+     */
+    retainAll(value: Object):boolean
+    /***
+     */
+    removeIf(predicate:predicate<E>):boolean
+    /***
+     */
     isEmpty( ) : boolean
     /***
      */
     size( ) :number
     /***
      */
-    toArray( ) : array<E>
-    /***
-     */
-    toJson( ) : MapType<any, any>
-}
-
-export interface Set<E> extends Collection<E>{
-
-}
-
-export interface List<E> extends Collection<E>{
-    /***
-     */
-    get( index : number ) : E
-    /***
-     */
-    indexOf( value : object  ) : number
+    toArray( ) : E[]
     /***
      */
     lasIndexOf( value : object ) : number
     /***
      */
-    set( index : number, element : E): E
+    toJson( ) : MapType<any, any>
     /***
      */
-    listIterator( ) : ListIterator<E>
-    /***
-     */
-    subList( from : number, to : number ): List<E>
-    /***
-     */
-    stream( ) : Stream<E>
-    /***
-     */
+    toString():string
+}
+/***@Set<E>*/
+export interface Set<E> extends collection<E>{}
+
+/**@v3.0.0*/
+export interface List<E> extends collection<E> {
+    get(index:number):E
+    set(index:number,value:E):void
+    indexOf(o:Object):number
+    //lastIndexOf(Object o)
+    replaceAll(oldValue:E, newValue:E):void
+    listIterator( ): ListIterator<E>
+    stream(): Stream<E>
+    sort(comparator?:Comparator<E>):void
+    reverse():void
+    subList( from:number, to:number ):List<E>
+    clone():List<E>
 }
 /***
  *
- */
-export interface Cloneable<E> {
-    /***
-     *
-     */
-    clone( ) : ArrayList<E>
-}
-/***
- *
- */
+ * *****************************************************
 export interface NativeExportable<T> {
     /***
      *
-     */
+
     shift() : T
     /***
      *
-     */
+
     pop() : T
 }
 /***
  *
- */
+ ****************************************************
 export interface ArrayListInterfaceA<E> {
     /***
      * Extend ArrayList
-     */
-}
+
+}***************************************************/
+/***
+ * @comparable
+ * @comparator
+ * @comparatorImpl
+ */
 /***
  *
  */
@@ -425,17 +416,17 @@ export interface comparable<T> {
 }
 export interface comparator<T> {
     /***
-     *
      */
     compare(o1: T, o2: T ): number
     /***
-     *
      */
     equals(o:Object):boolean
     /***
-     *
      */
     //reversed(): comparator<T>
+}
+export interface comparatorImpl<T> extends comparator<T>{
+    reversed(): comparatorImpl<T>
 }
 /***
  * @AComparator<T> : usage as proxy interface for add some method
@@ -450,8 +441,12 @@ export interface comparator<T> {
 
 }
 /***
- * Iterator interfaces
- * E => array<T> => T[] | Array<T>
+ * @Iterator
+ * @iteratorImp
+ * @listIteratorInterface
+ */
+/***
+ *
  */
 export interface IteratorInterface<E> {
     /***
@@ -465,10 +460,14 @@ export interface IteratorInterface<E> {
 }
 /*3.0.0.0 Refactor*/
 /*@iterator*/
-export interface iterator<E> extends IteratorInterface<E>{}
-export interface iteratorImpl<E> extends iterator<E>{
-    forEachRemaining(consumer:consumer<E>): void
+export interface iterator<E> extends IteratorInterface<E>{
+    /***
+     *
+     */
+    forEachRemaining?(consumer:consumer<E>): void
+    remove?():void
 }
+
 
 export interface listIteratorInterface<E> {
     /***
@@ -529,7 +528,7 @@ export interface Map<K extends string|number,V> {
     size( ) : number
     /***
      */
-    valueCollection( ) : Collection<V>
+    valueCollection( ) : collection<V>
     /***
      */
     each( callback : streamLambda<V> ): void
@@ -667,7 +666,7 @@ export interface ArrayStream<T> extends StreamAble<number,T>{
     toArray() : array<T>
     /***
      */
-    getList() :  ArrayList<T>
+    getList() :  List<T>
 }
 /***
  */
