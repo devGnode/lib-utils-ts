@@ -1,8 +1,8 @@
 import {Define} from "../Define";
 import {Utils} from "../Utils";
 import {format} from "util";
-import {ArrayList} from "../List";
-import {comparable, comparator} from "../Interface";
+import {comparable, comparator, List} from "../Interface";
+import {ArrayList} from "../ArrayList";
 /***
  * @StringA : Proxy class, allow to extend the prototype of the native String or string
  * Object. Dont forget to implement your method in global interface ObjectConstructor,
@@ -24,7 +24,7 @@ export abstract class StringA extends String implements comparable<string>{
     /***
      * @format
      */
-    public format(  ... args : any[] ) :string{return format.apply(null,Array.from([this.valueOf()]).concat(args));}
+    public format(  ... args : any[] ) :string{return format.apply(null,Array.from(args).concat([this.valueOf()]));}
     /***
      * @isEmpty
      */
@@ -32,7 +32,7 @@ export abstract class StringA extends String implements comparable<string>{
     /***
      * @explodeAsList
      */
-    public explodeAsList( separator : string|RegExp ) : ArrayList<string>{return ArrayList.of<string>(this.valueOf().split(separator));}
+    public explodeAsList( separator : string|RegExp ) : List<string>{return ArrayList.of<string>(this.valueOf().split(separator));}
     /***
      * @exec
      */
@@ -42,11 +42,12 @@ export abstract class StringA extends String implements comparable<string>{
      */
     public orDefault( value : String|string ): string{return this.isEmpty()?String(value):this.valueOf();}
     /***
-     * https://stackoverflow.com/questions/5326165/use-javascript-to-stripslashes-possible/14623073
+     * @stripSlashes
      */
     public stripSlashes() :string{return this.replace(/\\(.)/mg, "$1");}
     /***
-     *
+     * @compareString
+     * @interface comparator<string>
      */
     private static compareString: comparator<string> = new class implements comparator<string>{
         public compare(o1: string, o2: string): number {

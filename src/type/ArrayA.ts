@@ -1,6 +1,6 @@
 import {ArrayList} from "../List";
 import {comparator} from "../Interface";
-import {Iterator} from "../Iterator";
+import {flombok} from "../flombok";
 /***
  * @ArrayA<T> Proxy class, allow to extend the prototype of the native Object.
  * Dont forget to implement your method in global interface ObjectConstructor,
@@ -26,6 +26,7 @@ export abstract class ArrayA<T> extends Array<T> implements comparator<T>{
     /***
      *
      */
+    @flombok.ENUMERABLEFUNC(false)
     public equals(o: Array<T>): boolean {
         let current: Array<T> = <Array<T>>this.valueOf(), i:number=0;
         for(; i < current.length; i++)if(!o[i].equals(current[i])) return false;

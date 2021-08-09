@@ -2,8 +2,10 @@ import {flombok} from "./flombok";
 import {constructorFunction, constructor} from "./Interface";
 import {FileReader, InputStreamReader} from "./file/IOStream";
 import {Class} from "./Class";
+import {ClassNotFoundException} from "./Exception";
 /***
  * @Constructor : in Js an Object it's just a function with an object prototype
+ * @Interface   : constructor<T>
  */
 export class Constructor<T extends Object> extends Function implements constructor<T> {
     /***
@@ -27,10 +29,14 @@ export class Constructor<T extends Object> extends Function implements construct
      */
     public getDeclaringClass(): Class<T>{ return new Class<T>(this.value.class<T>().newInstance()); }
     /***
+     * @newInstance return new Instance
+     * @ClassNotFoundException when constructor is null
+     * @NullPointerException if value target is null
      */
     public newInstance(...args: Object[]): T {
-        let tmp : any = Object.create(this.value.prototype);
+        let tmp : any = Object.create(Object.requireNotNull(this.value));
         tmp.constructor = this.value;
+        if(Object.isNull(tmp.constructor)) throw new ClassNotFoundException('Class constructor not found !');
         return <T>(new tmp.constructor(...args));
     }
     /***
@@ -43,4 +49,12 @@ export class Constructor<T extends Object> extends Function implements construct
      *
      */
     public getKeys( ): string[]{return Object.keys(this.value.prototype);}
+    /***
+     * @test
+     */
+    public getStaticEntries( ):string[]{
+        let out:string[]=[];
+        for(let entry in this.value)out.push(String(entry));
+        return out;
+    }
 }

@@ -8,6 +8,7 @@ import getNumberFunc = flombok.getNumberFunc;
 import {Collection} from "../src/Collection";
 import {ArrayList} from "../src/List";
 import { List } from "../src/Interface";
+import {ArrayList} from "../src/ArrayList";
 
 /***
  * https://mkyong.com/java8/java-8-lambda-comparator-example/
@@ -49,7 +50,7 @@ class TestSorting {
         listDevs.stream().each(console.log);
 
         //sort by age
-       Collection.sortA(listDevs, new class extends Comparator<Developer> {
+       Collections.sortA(listDevs, new class extends Comparator<Developer> {
 
                 public compare = (o1: Developer, o2: Developer): number =>{
                     return o1.getAge().compareTo( o2.getAge() )

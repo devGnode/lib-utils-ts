@@ -1,7 +1,10 @@
 import {Constructor} from "./Constructor";
 import {classLoader, functionAConstructor} from "./Interface";
 import {RuntimeException} from "./Exception";
-
+/***
+ * @ClassLoader
+ * @Interface   : classLoader<T> extends constructor<T>
+ */
 export class ClassLoader<T> extends Constructor<T> implements classLoader<T>, Function{
     /***
      *
@@ -12,7 +15,6 @@ export class ClassLoader<T> extends Constructor<T> implements classLoader<T>, Fu
         funcA.prototype = Object.create(funcA.prototype||Object());
     }
     /***
-     *
      * @param proto
      */
     public setPrototype(proto: Function|Object): ClassLoader<T> {
@@ -23,7 +25,6 @@ export class ClassLoader<T> extends Constructor<T> implements classLoader<T>, Fu
         return this;
     }
     /***
-     *
      * @param name
      * @param proto
      */

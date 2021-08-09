@@ -5,10 +5,10 @@ import getStringFunc = flombok.getStringFunc;
 import setNumberFunc = flombok.setNumberFunc;
 import getNumberFunc = flombok.getNumberFunc;
 
-import {Collection} from "../src/Collection";
-import {ArrayList} from "../src/List";
-import {comparator, List} from "../src/Interface";
+import {Collections} from "../src/Collections";
+import {comparator, iterator, List} from "../src/Interface";
 import {Iterator} from "../src/Iterator";
+import {ArrayList} from "../src/ArrayList";
 
 /***
  * https://www.geeksforgeeks.org/comparator-interface-java/
@@ -72,12 +72,12 @@ class Student{
         al.add(obj6);
 
         console.log("Before Sort");
-        let custIterator:Iterator<Student> = al.iterator();
+        let custIterator:iterator<Student> = al.iterator();
         while (custIterator.hasNext()) {
             console.log(custIterator.next().toString());
         }
         // sorting using Collections.sort(al, comparator);
-        Collection.sortA(al, new Student.CustomerSortingComparator());
+        Collections.sortA(al, new Student.CustomerSortingComparator());
 
 
         console.log("After Sort");

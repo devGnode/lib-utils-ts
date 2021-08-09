@@ -25,8 +25,9 @@ export class Class<T extends Object> implements classA<T>{
     get name():string{return this.value.constructor.name;}
     /***
      * @getName : return name of Class
-     * so here there is one difference with real Java. getName give back package name & getSimpleName give back name of class,
-     * i dont't have want to change that, and make an hot fix
+     * so here there is one difference with real Java. getName give back package
+     * name & getSimpleName give back name of class, i dont't have want to change that,
+     * and make an hot fix
      */
     public getName():string{ return this.value.constructor.name; }
     /***
@@ -36,7 +37,7 @@ export class Class<T extends Object> implements classA<T>{
     /***
      * @getType
      */
-    public getType( ):string {return (typeof this.value).toLowerCase();}
+    public getType( ):string {return Object.typeof(this.value).toLowerCase();}
     /***
      * @getKeys
      */
@@ -58,10 +59,13 @@ export class Class<T extends Object> implements classA<T>{
     }
     /***
      * @newInstance return new Instance
+     * @ClassNotFoundException when constructor is null
+     * @NullPointerException if value target is null
      */
     public newInstance( ...args : Object[] ):T{
-        let tmp: any = Object.create(this.value);
+        let tmp: any = Object.create(Object.requireNotNull(this.value));
         tmp.constructor = this.value.constructor;
+        if(Object.isNull(tmp.constructor)) throw new ClassNotFoundException('Class constructor not found !')
        return <T>(new tmp.constructor( ... args));
     }
     /***
@@ -107,9 +111,11 @@ export class Class<T extends Object> implements classA<T>{
             classPath=pattern;
         }
 
+        console.log("Element ",String(classPath))
         element = String(classPath).explodeAsList(/\./);
         p=classPath;
 
+        console.log("Element ",element)
         if(classPath.startsWith("/")||/^[A-Z]{1}\:/.test(classPath)) dir=""; // absolute path
         if( (tmp = element.get(element.size()-1).explodeAsList(/\//)).size().equals(1) ) getter = tmp.get(0);
         else{
@@ -118,11 +124,21 @@ export class Class<T extends Object> implements classA<T>{
             element.set(element.size()-1,element.get(element.size()-1).replace(new RegExp(`\/${getter}`),""));
         }
         classPath = element.toArray().join('/');
-        try{
+        console.log(classPath,"****** ",isPackage?classPath:`${dir}${classPath}.${typeScript?'ts':'js'}`)
+        //try{
             let callback = require(isPackage?classPath:`${dir}${classPath}.${typeScript?'ts':'js'}`);
+            console.log( "callllllback ", callback)
             return new Constructor<T>(Define.of<any>(callback[getter]).orElseThrow(new NullPointerException(`Element not found ${getter} is Null from [${p}] !`)));
-        }catch (e) {
+       /* }catch (e) {
             throw new ClassNotFoundException(`'${getter}' : class not found from package [${p}]`);
-        }
+        }*/
+    }
+    /***
+     *
+     */
+    public getStaticEntries(): string[] {
+        let out:string[]=[];
+        for(let entry in this.value)out.push(String(entry));
+        return out;
     }
 }

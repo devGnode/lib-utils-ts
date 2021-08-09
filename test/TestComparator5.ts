@@ -6,6 +6,7 @@ import {List} from "../src/Interface";
 import {Define} from "../src/Define";
 import {RuntimeException} from "../src/Exception";
 import {Optional} from "../src/Optional";
+import {ArrayList} from "../src/List";
 
 let arrN: List<number> = Array.newList(6,3,20,4,1,3);
 
@@ -111,3 +112,11 @@ try {
     console.log(e)
     assert.strictEqual( true, true );
 }
+
+console.log( "dsdqsd", true )
+let dao= {kkkk:1,c12:{ e:0, u:[1,2,3] }, n: Array.newList<number>(1,2,3)};
+let dap= {kkkk:1,c12:{ e:0, u:[1,2,3] },n: Array.newList<number>(1,5,3)};
+console.log( Object.deepEquals(dao,dap), true );
+
+let arr0: ArrayList<number> = Array.list(1,2,3), arr1: ArrayList<number> = Array.list(1,2,3);
+console.log(arr0.equals(arr1))

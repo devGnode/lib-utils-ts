@@ -27,7 +27,7 @@ import * as http from "http";
 import * as https from "https";
 import {JSONException} from '../Exception';
 import {List, loader, restHttp, streamLambdaTo, wrapHeader} from "../Interface";
-import {ArrayList, HashMap} from "../List";
+import {ArrayList} from "../ArrayList";
 import {Proxy} from "./Proxy";
 import {Cookie} from "./Cookie";
 import "../globalUtils"
@@ -111,10 +111,11 @@ export class Response {
      */
     public getCookies() : ArrayList<Cookie> {
         let mapToCookie : streamLambdaTo<string,Cookie>=value=>Cookie.parse(value);
-        return ArrayList.of<string>( this.getHeader("cookie") )
+       /* return ArrayList.of<string>( this.getHeader("cookie") )
             .stream()
             .mapTo(mapToCookie)
-            .getList();
+            .getList();*/
+        return null;
     }
     /***
      *
@@ -130,7 +131,7 @@ export class Response {
      *
      */
 
-    public getHeaders() : HashMap<string,any>{ return HashMap.of<string,any>(this.response.headers); }
+    public getHeaders() : /*HashMap<string,any>*/any{ return null; /*HashMap.of<string,any>(this.response.headers);*/ }
     /***
      *
      */
@@ -191,7 +192,7 @@ abstract class AbstractRestHttp implements restHttp{
      */
     protected encoding:BufferEncoding      = "utf-8";
     protected proto :httpProtoType         = null;
-    protected header :HashMap<string,any>  = null;
+    protected header :/*HashMap<string,any>*/any  = null;
     protected data :string                 = null;
     protected followRedirect:boolean       = false;
     private loader:loader              = null;
@@ -202,7 +203,7 @@ abstract class AbstractRestHttp implements restHttp{
     /***
      *
      */
-    public getHeaderAsObject( ) : HashMap<string,any> {return this.header}
+    public getHeaderAsObject( ) : /*HashMap<string,any>*/any {return this.header}
     /***
      *
      */
@@ -263,7 +264,7 @@ abstract class AbstractRestHttp implements restHttp{
 
     public setData(data: string): void { this.data = data; }
 
-    public setHeader(header: HashMap<string, any>): void { this.header = header}
+    public setHeader(header: /*HashMap<string, any>*/any): void { this.header = header}
 
     public setEncoding( encoding:BufferEncoding):restHttp{this.encoding = encoding; return  this;}
 
@@ -286,7 +287,7 @@ export class RestHttp extends AbstractRestHttp{
      * @param header
      * @param data
      */
-    constructor( header : HashMap<string,any> = null, data : string = null) {
+    constructor( header /*: HashMap<string,any> */= null, data : string = null) {
         super();
         this.header = header;
         this.data   = data;
@@ -308,7 +309,7 @@ export class RestHttps extends RestHttp{
      * @param header
      * @param data
      */
-    constructor(header : HashMap<string,any>, data : string) {super(header,data); }
+    constructor(header : /*HashMap<string,any>*/any, data : string) {super(header,data); }
     /***
      * Constructor
      */
@@ -322,14 +323,14 @@ export class RestHttps extends RestHttp{
  */
 export class HttpOptions<T extends restHttp> implements wrapHeader<T>{
 
-    private options : HashMap<string,any> = new HashMap<string,any>({});
+    private options : /*HashMap<string,any>*/any = null// new HashMap<string,any>({});
     private data : object|string   = null;
     private params : string        = "";
     private Class : Constructor<T>;
 
     constructor( value : Function  ){
         this.Class = value.class();
-        this.options.put("headers",new HashMap<string,string>({}));
+        this.options.put("headers",/*new HashMap<string,string>({})*/null);
         this.withEndPoint("/");
         this.withPort(this.Class.newInstance().getProto().equals("https") ? 443 : 80 );
     }
@@ -522,7 +523,7 @@ export class HttpOptions<T extends restHttp> implements wrapHeader<T>{
      */
     private packParams( params : object ): string{
         let chunk="";
-        HashMap.of<string,any>(params).each((value,key)=>chunk += "%s=%s&".format(key,encodeURI(String(value))));
+        /*HashMap.of<string,any>(params).each((value,key)=>chunk += "%s=%s&".format(key,encodeURI(String(value))));*/
         return chunk.replace(/\&$/,"");
     }
 

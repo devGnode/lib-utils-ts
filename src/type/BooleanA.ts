@@ -1,3 +1,5 @@
+import {flombok} from "../flombok";
+
 /***
  * @BooleanA Proxy class, allow to extend the prototype of the native Object.
  * Dont forget to implement your method in global interface ObjectConstructor,
@@ -9,6 +11,7 @@ export abstract class BooleanA extends Boolean implements comparator<boolean>, c
     /***
      *
      */
+    @flombok.ENUMERABLEFUNC(false)
     public state(  expectTrue : any, orElse : any ) : any {return this.valueOf()? expectTrue : orElse;}
     /***
      *

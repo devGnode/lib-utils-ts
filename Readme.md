@@ -1,5 +1,10 @@
 <img src="https://img.shields.io/npm/v/lib-utils-ts"/> <img src="https://img.shields.io/snyk/vulnerabilities/npm/lib-utils-ts"/> <img src="https://img.shields.io/npm/l/lib-utils-ts"/> <img src="https://img.shields.io/github/languages/top/devGnode/lib-utils-ts"/><img src="https://img.shields.io/node/v/lib-utils-ts"/> <img src="https://ci.appveyor.com/api/projects/status/github/devGnode/lib-utils-ts?svg=true&branch=develop"/> <img src="https://img.shields.io/badge/tsconfig@target-ES2020-blue"/>
  
+# !! Big Refactoring !! Framework not operational.
+ 
+ - clone realease 2.0.0-stable
+ - clone master => 2.0.0-stable
+ 
 # Utils-ts
 
 <img src="https://i.ibb.co/tKdfYNv/libutilstsicon128.png" alt="lib-utils-ts" border="0" />
@@ -40,6 +45,8 @@ Static :
 + `nonNull(obj:Object):boolean`
 + `compare( o1:Object, o2: Object ): number`
 + `equals( o1: Object, o2: Object ): number`
++ `deepEquals( o1: Object, o2:Object ):boolean`
++ `typeof(o:Object):PrimitiveType`
 
 #### FunctionA
 
@@ -70,6 +77,9 @@ Static :
 + `orDefault( value : string ): string`
 + `compareTo( other : string ): number`
 
+Static : 
++ `compare(o1:String ,o2:String):number`
+
 #### Date
 
 + `plusDays( days : number ) : Date`
@@ -81,9 +91,13 @@ Static :
 
 Static : 
 + `dateFormat( pattern : string ) : Date`
++ `compare(o1:Date ,o2:Date):number`
 
 #### Array
 
++ `equals(o: Array<T>): boolean`
+
+Static : 
 + `asList<T>( value: T[] ) : ArrayList<T>`
 + `newList( ... value: T[] ) : ArrayList<T>`
 + `list( ... value: T[] ) : ArrayList<T>`
@@ -93,10 +107,12 @@ Static :
 
 + `state( expectTrue : any, orElse : any ) : any`
 + `equals( value: boolean ) : boolean`
++ `compareTo(obj: boolean): number`
 
 Static : 
 
 + `of( value: Object) : Boolean`
++ `compare(o1:boolean,o2:boolean):number`
 
 ## Constructor\<T\>
 
@@ -158,9 +174,11 @@ Another example :
 
  ````
 
-## FunctionA\<T\>
+## ClassLoader\<T\>
 
-Public class FunctionA\<T\> extends Constructor\<T\> implements functionA\<T\> 
+- class FunctionA<T> has been deprecated.
+
+Public class ClassLoader\<T\> extends Constructor\<T\> implements functionA\<T\> 
 
 constructor : 
 
@@ -168,7 +186,8 @@ constructor :
 
 Interface `functionA<T>` : 
 
-- `setPrototype(proto: Function | Object): FunctionA<T>`
+- `setPrototype(proto: Function | Object): ClassLoader<T>`
+- `setPrototype(proto: Function | Object): ClassLoader<T>`
 - `instance(...argArray: Object[]): T`
 
 Usage :
@@ -179,7 +198,7 @@ interface MyInterfaces{
     getValue():string
 }
 
-let fc : FunctionA<MyInterfaces> = new FunctionA(function(s){      
+let fc : ClassLoader<MyInterfaces> = new ClassLoader(function(s){      
     this.value= s||"success";
 });
 
@@ -265,7 +284,7 @@ Public interface comparator\<T\>
 - `reversed( ) : Compartor<T>`
 - `equals(o:Object):boolean`
 
-Public static Collection
+Public static Collections
 
 - `static sort<T extends comparable<T>>( list : List<T> ): void`
 - `static sortA<T>( list : List<T>, comparator: comparator<T> ): void`
@@ -315,7 +334,7 @@ l.add(new Test(0,"def"));
 l.add(new Test(56,"lkjhg"));
 l.add(new Test(2,"lkmlpolo"));
 l.add(new Test(255,"aztgrbcekielflflf"));
-Collection.sort(l);
+Collections.sort(l);
 console.log(l.stream().toArray());
 
 ````
@@ -351,7 +370,7 @@ class Test implements comparable<Test>{
 
 /* .... */
 
-Collection.sort(l);
+Collections.sort(l);
 console.log(l.stream().toArray());
 
 ````
@@ -523,7 +542,7 @@ let p : PredicationConstructor<String> = value => value.equals("azertyuiop");
   
 # List 
 
-### Collection
+### Collections
 
 - `static sort<T extends comparable<T>>( list : List<T> ): void`
 - `static sortA<T>( list : List<T>, comparator: comparator<T> ): void`
@@ -535,16 +554,16 @@ let p : PredicationConstructor<String> = value => value.equals("azertyuiop");
 
 `iterator( ): Iterator<T>`
 
-## Interface Collection\<E\>
+## Interface Collections\<E\>
 
-public interface Collection\<E\> extends Iterable\<E\>
+public interface Collections\<E\> extends Iterable\<E\>
 
 - `add( value : E ) : boolean`
 - `add(...value: E[]): boolean`
-- `addAll( collection : Collection<E> ) : boolean`
+- `addAll( collection : Collections<E> ) : boolean`
 - `clear( ) :void`
 - `contains( o : object  ) : boolean`
-- `containsAll( collection : Collection<E> ) : boolean`
+- `containsAll( collection : Collections<E> ) : boolean`
 - `equals( o : object ) : boolean`
 - `remove( key : E ) : boolean`
 - `isEmpty( ) : boolean`
@@ -567,7 +586,7 @@ public interface Collection\<E\> extends Iterable\<E\>
  
 ## AbstractCollection\<E\>
 
-public abstract class **AbstractCollection\<E\>** implements **Collection\<E\>**
+public abstract class **AbstractCollection\<E\>** implements **Collections\<E\>**
 
 ## AbstractList\<E\>
 
@@ -584,10 +603,10 @@ public class **ArrayList\<E\>** extends **AbstractList\<E\>** implements **Clone
 **Methods**  
   
 - `add(...value: E[]): void`  
-- `addAll( collection : Collection<E> ): boolean`
+- `addAll( collection : Collections<E> ): boolean`
 - `clear( ) : void`  
 - `contains(o: Object): boolean`
-- `containsAll(collection: Collection<E>): boolean`
+- `containsAll(collection: Collections<E>): boolean`
 - `equals(o: object): boolean`
 - `get( key : number ) : E`  
     + indexOfBoundException
@@ -651,7 +670,7 @@ personalList.add(new Personal());
 ```  
 # Set\<E\>
 
-public interface Set\<E\> extends Collection\<E\>
+public interface Set\<E\> extends Collections\<E\>
 
 ## AbstractSet\<E\>
 
@@ -678,7 +697,7 @@ public class SetList\<E\> extends AbstractSet\<E\>
 - `put( key : K, value : V ) : V`
 - `remove( o : Object ): V`
 - `size( ) : number`
-- `valueCollection( ) : Collection<V>`
+- `valueCollection( ) : Collections<V>`
 - `each( callback : streamLambda<V> ): void`
     
 ## MapEntry\<K,V\>
@@ -719,7 +738,7 @@ public class HashMap\<K extends ListKey,V\> extends AbstractMap\<K , V\>
 - `count( ) : number`
 - `each(callback : streamLambdaK<V,K>): V`  
 - `size( ) : number`
-- `valueCollection(): Collection<V>`
+- `valueCollection(): Collections<V>`
 - `clear() : void `
 - `static of<V>( list : {} ):`
 
@@ -1022,7 +1041,7 @@ let cookie: Cookie = q.getCookies()
     + Implementation of `RestHttp` and `RestHttps` feature
     + Stabilisation of predicate class : `Predication<T>`
     + Implementation of `Class`, `Constructor`,`FunctionA` class
-    + Implementation of `comparator`, `static Collection` class
+    + Implementation of `comparator`, `static Collections` class
 - 1.3.2-beta :
     + Fix some error in net/Http, add FollowRedirect method
     + Fix getType in Class & Constructor classes

@@ -1,6 +1,6 @@
 {
   "name": "lib-utils-ts",
-  "version": "2.0.0-stable",
+  "version": "2.0.3-dev",
   "author": "Maroder - <devgnode@gmail.com>",
   "description": "",
   "repository": {
@@ -10,9 +10,13 @@
   "main": "export/utils-ts.js",
   "types": "export/utils-ts.d.ts",
   "scripts": {
+    "build": "tsc",
+    "global:test": "ts-node ./test/GlobalUtilsTest.ts",
     "test": "ts-node test.ts",
     "netTest": "ts-node testnet.ts",
-    "build": "tsc"
+    "Enum": "ts-node test/EnumTest.ts",
+    "test:Comparator0": "ts-node ./test/TestComparator6.ts",
+    "test:Intstream": "ts-node ./test/Instream.ts"
   },
   "engines": {
     "node": ">= 12.14.1"

@@ -57,9 +57,10 @@ Date.dateFormat                     = DateA.prototype.dateFormat;
  Boolean extension
  */
 Boolean.prototype.state             = BooleanA.prototype.state;
-Boolean.prototype.compareTo        = BooleanA.prototype.compareTo;
+Boolean.prototype.compareTo         = BooleanA.prototype.compareTo;
 Boolean.of                          = BooleanA.of;
 Boolean.compare                     = BooleanA.compare;
+Object.defineProperty(Boolean.prototype,"state",{enumerable: false, writable: true, configurable: true});
 /***
  Array extension
  */
@@ -68,6 +69,7 @@ Array.list                          = ArrayA.prototype.list;
 Array.newList                       = ArrayA.prototype.newList;
 Array.sum                           = ArrayA.prototype.sum;
 Array.prototype.equals              = ArrayA.prototype.equals;
+Object.defineProperty(Array.prototype,"equals",{enumerable: false, writable: true, configurable: true});
 /***
  Object extension
  */

@@ -39,7 +39,7 @@ export class Optional<T> implements OptionalInterface<T>,OptionalMapInterface<T,
     }
 
     public static of<T>( value : T ) : Optional<T>{
-        if(value===null) throw new NullPointerException("Optional value argument is null use ofNullable methode");
+        if(value===null) throw new NullPointerException("Optional value argument is null use ofNullable method");
         return new Optional<T>(value)
     }
 

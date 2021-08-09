@@ -1,11 +1,13 @@
 /***
  * Wrap FunctionA
  */
-
 import { functionAConstructor} from "./Interface";
 import {ClassLoader} from "./ClassLoader";
 /***
+ * @FunctionA<T>
+ * @package src
  * @deprecated
+ * @Alternative ClassLoader
  */
 export class FunctionA<T> extends ClassLoader<T>{
     /****
