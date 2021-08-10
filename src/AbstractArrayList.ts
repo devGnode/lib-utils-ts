@@ -57,7 +57,7 @@ export abstract class AbstractArrayList<T> extends AbstractCollection<T> impleme
      * @param comparator
      */
     public sort(comparator: Comparator<T>){
-        Collections.sortA(this,!Object.isNull(comparator) ?comparator: Comparator.naturalOrder());
+        Collections.sortComparator(this,!Object.isNull(comparator) ?comparator: Comparator.naturalOrder());
     }
     /***
      *

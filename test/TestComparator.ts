@@ -5,8 +5,7 @@ import getStringFunc = flombok.getStringFunc;
 import setNumberFunc = flombok.setNumberFunc;
 import getNumberFunc = flombok.getNumberFunc;
 
-import {Collection} from "../src/Collection";
-import {ArrayList} from "../src/List";
+import {Collections} from "../src/Collections";
 import { List } from "../src/Interface";
 import {ArrayList} from "../src/ArrayList";
 
@@ -50,7 +49,7 @@ class TestSorting {
         listDevs.stream().each(console.log);
 
         //sort by age
-       Collections.sortA(listDevs, new class extends Comparator<Developer> {
+       Collections.sortComparator(listDevs, new class extends Comparator<Developer> {
 
                 public compare = (o1: Developer, o2: Developer): number =>{
                     return o1.getAge().compareTo( o2.getAge() )

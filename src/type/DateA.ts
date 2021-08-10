@@ -33,8 +33,9 @@ export abstract class DateA extends Date implements comparable<Date>{
     */
     private static compareDate: comparator<Date> = new class implements comparator<Date>{
         public compare(o1:Date, o2: Date): number {
-            let res:number = Object.compare(o1,o2);
-            return res === 0 ? res : o1.elapsedTime( o2 );
+            if(Object.isNull(o1)&&Object.isNull(o2)||Object.isNull(o1)||Object.isNull(o2)) return 0;
+            let tmp:number;
+            return (tmp = o1.elapsedTime( o2 )) > 0 ? 1 : tmp < 0 ? -1 : tmp;
         }
     }
     /***

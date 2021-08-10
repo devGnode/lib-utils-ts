@@ -1,5 +1,4 @@
 import "../src/globalUtils"
-import {Comparator} from "../src/Comparator";
 import {flombok} from "../src/flombok";
 import getStringFunc = flombok.getStringFunc;
 import setNumberFunc = flombok.setNumberFunc;
@@ -7,7 +6,6 @@ import getNumberFunc = flombok.getNumberFunc;
 
 import {Collections} from "../src/Collections";
 import {comparator, iterator, List} from "../src/Interface";
-import {Iterator} from "../src/Iterator";
 import {ArrayList} from "../src/ArrayList";
 
 /***
@@ -77,7 +75,7 @@ class Student{
             console.log(custIterator.next().toString());
         }
         // sorting using Collections.sort(al, comparator);
-        Collections.sortA(al, new Student.CustomerSortingComparator());
+        Collections.sortComparator(al, new Student.CustomerSortingComparator());
 
 
         console.log("After Sort");

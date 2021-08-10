@@ -28,7 +28,7 @@ export abstract class Collections {
     /****
      *
      */
-    public static sortA<T>( list : List<T>, comparator: comparator<T> ): void{
+    public static sortComparator<T>( list : List<T>, comparator: comparator<T> ): void{
         let i:number=0;
         list.spliterator().forEachRemaining(new class implements IConsumer<T>{
             accept = (value:T)=>{
@@ -83,10 +83,11 @@ export abstract class Collections {
     protected static ReverseOrder:comparator<comparable<Object>> = new class ReverseOrder implements comparator<comparable<Object>>{
 
         public compare(o1: comparable<Object>, o2: comparable<Object>): number {
+            if(Object.isNull(o1)&&Object.isNull(o2)||Object.isNull(o1)||Object.isNull(o2)) return 0;
             return o2.compareTo(o1);
         }
 
-        public reversed(): comparator<comparable<Object>> {return Comparator.naturalOrder();}
+        public reversed?<T extends comparable<T>>(): comparator<comparable<Object>> {return <comparator<comparable<Object>>>Comparator.naturalOrder();}
     }
     /****
      * @reverseOrder sort by natural order a list.
