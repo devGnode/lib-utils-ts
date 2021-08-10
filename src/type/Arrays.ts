@@ -1,6 +1,6 @@
 import { RuntimeException} from "../Exception";
-import {spliterator, Spliterators} from "../Spliterators";
-import {predicate, primitiveArray} from "../Interface";
+import {Spliterators} from "../Spliterators";
+import {predicate, primitiveArray, spliterator} from "../Interface";
 /***
  * @Arrays
  * @Abstract

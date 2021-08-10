@@ -1,49 +1,101 @@
-import {lambdaType, OptionalInterface, OptionalMapInterface, predication, streamLambda} from "./Interface";
+import {Func, optional, predication, consumer, IConsumer, supplier} from "./Interface";
 import {Predication} from "./Predication";
-import {NullPointerException} from "./Exception";
 import {flombok} from "./flombok";
-
-export class Optional<T> implements OptionalInterface<T>,OptionalMapInterface<T,Optional<T>>{
+import {Consumer} from "./Consumer";
+/****
+ * @class Optional<T>
+ * @interface optional<T>
+ */
+export class Optional<T> implements optional<T>{
 
     @flombok.ENUMERABLE(false)
     protected value : T;
 
     constructor( value : T ) {this.value = value;}
-
+    /***
+     *  @isPresent
+     */
     public isPresent( ){return this.value!==null&&this.value!==undefined;}
-
+    /***
+     * @ifPresent
+     */
+    public ifPresent(consumer:consumer<T>):void{
+        if( typeof consumer === "function") consumer = Consumer.of(consumer);
+        if(this.isPresent()) consumer.accept(this.value);
+    }
+    /***
+     *  @isEmpty
+     */
     public isEmpty( ){return !this.isPresent();}
-
+    /***
+     *  @equals
+     */
     public equals( obj : Object ): boolean {return this.value===obj;}
-
+    /***
+     *  @get
+     */
     public get(): T { return this.value; }
-
-    public map( callback: streamLambda<T> ): Optional<T> {return this.mapTo<T>(callback);}
-
-    public mapTo<U>( callback: lambdaType<T,U> ): Optional<U> {
-        return new Optional<U>(callback.call(null, this.value ));
+    /***
+     *  @map
+     */
+    public map<T,U>( callback:Func<T,U> ): Optional<U> {
+        return Optional.ofNullable<U>(callback.call(null, this.value ));
     }
-
+    /***
+     * @deprecated
+     * @alternatives map
+     * @param callback
+     */
+    public mapTo<T, U>( callback:Func<T,U> ): Optional<U> {return this.map(callback);}
+    /***
+     *  @filter
+     */
     public filter( predicate: predication<T> ): Optional<T> {
-        let state : Boolean;
-        if(predicate instanceof  Predication )  state = predicate.test(this.value);
-        else state = predicate(this.value);
-        return new Optional<T>(state === true?this.value:null);
+        if( !(predicate instanceof  Predication) )  predicate = Predication.of(predicate);
+        if(this.isEmpty()) return this;
+        return new Optional<T>(predicate.test(this.value) ?this.value:null );
     }
-
+    /***
+     *  @orElse
+     */
     public orElse(other: T): T {return !this.isEmpty() ? this.value:other;}
-
-    public orElseThrow( other : any ): T {
+    /***
+     *  @orElseThrow
+     */
+    public orElseThrow<U extends Error>( other : U ): T {
         if(!this.isEmpty()) return this.value;
         throw other;
     }
-
-    public static of<T>( value : T ) : Optional<T>{
-        if(value===null) throw new NullPointerException("Optional value argument is null use ofNullable method");
-        return new Optional<T>(value)
+    /***
+     *  @orElseGet
+     */
+    public orElseGet(other: supplier<T> ):T{
+        if(!this.isEmpty()) return this.value;
+        else {
+            return other.get();
+        }
     }
-
+    /***
+     *  @orElseGet
+     */
+    public orElseThrowSupplier<U extends Error>(supplier :supplier<U>){
+        if(!this.isEmpty()) return this.value;
+        else{
+            throw supplier.get();
+        }
+    }
+    /***
+     *  @of
+     */
+    public static of<T>( value : T ) : Optional<T>{
+        return new Optional<T>(Object.requireNotNull(value,"Optional value is null use ofNullable method"));
+    }
+    /***
+     *  @ofNullable
+     */
     public static ofNullable<T>(  value : T ): Optional<T>{return new Optional<T>( value );}
-
+    /***
+     *  @valueOf
+     */
     public valueOf( ):Object{return <Object>this.value; }
 }
