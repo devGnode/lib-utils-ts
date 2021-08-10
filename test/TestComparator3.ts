@@ -1,17 +1,16 @@
 import "../src/globalUtils"
 import {Comparator} from "../src/Comparator";
 import {flombok} from "../src/flombok";
-import getStringFunc = flombok.getStringFunc;
 import setNumberFunc = flombok.setNumberFunc;
 import getNumberFunc = flombok.getNumberFunc;
 
-import {Collection} from "../src/Collection";
-import {ArrayList} from "../src/List";
-import {comparator, List} from "../src/Interface";
+import { Collections} from "../src/Collections";
+import { List} from "../src/Interface";
 import {Iterator} from "../src/Iterator";
 import accessorGetFunc = flombok.accessorGetFunc;
 import accessorSetFunc = flombok.accessorSetFunc;
 import {Comparators} from "../src/Comparators";
+import {ArrayList} from "../src/ArrayList";
 
 /***
  * https://www.geeksforgeeks.org/comparator-interface-java/
@@ -61,13 +60,13 @@ class Student {
         al.add(obj6);
 
         console.log("Before Sort");
-        let custIterator:Iterator<Student> = al.iterator();
+        let custIterator:Iterator<Student> = <Iterator<Student>>al.iterator();
         while (custIterator.hasNext()) {
             console.log(custIterator.next());
         }
          // sorting using Collections.sort(al, comparator);
-        Collection.sortA(al, Comparator.comparing(Student.prototype.getAge));
-       // Collection.sortA(al, Comparator.comparing<Student,number>(Student.prototype.getAge).reversed());
+        Collections.sortComparator(al, Comparator.comparing(Student.prototype.getAge));
+        Collections.sortComparator(al, Comparator.comparing<Student,number>(Student.prototype.getAge).reversed());
 
 
         console.log("After Sort");
@@ -102,7 +101,7 @@ console.log( Array.newList("1","1",null) , new Comparators.NullComparator( true,
 
 let arr:List<string> = Array.newList("1","2",null,"1",null);
 
-Collection.sortA(arr, Comparator.nullsLast(new class extends Comparator<string> {
+Collections.sortComparator(arr, Comparator.nullsLast(new class extends Comparator<string> {
 
     public compare = (o1: string, o2: string): number =>{
         return o1.compareTo( o2 );

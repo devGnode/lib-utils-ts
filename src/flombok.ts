@@ -7,6 +7,8 @@
  *
  * @version : 0.0.1
  */
+import {IOException, NoSuchElementException} from "./Exception";
+
 export module flombok{
     /***
      * Accessor prototype
@@ -32,14 +34,20 @@ export module flombok{
     /***
      *
      * @param readOnly
+     * @param orThrow
      * @constructor
      */
-    export function GETTER<T>( readOnly : boolean = false  ) {
+    export function GETTER<T>( readOnly : boolean = false, orThrow:boolean = false  ) {
         return function (target : any, key : string ){
             let name:string=key.substr(0,1).toUpperCase()+key.substr(1,key.length);
             Object.defineProperty(target,"get"+name,{
                 writable:!(readOnly),
-                value:function () :T{return this[key];}
+                value:function () :T{
+                    try {return this[key];}catch (e) {
+                        if(orThrow) new NoSuchElementException(`flombok : Getter element [ ${key} ] not found !`)
+                        return null;
+                    }
+                }
             });
         };
     }
@@ -53,7 +61,11 @@ export module flombok{
             let name:string=key.substr(0,1).toUpperCase()+""+key.substr(1,key.length);
             Object.defineProperty(target,"set"+name,{
                 writable:!(readOnly),
-                value:function ( value : T) {this[key] = value;}
+                value:function ( value : T) {
+                    try{this[key] = value;}catch (e) {
+                        throw new IOException(`flombok : Setter method [ ${key} ] not found !`)
+                    }
+                }
             });
         };
     }

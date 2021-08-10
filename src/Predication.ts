@@ -1,7 +1,9 @@
 import {predicate, predicateFn} from "./Interface";
 import {Define} from "./Define";
 /****
- * Predicate class :
+ * @package lib-utils-ts.src
+ * @class Predication
+ * @interface predicate<T>
  */
 export class Predication<T> implements predicate<T>{
 
@@ -10,7 +12,7 @@ export class Predication<T> implements predicate<T>{
      *
      * @param other
      */
-    public and( other :  predicate<T> ) : predicate<T>{
+    public and?( other :  predicate<T> ) : predicate<T>{
         Object.requireNotNull(other,"Predication [ other ] argument is null !");
         let predication: predicateFn<T> = (value)=> this.test(value)&& Define.of<predicateFn<T>>(other.test).orNull(()=>false).call(other,value);
 
@@ -22,7 +24,7 @@ export class Predication<T> implements predicate<T>{
      *
      * @param other
      */
-    public or( other : predicate<T> ) : predicate<T>{
+    public or?( other : predicate<T> ) : predicate<T>{
         Object.requireNotNull(other,"Predication [ other ] argument is null !");
         let predication :  predicateFn<T> = (value:T) => this.test(value)||Define.of<predicateFn<T>>(other.test).orNull(()=>false).call(other,value);
 
@@ -33,9 +35,9 @@ export class Predication<T> implements predicate<T>{
     /***
      *
      */
-    public negate(): predicate<T> {return Predication.of<T>((value:T)=> !this.test(value));}
+    public negate?(): predicate<T> {return Predication.of<T>((value:T)=> !this.test(value));}
     /***
-     *
+     * @method isEqual
      * @param object
      */
     public static isEqual<T>(object: Object): predicate<T> {
@@ -46,7 +48,7 @@ export class Predication<T> implements predicate<T>{
         return p;
     }
     /***
-     *
+     * @static of
      * @param test
      */
     public static of<T>( test: predicateFn<T> ): predicate<T> {

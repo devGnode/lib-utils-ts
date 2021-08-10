@@ -15,7 +15,8 @@ export abstract class NumberA extends Number implements comparator<number>,compa
      */
     private static compareNumber:comparator<number> = new class implements comparator<number>{
         public compare(o1: number, o2: number): number {
-            return o1 - o2;
+            if(Object.isNull(o1)&&Object.isNull(o2)||Object.isNull(o1)||Object.isNull(o2)) return 0;
+            return ( o1 > o2 ) ? 1 : o1 == o2 ? 0 :  -1;
         }
     }
     /***

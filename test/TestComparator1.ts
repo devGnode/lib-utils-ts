@@ -62,8 +62,8 @@ class TestSorting {
                 return o1.getAge().compareTo(o2.getAge());
             }
         };
-        //Collection.sortA(listDevs, cmp );
-       // Collection.sortA(listDevs, cmp.reversed() );
+        Collections.sortComparator(listDevs, cmp );
+        Collections.sortComparator(listDevs, cmp.reversed() );
 
         console.log("After Sort");
         listDevs.stream().each(console.log);

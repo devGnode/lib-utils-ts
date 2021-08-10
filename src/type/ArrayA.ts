@@ -1,6 +1,6 @@
-import {ArrayList} from "../List";
-import {comparator} from "../Interface";
+import {comparator, List} from "../Interface";
 import {flombok} from "../flombok";
+import {ArrayList} from "../ArrayList";
 /***
  * @ArrayA<T> Proxy class, allow to extend the prototype of the native Object.
  * Dont forget to implement your method in global interface ObjectConstructor,
@@ -10,15 +10,15 @@ export abstract class ArrayA<T> extends Array<T> implements comparator<T>{
     /***
      *
      */
-    public asList<T>( value : T[] ): ArrayList<T> {return new ArrayList<T>(value);}
+    public asList<T>( value : T[] ): List<T> {return new ArrayList<T>(value);}
     /***
      *
      */
-    public newList<T>( ... value : T[] ): ArrayList<T> {return new ArrayList<T>(Array.from(value));}
+    public newList<T>( ... value : T[] ): List<T> {return new ArrayList<T>(value);}
     /***
      *
      */
-    public list<T>( ... value : T[] ): ArrayList<T> {return this.newList.apply(this,arguments);}
+    public list<T>( ... value : T[] ): List<T> {return this.newList.apply(this,arguments);}
     /***
      * @test
      */

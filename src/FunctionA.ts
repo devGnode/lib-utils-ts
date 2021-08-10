@@ -11,12 +11,13 @@ import {ClassLoader} from "./ClassLoader";
  */
 export class FunctionA<T> extends ClassLoader<T>{
     /****
-     *
+     * @deprecated
+     * @Alternative ClassLoader
      */
     constructor( funcA: functionAConstructor) {super(null);}
     /***
-     *
-     * @param proto
+     * @deprecated
+     * @Alternative ClassLoader
      */
     public setPrototype(proto: Function|Object): FunctionA<T> {return <FunctionA<T>>super.setPrototype(proto);}
 }
