@@ -1,7 +1,6 @@
-import {Define} from "../Define";
-import {Utils} from "../Utils";
+
 import {format} from "util";
-import {comparable, comparator, List} from "../Interface";
+import {comparable, comparator, Func, List} from "../Interface";
 import {ArrayList} from "../ArrayList";
 /***
  * @StringA : Proxy class, allow to extend the prototype of the native String or string
@@ -16,7 +15,7 @@ export abstract class StringA extends String implements comparable<string>{
     /***
      * @regExp
      */
-    public regExp( regExp : RegExp = /.+/, callback : Function ) : string{return Utils.regExp(regExp,this.toString(),callback);}
+    public regExp( regExp : RegExp = /.+/, callback : Func<string,string> ) : string{return StringA.regExp(regExp,this.toString(),callback)}
     /***
      * @contains
      */
@@ -68,6 +67,19 @@ export abstract class StringA extends String implements comparable<string>{
     /***
      * @repeatStringA
      */
-    public static repeatStringA( char : string, loop : number = 0 ) : String{ return new Array<any>(Math.abs(Define.of(loop).orElse(0))).fill(char.charAt(0)).join("");}
-
+    public static repeatStringA( char : string, loop : number = 0 ) : String{ return loop <= 0 || Object.isNull(loop) ? "" :new Array<any>(loop).fill(char.charAt(0)).join("");}
+    /**
+     * **/
+    private static regExp( regexp : RegExp = /.+/, value : string, callback : Func<string,string>  ):string{
+        try{
+            let tmp,toReplace;
+            while(( tmp = regexp.exec(value) )){
+                toReplace = callback !==undefined ? callback.call(tmp,value, tmp) : "";
+                value = value.replace(tmp[0], toReplace);
+            }
+        }catch (e) {
+            return value;
+        }
+        return value;
+    }
 }

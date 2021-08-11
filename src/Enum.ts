@@ -1,4 +1,5 @@
 import {ClassNotFoundException} from "./Exception";
+import {ObjectA} from "./type/ObjectA";
 /***
  * @AbstractClassEnum
  *
@@ -22,7 +23,9 @@ export abstract class Enum{
     /***
      * @equals
      */
-    public equals(o:Object):boolean{return Object.deepEquals(this,o);}
+    public equals(o:Object):boolean{
+        return Object.deepEquals(this,o);
+    }
     /***
      * @decoration
      * @args ... args: Object[]
@@ -30,8 +33,7 @@ export abstract class Enum{
     public static args( ...args:Object[] ):any{
         return (target: any, propertyKey: string) => {
             let descriptor: PropertyDescriptor;
-
-           if (( descriptor = Object.getOwnPropertyDescriptor(target, propertyKey) || {}) ) {
+           if (( descriptor = Object.getOwnPropertyDescriptor(target, propertyKey) || new  ObjectA.ObjectAttributes() )) {
                 descriptor.enumerable = true;
                 descriptor.writable   = false;
                 descriptor.value      = target.class().newInstance.apply(target.class(),args);

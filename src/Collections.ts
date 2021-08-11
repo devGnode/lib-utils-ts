@@ -2,6 +2,7 @@ import {comparable, comparator, IConsumer, int, iterator, List} from "./Interfac
 import {Random} from "./Random";
 import {ListIterator} from "./Iterator";
 import {Comparator} from "./Comparator";
+import {NullPointerException} from "./Exception";
 /***
  * @Collections
  * @Abstract
@@ -84,6 +85,7 @@ export abstract class Collections {
 
         public compare(o1: comparable<Object>, o2: comparable<Object>): number {
             if(Object.isNull(o1)&&Object.isNull(o2)||Object.isNull(o1)||Object.isNull(o2)) return 0;
+            if(Object.isNull(o2.compareTo)) throw new NullPointerException(`${o2.getClass().getName()} class doesn't not implement comparable interface`);
             return o2.compareTo(o1);
         }
 

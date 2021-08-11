@@ -27,7 +27,7 @@ export type lambda                  = ((value : any ,key?: ascii)=> void ) | Fun
 /***
  * List<T>
  */
-export type optional<T,V>                   = T & {__sizeof__:V};
+export type primitiveOptional<T,V>          = T & {__sizeof__:V};
 export type ListKey                         = number | string;
 export type array<T>                        = T[] | Array<T> | null
 export type MapType<K extends ListKey,V>    = { [J in K] : V };
@@ -41,6 +41,7 @@ export type predicateFn<T>           = predicateFnA<T> & Function
 export type predicationKA<K,V>       = ( value :V, key : K, ) => boolean
 export type predicationK<K,V>        = predicationKA<K,V> & Function
 export type predication<T>           = predicateFn<T> | Predication<T> | PredicationConstructor<T>
+
 export type intPredicate             =  predication<number>
 /**/
 export type streamLambda<T>          = ( value : T, key?: ascii ) => T | void
@@ -49,6 +50,8 @@ export type streamLambdaTo<T,U>      = ( value : T, key?: ascii ) => U | void
 export type lambdaType<T,U>          = streamLambdaTo<T,U> | streamLambda<T> | streamLambdaK<T,U>
 export type asyncStreamLambdaTo<T,U> = ( value : T, key?: ascii ) => Promise<U>
 export type asyncStreamLambda<T>     = ( value : T, key?: ascii ) => Promise<T> | void
+/**@v3.0.0.*/
+
 /**/
 export type newConstructor<E>        = { new( ... args: Object[ ] ) :E }
 export type newConstructorFunc<E>    = { (... args: Object[ ] ): E }
@@ -62,8 +65,8 @@ export type comparatorFunc<T>                       = ( other1: T, other2: T ) =
 export type comparatorFn<T,V extends comparable<V>> = ( other1: T, other2: T ) => V
 export type comparatorFnA<T,V> = ( other1: T, other2: T ) => V
 /**/
-export type consumerFn<T> = ( o: T ) => void
-export type consumer<T> = IConsumer<T> |consumerFn<T> | Consumer<T>
+export type consumerFn<T>   = ( o: T ) => void
+export type consumer<T>     = IConsumer<T> |consumerFn<T> | Consumer<T>
 /*@biConsumerFn*/
 export type biConsumerFn<T,P> = (p:T, q:P ) => void;
 /*@supplierFn*/
@@ -140,18 +143,24 @@ declare global {
         equals(o1:Object, o2:Object):boolean
         nonNull( obj: Object ): boolean
         toString( o: Object ): string
-        }
+    }
+
     interface Object {
         getClass<T>(): Class<T>
         equals(o1:Object):boolean
         compare( o1: Object, o2: Object ) : number
         deepEquals( o1: Object, o2:Object ):boolean
         typeof(o:Object):PrimitiveTypes
+        hash():number
     }
     
     interface Function {
         class<T extends Object>(): Constructor<T>
     }
+}
+/***@v3.0.0*/
+export interface Serial {
+    __serial__?:number
 }
 /***@Supplier*/
 export interface supplier<T> {
@@ -226,7 +235,7 @@ export interface constructor<T> {
 /***
  * @interface: classA
  */
-export interface classA<T> extends constructor<T>{
+export interface classInterface<T> extends constructor<T>{
     /***
      * @getInstance : give back instance of T
      */
@@ -240,6 +249,11 @@ export interface classA<T> extends constructor<T>{
      */
     notNullProperties( ) : MapType<string, Object>
 }
+/***
+ * @deprecated
+ * @Alternative classInterface<T>
+ * */
+export interface classA<T> extends classInterface<T>{}
 /***
  *
  */
@@ -277,7 +291,7 @@ export interface predicate<T> {
 
 }
 /****
- *
+ **************************************************************
  */
 export interface intStream{
     each(consumer: consumerFn<number>): void
@@ -333,7 +347,7 @@ export interface collection<E> extends Iterable<E> {
     containsAll( collection : collection<E> ) : boolean
     /***
      */
-    equals( o : object ) : boolean
+    equals( o : Object ) : boolean
     /***
      */
     remove( value : E ) : boolean
@@ -408,12 +422,11 @@ export interface ArrayListInterfaceA<E> {
  * @comparator
  * @comparatorImpl
  */
-/***
- *
- */
+/****/
 export interface comparable<T> {
     compareTo( obj : T ) :number
 }
+/**/
 export interface comparator<T> {
     /***
      */
@@ -492,7 +505,7 @@ export interface listIteratorInterface<E> {
      */
 }
 
-export interface Map<K extends string|number,V> {
+export interface Map<K,V> {
     /***
      */
     clear( ): void
@@ -544,6 +557,7 @@ export interface Map<K extends string|number,V> {
 export interface MapEntries<K,V> {
     getKey() : K
     getValue( ) : V
+    setValue(value:V):V
 }
 /***
  * 
@@ -564,36 +578,62 @@ export interface OptionalMapInterface<T,U> {
 /**
  *
  */
-export interface OptionalInterface<T> {
-    /***
-     *
-     */
+export interface optional<T> {
+    /**/
     equals( obj : Object ) : boolean
-    /***
-     *
-     */
+    /**/
     get( ) : T
-    /**
-     * @param predicate
-     */
-    filter( predicate : predication<T> ) : Optional<T>
-    /***
-     *
-     */
+    /**/
+    filter( predicate : predication<T> ) : optional<T>
+    /**/
+    map<T, U>( callback : Func<T,U> ) : optional<U>
+    /**/
     isEmpty(): boolean
+    /**/
+    isPresent():boolean
+    /***/
+    ifPresent(consumer:consumer<T>):void
+    /**/
+    orElse(other: T) : T
+    /**/
+    orElseThrow<U extends Error>( other : U ) : T
+    /**/
+    orElseGet(other: supplier<T> ):T
+    /***/
+    orElseThrowSupplier<U extends Error>(supplier :supplier<U>)
+}
+/**@deprecated*/
+interface OptionalInterface<T> extends  optional<T>{}
+/***@Define*/
+export interface define<T>{
     /***
      *
      */
-    isPresent():boolean
+    isNullable():boolean
     /***
-     * @param other
+     *
      */
-    orElse(other: T) : T
+    isNull(): boolean
     /***
-     * @param other
+     *
      */
-    orElseThrow( other : Object ) : T
-
+    orNull( value : T ): T
+    /***
+     *
+     */
+    orElseThrow( exception : Error|TypeError ): T
+    /***
+     *
+     */
+    orThrow( exception : Object ): Define<T>
+    /***
+     *
+     */
+    getType( ): string
+    /***
+     *
+     */
+    valueOf( ): T
 }
 /***
  *
@@ -673,39 +713,7 @@ export interface ArrayStream<T> extends StreamAble<number,T>{
 export interface objectStream<K extends string|number,V> extends StreamAble<K,V>{
     valueOfOptional( ): Optional<MapType<K,V>>
 }
-/****
- * <Definer null value>
- * */
-export interface IDefine<T>{
-    /***
-     *
-     */
-    isNullable():boolean
-    /***
-     *
-     */
-    isNull(): boolean
-    /***
-     *
-     */
-    orNull( value : T ): T
-    /***
-     *
-     */
-    orElseThrow( exception : Error|TypeError ): T
-    /***
-     *
-     */
-    orThrow( exception : Object ): Define<T>
-    /***
-     *
-     */
-    getType( ): string
-    /***
-     *
-     */
-    valueOf( ): T
-}
+
 export interface path {
     getPath():string
     getFileName( ):string

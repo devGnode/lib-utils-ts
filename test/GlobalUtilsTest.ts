@@ -65,7 +65,7 @@ console.log("".contains(null))
 //assert.strictEqual("".contains(null), "");
 
 // compareTo
-assert.strictEqual("abc".compareTo("foo"), 0);
+assert.strictEqual("abc".compareTo("foo"), -5);
 assert.strictEqual("".compareTo("foo"), -3);
 
 // AsList
@@ -94,3 +94,34 @@ try{
     control=false;
 }
 assert.strictEqual(control, true);
+
+///
+class Test{
+    private c:number;
+    private b:string;
+
+    constructor() {
+    }
+
+    public getC():void{
+
+    }
+}
+
+class des{
+    private a:string = "fooBar";
+    constructor() {
+    }
+
+    public toString():string{
+        return "[ a = "+this.a+" ]";
+    }
+}
+
+console.log((new Test()).toString(), "/", Object.toString(new Test()));
+console.log( [new Test(), new des()].toString());
+
+console.log(Array.newList<string>("a","b","c").toString())
+console.log(Array.newList<Test>(new Test(),new Test(),new Test(),new Test(),new Test(),new Test(),new Test(),new Test()).toString());
+
+console.log(Object.equals(new Test(),new Test()))

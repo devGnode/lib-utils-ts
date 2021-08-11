@@ -1,12 +1,18 @@
-import {biConsumer, biConsumerFn, collector, Func, IConsumer, List, supplierFn,supplier} from "../src/Interface";
+import {
+    biConsumer,
+    biConsumerFn,
+    collector,
+    Func,
+    IConsumer,
+    List,
+    supplierFn,
+    supplier,
+    spliterator
+} from "../src/Interface";
 import {Collectors} from "../src/Collectors";
 import {Streams} from "../src/Streams";
-import {spliterator} from "../src/Spliterators";
-import {BiConsumer, Consumer} from "../src/Consumer";
+import {BiConsumer} from "../src/Consumer";
 import {Predication} from "../src/Predication";
-import {ClassLoader} from "../src/ClassLoader";
-
-
 /***
  * 1 - Impl
  *

@@ -1,4 +1,4 @@
-import {classA, List, MapType} from "./Interface";
+import {classInterface, List, MapType} from "./Interface";
 import {flombok} from "./flombok";
 import {HashMap} from "./List";
 import {FileReader, InputStreamReader} from "./file/IOStream";
@@ -11,7 +11,7 @@ import {Path} from "./file/Path";
  * @Class :  Hook class Object accessor: (new MyAnyClass()).getClass()
  *
  */
-export class Class<T extends Object> implements classA<T>{
+export class Class<T extends Object> implements classInterface<T>{
     /**
      */
     @flombok.ENUMERABLE(false)
@@ -79,6 +79,14 @@ export class Class<T extends Object> implements classA<T>{
     public getResourcesAsStream( name: string): InputStreamReader{return new FileReader(name);}
 
     public getConstructor( ):Constructor<T>{return new Constructor<T>(this.value.constructor);}
+    /***
+     *
+     */
+    public getStaticEntries(): string[] {
+        let out:string[]=[];
+        for(let entry in this.value)out.push(String(entry));
+        return out;
+    }
     /**
      * @param pattern : pattern
      * @param typeScript : is typescript file otherwise js
