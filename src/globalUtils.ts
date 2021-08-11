@@ -15,7 +15,6 @@ import {StringA} from "./type/StringA";
  * + Number
  * + Date
  * ....
- *
  */
 /****
  * equals method extended for all native Object
@@ -77,12 +76,16 @@ Object.nonNull                      = ObjectA.nonNull;
 Object.isNull                       = ObjectA.isNull;
 Object.requireNotNull               = ObjectA.requireNotNull;
 Object.toString                     = ObjectA.toString;
-Object.prototype.equals             = ObjectA.prototype.equals;
 Object.equals                       = ObjectA.equals;
 Object.compare                      = ObjectA.compare;
 Object.deepEquals                   = ObjectA.deepEquals;
 Object.typeof                       = ObjectA.typeof;
+Object.prototype.equals             = ObjectA.prototype.equals;
 Object.prototype.getClass           = function<T>():Class<T> { return new Class<T>(this); };
+Object.prototype.toString           = function():string {return ObjectA.toString(this);};
+Object.prototype.hash               = ObjectA.hash;
+Object.defineProperty(Object.prototype,"hash",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"__serial__",{enumerable: false, writable: true, configurable: true, value:null});
 Object.defineProperty(Object,"nonNull",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"isNull",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"requireNotNull",{enumerable: false, writable: true, configurable: true});
@@ -91,6 +94,7 @@ Object.defineProperty(Object.prototype,"getClass",{enumerable: false, writable: 
 Object.defineProperty(Object.prototype,"equals",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"deepEquals",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"typeof",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"toString",{enumerable: false, writable: true, configurable: true});
 /***
  FunctionA extension
  */

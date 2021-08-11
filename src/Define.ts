@@ -20,7 +20,7 @@ export class Define<T> extends Optional<T> implements define<T>{
     /***
      *
      */
-    public isNull(): boolean{return super.isPresent();}
+    public isNull(): boolean{return !super.isPresent();}
     /***
      *
      * @param value

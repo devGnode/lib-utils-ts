@@ -1,6 +1,3 @@
-/***
- * Wrap FunctionA
- */
 import { functionAConstructor} from "./Interface";
 import {ClassLoader} from "./ClassLoader";
 /***
