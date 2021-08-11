@@ -32,7 +32,7 @@ class TestDevice extends Enum{
  *
  */
 let window: TestDevice  = TestDevice.valueOf("WINDOW");
-let ios: TestDevice     = TestDevice.valueOf("WINDOW");
+let ios: TestDevice     = TestDevice.valueOf("IOS");
 /***
  *
  */

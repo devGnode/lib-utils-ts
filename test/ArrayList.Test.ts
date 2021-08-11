@@ -60,13 +60,19 @@ class Testor{
         this.value = rand;
     }
 
-    static gen():List<Testor>{
+   public static gen():List<Testor>{
         let out:List<Testor> = new ArrayList();
 
         for(let i=0;i < 10;i++){
             out.add(new Testor(i));
         }
         return out;
+    }
+
+    public equals(o:Object):boolean{
+        if(Object.isNull(o)) return false;
+        if(Object.isNull(this.num)||!(o instanceof Testor)) return false;
+        return o.num === this.num || this == o;
     }
 }
 

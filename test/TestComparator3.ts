@@ -40,6 +40,10 @@ class Student {
         return student;
     }
 
+    public compareTo(o1:Student){
+        return this.getAge().compareTo(o1.getAge());
+    }
+
     public static main( args: String[]):void {
 
         let al: List<Student> = new ArrayList();
@@ -65,12 +69,16 @@ class Student {
             console.log(custIterator.next());
         }
          // sorting using Collections.sort(al, comparator);
-        Collections.sortComparator(al, Comparator.comparing(Student.prototype.getAge));
-        Collections.sortComparator(al, Comparator.comparing<Student,number>(Student.prototype.getAge).reversed());
+       // Collections.sortComparator(al, Comparator.comparing(Student.prototype.getAge).reversed());
+        //Collections.sortComparator(al, Comparator.comparing<Student,number>(Student.prototype.getAge).reversed());
 
 
         console.log("After Sort");
-        al.stream().each(console.log);
+      //  al.stream().each(console.log);
+        custIterator = <Iterator<Student>>al.iterator();
+        while (custIterator.hasNext()) {
+            console.log(custIterator.next());
+        }
 
     }
 }
