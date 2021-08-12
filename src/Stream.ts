@@ -12,7 +12,8 @@ import {
 import {Optional} from "./Optional";
 import {Iterator, ListIterator} from "./Iterator";
 import {RuntimeException} from "./Exception";
-import {Collection} from "./Collection";
+import {Collections} from "./Collections";
+import {ArrayList} from "./ArrayList";
 /***
  *
  */
