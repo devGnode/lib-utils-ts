@@ -1,10 +1,10 @@
-import {ArrayList} from "./List";
+
 import {Predication} from "./Predication";
 import {
     array,
     ArrayStream,
-    ascii, asyncStreamLambdaTo, comparator,
-    lambdaType, MapType, objectStream,
+    ascii, asyncStreamLambdaTo, comparator, Func,
+    lambdaType, List, MapType, objectStream,
     OptionalMapInterface,
     predication, StreamAble,
     streamLambda, streamLambdaK
@@ -66,7 +66,7 @@ export class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<
      *
      * @param callback
      */
-   public map( callback : streamLambda<T> ): Stream<T> {return this.mapTo<T>(callback);}
+ //  public map( callback : streamLambda<T> ): Stream<T> {return this.mapTo<T>(callback);}
     /**
      *
      * @param callback
@@ -155,11 +155,11 @@ export class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<
     }
 
     public sort( comparatorFn: comparator<T>):Stream<T>{
-        Collection.sortA<T>(this.getList(),comparatorFn);
+       // Collections.sortA<T>(this.getList(),comparatorFn);
         return this;
     }
 
-    public getList( ) : ArrayList<T> {return ArrayList.of<T>(this.list);}
+    public getList( ) : List<T> {return null;/* ArrayList.of<T>(this.list);*/}
 
     public toArray() : array<T> {return this.list;}
 
@@ -168,6 +168,10 @@ export class Stream<T> implements  ArrayStream<T>,OptionalMapInterface<T,Stream<
     public  listIterator(): ListIterator<T> { return new ListIterator<T>(this.list); }
 
     public static of<T>( list : array<T> ): Stream<T>{return new Stream(list);}
+
+    map<T, U>(callback: Func<T, U>): U {
+        return undefined;
+    }
 }
 
 /***

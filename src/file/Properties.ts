@@ -2,7 +2,8 @@ import { List, predicateFn, properties, Set} from "../Interface";
 import {FileReader, FileWriter, OutputStreamWriter,InputStreamReader} from "./IOStream";
 import {Define} from "../Define";
 import {JSONException, NullPointerException} from "../Exception";
-import { HashMap} from "../List";
+/***@toFix*/
+//import { HashMap} from "../List";
 import {Iterator} from "../Iterator";
 import "../globalUtils";
 /***
@@ -23,7 +24,7 @@ export abstract class AbstractProperties<V> implements properties<V>{
     /***
      *
      */
-    protected prop : HashMap<string, V> = new HashMap({});
+    protected prop : /*HashMap<string, V>*/any = null//new HashMap({});
     protected path : string;
     /***
      *
@@ -67,7 +68,8 @@ export abstract class AbstractProperties<V> implements properties<V>{
         Define.of(input).orElseThrow(new NullPointerException("target is null !"));
         let chunk:string = null,chunkKey:string,push:boolean=false;
 
-        this.prop = new HashMap({});
+        /***@toFix*/
+        this.prop = null; // new HashMap({});
         this.path = input.getPath();
         input.getLines()
             .stream()
@@ -111,7 +113,8 @@ export abstract class AbstractProperties<V> implements properties<V>{
     public update( ) :void{
         Define.of(this.path).orElseThrow(new NullPointerException("path is null !"));
         let file : List<string> = new FileReader(this.path).getLines(),
-            itr : Iterator<string> = this.prop.keySet().iterator(),
+            /***@toFix*/
+            itr : Iterator<string> = <Iterator<string>>this.prop.keySet().iterator(),
             str:string,found:boolean=false;
 
         while(itr.hasNext()){
@@ -129,7 +132,8 @@ export abstract class AbstractProperties<V> implements properties<V>{
     }
 
     public merge<T extends V,Object>( properties:AbstractProperties<V>,  exclude: predicateFn<T> = null ):void{
-        let key:Iterator<string> = properties.stringPropertiesName().iterator(),
+        /***@toFix*/
+        let key:Iterator<string> = <Iterator<string>>properties.stringPropertiesName().iterator(),
             value:string, pass:boolean=false,dexclude:Define<predicateFn<T>> = Define.of(exclude);
         while( key.hasNext() ){
             value = key.next();
@@ -171,7 +175,7 @@ export class PropertiesJson extends AbstractProperties<Object>{
     public load( input : InputStreamReader ) : void{
         Define.of(input).orElseThrow(new NullPointerException("target is null !"));
         this.path = input.getPath();
-        try{this.prop = new HashMap<string, Object>(JSON.parse(input.toString()));}catch (e) {
+        try{this.prop = /*new HashMap<string, Object>*/(JSON.parse(input.toString()));}catch (e) {
             throw new JSONException(`Wrong parsing file : ${input.getPath()}`);
         }
     }
