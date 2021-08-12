@@ -1,36 +1,12 @@
 import {Define} from "./Define";
 import {comparable, comparator,comparatorFn} from "./Interface";
-import {AComparator} from "./Comparator";
-import {RuntimeException} from "./Exception";
-import {Collection} from "./Collection";
-/*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
- *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
- *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
- */
+import {NullPointerException, RuntimeException} from "./Exception";
+import {Collections} from "./Collections";
+import {Comparator} from "./Comparator";
 /****
  *  1 . By chance, I managed to see the source code so I have decided to stay ISO code
  */
-type reversed       = { new<T>(compare: comparator<T>): comparator<T> };
+//type reversed       = { new<T>(compare: comparator<T>): comparator<T> };
 type NullComparator<T> = {  new<T>(nullFirst:boolean, comparator: comparator<T>): comparator<T> };
 /****
  *
@@ -43,10 +19,12 @@ export abstract class Comparators<T> {
     /****
      *
      */
-    public static reversed:reversed = class Reversed<T> implements comparator<T>{
-        private readonly comparator: comparator<T>;
+    public static Reversed = class Reversed<T>  implements comparator<T>{
 
-        constructor(comparator:comparator<T>) {this.comparator = comparator;}
+        readonly comparator: comparator<T>;
+
+        constructor(comparator:comparator<T>) { this.comparator = comparator;}
+
 
         public compare(o1: T, o2: T): number {
             return Object.isNull(this.comparator) ? 0 : -this.comparator.compare(o1,o2);
@@ -58,7 +36,7 @@ export abstract class Comparators<T> {
             return new Reversed<T>( Object.isNull(other) ? other : this.comparator );
         }
 
-        public thenComparingFn<T, U extends comparable<U>>(comparatorFn: comparatorFn<T, U>, comparator: comparator<T>): comparator<T> {
+        public thenComparingFn<T, U extends comparable<U>>(comparatorFn: comparatorFn<T, U>, comparator: comparator<T> = null ): comparator<T> {
             return undefined;
         }
     }
@@ -66,7 +44,9 @@ export abstract class Comparators<T> {
      *
      */
     public static naturalOrder:comparator<comparable<Object>> = new class NaturalOrder<T> implements comparator<comparable<Object>>{
-
+        /***
+         * @throws NullPointerException : when compareTo is not defined
+         */
         public compare(o1: comparable<Object>, o2: comparable<Object>): number {
             if(Object.isNull(o1)&&Object.isNull(o2)||Object.isNull(o1)||Object.isNull(o2)) return 0;
             if(Object.isNull(o2.compareTo)) throw new NullPointerException(`${o2.getClass().getName()} class doesn't not implement comparable interface`);
@@ -103,16 +83,16 @@ export abstract class Comparators<T> {
             }
         }
 
-        /*public reversed<U extends T>(): comparator<T>{
-          //  return new NullComparators<T>(!this.nullFirst, Object.isNull(this.comparator) ? null : this.comparator.reversed());
-        }*/
+        public reversed<U extends T>(): comparator<T>{
+            return new NullComparators<T>(!this.nullFirst, Object.isNull(this.comparator) ? null : this.comparator.reversed());
+        }
 
-        public thenComparing<U extends T>( other: comparator<T> ):NullComparators<T>{
+        public thenComparing?<U extends T>( other: comparator<T> ):NullComparators<T>{
              Object.requireNotNull(other);
             return new NullComparators<T>(this.nullFirst, Object.isNull(other) ? other : this.comparator );
         }
 
-        public thenComparingFn<T, U extends comparable<U>>(comparatorFn: comparatorFn<T, U>, comparator: comparator<T>): comparator<T> {
+        public thenComparingFn?<T, U extends comparable<U>>(comparatorFn: comparatorFn<T, U>, comparator: comparator<T> = null): comparator<T> {
             return undefined;
         }
 

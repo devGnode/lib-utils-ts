@@ -14,7 +14,7 @@ export class ArrayList<T> extends AbstractArrayList<T> implements List<T>{
     /**
      *
      */
-    private value:T[] = [];
+    protected value:T[] = [];
     /***
      *
      * @param value
@@ -101,8 +101,8 @@ export class ArrayList<T> extends AbstractArrayList<T> implements List<T>{
      */
     public toString(): string {
         let out:string = "", i:number=0;
-        this.spliterator().forEachRemaining(Consumer.of((value:T)=>out +=(i++)+"="+value.toString()+", "))
-        return "[ "+out.replace(/\,\s*$/,"")+"]";
+        this.spliterator().forEachRemaining(Consumer.of((value:T)=>out +=(i++)+" = "+value.toString()+",\n"))
+        return "[ \n"+out.replace(/\,\s*$/,"")+"\n]";
     }
     /***
      * @reverse

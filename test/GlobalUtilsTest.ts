@@ -123,5 +123,3 @@ console.log( [new Test(), new des()].toString());
 
 console.log(Array.newList<string>("a","b","c").toString())
 console.log(Array.newList<Test>(new Test(),new Test(),new Test(),new Test(),new Test(),new Test(),new Test(),new Test()).toString());
-
-console.log(Object.equals(new Test(),new Test()))
