@@ -109,17 +109,19 @@ export class Response {
     /***
      *
      */
+    /***@toFix*/
     public getCookies() : ArrayList<Cookie> {
         let mapToCookie : streamLambdaTo<string,Cookie>=value=>Cookie.parse(value);
-       /* return ArrayList.of<string>( this.getHeader("cookie") )
+       /*  return ArrayList.of<string>( this.getHeader("cookie") )
             .stream()
             .mapTo(mapToCookie)
-            .getList();*/
+            .getList(); */
         return null;
     }
     /***
      *
      */
+    /***@toFix*/
     public getCookie( name :string ) : Cookie {
         return this.getCookies()
             .stream()
@@ -130,8 +132,8 @@ export class Response {
     /***
      *
      */
-
-    public getHeaders() : /*HashMap<string,any>*/any{ return null; /*HashMap.of<string,any>(this.response.headers);*/ }
+    /***@toFix*/
+    public getHeaders() : /*HashMap<string,any>*/any{ return null; /* HashMap.of<string,any>(this.response.headers); */ }
     /***
      *
      */
@@ -148,6 +150,7 @@ export class Response {
      *  throwable : RuntimeException
      *
      */
+    /***@toFix*/
     public getBodyAsObject():any{
         try{return JSON.parse(this.response.body);}catch (e) {
             console.log("446646", this.response.body);
@@ -192,7 +195,8 @@ abstract class AbstractRestHttp implements restHttp{
      */
     protected encoding:BufferEncoding      = "utf-8";
     protected proto :httpProtoType         = null;
-    protected header :/*HashMap<string,any>*/any  = null;
+    /***@toFix*/
+    protected header :/*H ashMap<string,an y>*/any  = null;
     protected data :string                 = null;
     protected followRedirect:boolean       = false;
     private loader:loader              = null;
@@ -203,7 +207,7 @@ abstract class AbstractRestHttp implements restHttp{
     /***
      *
      */
-    public getHeaderAsObject( ) : /*HashMap<string,any>*/any {return this.header}
+    public getHeaderAsObject( ) : /* HashMap<string,any> */any {return this.header}
     /***
      *
      */
@@ -263,8 +267,8 @@ abstract class AbstractRestHttp implements restHttp{
     }
 
     public setData(data: string): void { this.data = data; }
-
-    public setHeader(header: /*HashMap<string, any>*/any): void { this.header = header}
+    /***@toFix*/
+    public setHeader(header: /* HashMap<string, any> */any): void { this.header = header}
 
     public setEncoding( encoding:BufferEncoding):restHttp{this.encoding = encoding; return  this;}
 

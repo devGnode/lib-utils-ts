@@ -1,6 +1,5 @@
 import {classInterface, List, MapType} from "./Interface";
 import {flombok} from "./flombok";
-import {HashMap} from "./List";
 import {FileReader, InputStreamReader} from "./file/IOStream";
 import "./globalUtils";
 import {Constructor} from "./Constructor";
@@ -50,12 +49,13 @@ export class Class<T extends Object> implements classInterface<T>{
     /***
      * @notNull : return a new anonymous object without any null property value
      */
+    /***@toFix*/
     public notNullProperties( ) : MapType<string, Object>{
-        return HashMap.of<string,Object>(this.value)
+        return null; /*HashMap.of<string,Object>(this.value)
             .stream()
             .filter(value=> value !== null && value !== undefined )
             .valueOfOptional()
-            .get();
+            .get();*/
     }
     /***
      * @newInstance return new Instance
@@ -123,7 +123,7 @@ export class Class<T extends Object> implements classInterface<T>{
         element = String(classPath).explodeAsList(/\./);
         p=classPath;
 
-        console.log("Element ",element)
+        console.log("Element ",element);
         if(classPath.startsWith("/")||/^[A-Z]{1}\:/.test(classPath)) dir=""; // absolute path
         if( (tmp = element.get(element.size()-1).explodeAsList(/\//)).size().equals(1) ) getter = tmp.get(0);
         else{
@@ -132,21 +132,13 @@ export class Class<T extends Object> implements classInterface<T>{
             element.set(element.size()-1,element.get(element.size()-1).replace(new RegExp(`\/${getter}`),""));
         }
         classPath = element.toArray().join('/');
-        console.log(classPath,"****** ",isPackage?classPath:`${dir}${classPath}.${typeScript?'ts':'js'}`)
-        //try{
-            let callback = require(isPackage?classPath:`${dir}${classPath}.${typeScript?'ts':'js'}`);
-            console.log( "callllllback ", callback)
-            return new Constructor<T>(Define.of<any>(callback[getter]).orElseThrow(new NullPointerException(`Element not found ${getter} is Null from [${p}] !`)));
-       /* }catch (e) {
-            throw new ClassNotFoundException(`'${getter}' : class not found from package [${p}]`);
-        }*/
-    }
-    /***
-     *
-     */
-    public getStaticEntries(): string[] {
-        let out:string[]=[];
-        for(let entry in this.value)out.push(String(entry));
-        return out;
+        console.log(classPath,"****** ",isPackage?classPath:`${dir}${classPath}.${typeScript?'ts':'js'}`);
+        //try{v
+            let callback = require(isPackage?classPath:`${dir}${classPath}.${typeScript?'ts':'js'}`);;
+            console.log( "callllllback ", callback);
+            return new Constructor<T>(Define.of<any>(callback[getter]).orElseThrow(new NullPointerException(`Element not found ${getter} is Null from [${p}] !`)));;
+       /* }catch (e) {;
+            throw new ClassNotFoundException(`'${getter}' : class not found from package [${p}]`);;
+        };*/
     }
 }

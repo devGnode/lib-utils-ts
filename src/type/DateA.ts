@@ -1,4 +1,5 @@
-import {HashMap} from "../List";
+/***@toFix*/
+//import {HashMap} from "../List";
 import {comparable, comparator} from "../Interface";
 
 const local_round = value=>value.length%2===0?"0"+value:value;
@@ -45,16 +46,17 @@ export abstract class DateA extends Date implements comparable<Date>{
     /***
      *
      */
+    /***@toFix*/
     public dateFormat( pattern : string ) : string{
         let now =this instanceof Date ? this : new Date();
-        HashMap.of<string,string>({
+        /*HashMap.of<string,string>({
             YYYY:now.getFullYear(), YY: String(now.getFullYear()).substring(2,4),
             MM:local_round(now.getMonth()+1),dd: local_round(now.getDate()),
             hh:local_round(now.getHours()), mm: local_round( now.getMinutes()),
             ss:local_round(now.getSeconds()),ms:now.getMilliseconds()
         }).each((value,key)=>{
             pattern = pattern.replace(new RegExp("\%"+key),value);
-        });
+        });*/
         return pattern;
     }
 }

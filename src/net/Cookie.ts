@@ -1,6 +1,6 @@
 import "../globalUtils"
 import {Define} from "../Define";
-import {ArrayList} from "../List";
+/***@toFix*/
 
 export type cookieSameSite = "lax"|"strict"|"none"
 export class Cookie{
@@ -122,8 +122,9 @@ export class Cookie{
             this.samesite.map(value=>value!==null?`samesite=${value};`:"").get();
     }
 
+    /***@toFix*/
     public static parse( cookie : string ){
-        let cook : ArrayList<string> = cookie.explodeAsList(";"),
+       /* let cook : ArrayList<string> = cookie.explodeAsList(";"),
             tmp: ArrayList<string>, out : Cookie = new Cookie();
         tmp = cook.shift().explodeAsList("=");
         out.setName(tmp.get(0)).setValue(tmp.get(1));
@@ -136,7 +137,7 @@ export class Cookie{
                 case 'httpOnly': out.setHttpOnly(true); break;
                 case 'secure': out.setSecure(true); break;
             }
-        });
-        return out;
+        });*/
+        return null // out;
     }
 }

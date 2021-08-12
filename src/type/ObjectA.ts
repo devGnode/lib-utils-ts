@@ -1,4 +1,5 @@
-import { HashMap} from "../List";
+/***@toFix*/
+//import { HashMap} from "../List";
 import {Define} from "../Define";
 import {NullPointerException} from "../Exception";
 import {comparator, PrimitiveTypes, Serial} from "../Interface";
@@ -40,11 +41,12 @@ export abstract class ObjectA extends Object implements comparator<Object>{
     /***
      * @nonNull : remove all null value un a object
      */
+    /***@toFix*/
     @flombok.ENUMERABLEFUNC(false)
     public static nonNull(obj:Object):boolean{
-        return HashMap.of<string,Object>(obj)
+        return null;/*HashMap.of<string,Object>(obj)
             .stream()
-            .anyMatch(value=> value !== null && value !== undefined );
+            .anyMatch(value=> value !== null && value !== undefined );*/
     }
     /***
      * @requireNotNull<T> :
@@ -144,3 +146,5 @@ export abstract class ObjectA extends Object implements comparator<Object>{
         return true;
     }
 }
+
+console.log( (<any>this).__decorate)

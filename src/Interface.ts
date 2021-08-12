@@ -815,7 +815,8 @@ export interface restHttp{
     /***
      * get http headers like an object
      */
-    getHeaderAsObject( ) : HashMap<string,any>
+    /***@toFix*/
+    getHeaderAsObject( ) : any //HashMap<string,any>
     /***
      *  GetDataAsObject return the response body request like an anonymous
      *  object. This method follow response query.
@@ -832,7 +833,8 @@ export interface restHttp{
     /***
      *
      */
-    setHeader( header: HashMap<string,any> ):void
+    /***@toFix*/
+    setHeader( header: /*HashMap<string,any>*/any ):void
     /***
      * Allow to send the http request
      */

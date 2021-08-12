@@ -5,6 +5,8 @@
  - clone realease 2.0.0-stable
  - clone master => 2.0.0-stable
  
+ - Stream feature is disable in develop branch
+ 
 # Utils-ts
 
 <img src="https://i.ibb.co/tKdfYNv/libutilstsicon128.png" alt="lib-utils-ts" border="0" />
@@ -14,12 +16,14 @@ Lucas and Eric both are developer. Lucas use lib-utils-ts :registered:, and on t
 
 This framework has been created only for Typescript projects, it's possible to use it for javascript project but is not really adapted for this, cause generics is not support by the native javascript.  
 
-Difficulty new Dev : :star::star::star::star::star:
+Dev : :star::star::star::star::star:
 
-Difficulty junior  : :star::star::star:
-
-Difficulty senior  : 
  
+# Why 
+
+When i have start to my job, I had to work with the Java, but Java is was't been my favorite language buts with time i learned to love it. in the beginning develop sometimes it was really hard ... after, i had to work with Typescript,  JS a language i master it really well, but its language too permissive not enaugth strcutured. And i had discover Typescript who allows to strucutred Js developpment in real. In first i have decide to implement a speudo code of Stream in typescript JS, more later,  I have decide to implement some elements to Java. that allows to learn Java easly without compilation error. navigation betwenn the a permissive language & typed lanuage that is allows too to see how Java work. I try to be iso Java but sometimes its not possibles
+
+
 ## Set up  
   
 `npm i lib-utils-ts`  
@@ -27,8 +31,10 @@ Difficulty senior  :
 # Native Extension  
   
 Importation : `import "lib-utils-ts/src/globalUtils"`
-  
-This import provides access to the methods of these native objects that have been extended `Object`, `FunctionA`, `Number`, `String`, `Date`, `Boolean`. Below their prototype :
+
+For enabled this framework you need to import globalUtils to you root project,
+This import provides access to the methods of these native objects that have been extended `Object`, `FunctionA`, `Number`, `String`, `Date`, `Boolean`.
+And so many others :
 
 #### Object
 
@@ -39,10 +45,10 @@ Instanced Object :
 
 Static :
 
-+ `isNull() : boolean`
++ `isNull() : boolean` : obj can be null or undefined
++ `nonNull(obj:Object):boolean` : check if an element is null 
 + `requireNotNull<T>( other: T, message?: string ) :T `
     - NullPointerException
-+ `nonNull(obj:Object):boolean`
 + `compare( o1:Object, o2: Object ): number`
 + `equals( o1: Object, o2: Object ): number`
 + `deepEquals( o1: Object, o2:Object ):boolean`
@@ -78,6 +84,7 @@ Static :
 + `compareTo( other : string ): number`
 
 Static : 
+
 + `compare(o1:String ,o2:String):number`
 
 #### Date
@@ -114,11 +121,23 @@ Static :
 + `of( value: Object) : Boolean`
 + `compare(o1:boolean,o2:boolean):number`
 
+# Interfaces
+
+Importation : `import "lib-utils-ts/src/Interfaces"`
+
+You will find all the interfaces in this file. All interfaces 
+name are in lowerCase 
+
+# Framework
+
 ## Constructor\<T\>
+
+- Interface : `constructor<T>`
+
+- Class : `public class Constructor extends Function implements constructor<T>`
 
 As in javascript an object is also a function, these class depict a next future instanced object
 
-- getter access `name`: string
 - `getName( ):string` 
 - `getType( ):string`  
 - `getEntries( ): [any, string ][]`  
@@ -127,8 +146,7 @@ As in javascript an object is also a function, these class depict a next future 
 - `newInstance( ...args : Object[] ) :T`  
 - `getResourcesAsStream( name: string): InputStreamReader` 
 
-`>=1.3.1` : getType method return native type of a variable, before this version getType return the name of the constructor
-bad interpretation.
+Fix :
 
 - `< 1.3.1` class `MyObj` . getType &rarr; MyObj
 - `>= 1.3.1` class `MyObj` . getType &rarr; Object
@@ -176,9 +194,11 @@ Another example :
 
 ## ClassLoader\<T\>
 
-- class FunctionA<T> has been deprecated.
+Old class was been FunctionA, it was been deprecated
 
-Public class ClassLoader\<T\> extends Constructor\<T\> implements functionA\<T\> 
+- Interface : `classLoader<T>, Function`
+
+- Class : `class ClassLoader<T> extends Constructor<T> implements classLoader<T>, Function`
 
 constructor : 
 
@@ -224,6 +244,11 @@ String.class<String>().newInstance("foo").equals("bar"); // with generic
 ````
 
 ## Class\<T\>
+
+- Interface : `classInterface`
+
+- Class : `class Class<T extends Object> implements classInterface<T>`
+
 
 - `getEntries( ): [any, string ][]`  
 - `getType( ):string`  
@@ -272,17 +297,144 @@ Class.forName<IMyInter>("src.package.Class").newInstance(12).getValue();
 
 ## Comparator\<T\>
 
-- `test/`
+- Interface : ` comparator<T>`
 
-Public interface comparable\<T\>
+- Class : `class Comparator<T> implements comparator<T>`
 
-- `compareTo( obj : T ) :number`
+Method :
 
-Public interface comparator\<T\>
+- `compare(o1: T, o2: T ): number` : To override
+- `reversed?( ) : Compartor<T>`
+- `equals?(o:Object):boolean`
+- `thenComparing?( comparator: comparator<T> ): comparator<T>`
 
-- `compare(o1: T, o2: T ): number`
-- `reversed( ) : Compartor<T>`
+````typescript
+class Test extends Comparator<Developer> /** implements comparator<Developer>*/{
+
+    public compare = (o1: Developer, o2: Developer): number =>{
+        return o1.getAge().compareTo( o2.getAge() )
+            //return o1.getAge() - o2.getAge();
+            //return o1.getSalary().compareTo(o2.getSalary())
+    }
+}
+````
+
+static
+
+- `nullsFirst<T>( comparator: comparator<T> ): Comparator<T>`
+- `nullsLast<T>( comparator: comparator<T> ): Comparator<T>`
+- `naturalOrder<T extends comparable<T>>( ): Comparator<T>`
+- `comparing<T,U extends comparable<T>>( comparatorFn: comparatorFn<T,U> ): Comparator<T>`
+- `comparingA<T,U extends comparable<T>>( comparatorFn: comparatorFn<T,U>, comparator: comparator<T> ): Comparator<T>`
+
+## Comparators\<T\>
+
+- Class : `static abstract class Comparators<T>`
+
+Method static :
+
+- `Reversed<T> implements comparator<T>` : Object to instanced
+- `NaturalOrder<T> implements comparator<comparable<Object>>` : Instanced Object
+- `NullComparators<T> implements comparator<T>` : Object to instanced
+
+## Consumer\<T\>
+
+- Interface : ` IConsumer<T>`
+
+- Class : `Consumer<T> implements IConsumer<T>`
+- Class : `IntConsumer implements IConsumer<number>`
+- Class : `BiConsumer<T,P> implements biConsumer<T,P>`
+
+Method to implemented for consumer:
+
+- `accept:consumerFn<T>` type  of `consumerFn<T>` is a simple function `(value:T) => void`
+
+````typescript
+//
+let consumer: Consumer<string> = Consumer.of(value=>console.log(value));
+consumer.accept("Accepted");
+//
+let consumer1: Consumer<string> = new Consumer();
+consumer1.accept = value=>console.log(value);
+consumer1.accept("Accepted");
+//
+class Test implements IConsumer<string>{
+    accept = value=>console.log(value);
+}
+new Test().accept("Accepted");
+````
+
+Method to implemented for biconsumer:
+
+- `accept:biConsumerFn<T,P>`;
+
+type `biConsumerFn<T,P>` is a function `(o:T,v:U) => void`
+
+````typescript
+let consumer: BiConsumer<string[],string> = BiConsumer.of((o:string[],value:string)=> o.push(value) ),
+tab:string[] = [];
+
+consumer.accept( tab,"Accepted");
+
+let consumer1: BiConsumer<string[],string> = new BiConsumer();
+consumer1.accept = (o:string[],value:string)=> o.push(value);
+consumer1.accept(tab, "Accepted-1");
+
+class Test implements  biConsumer<string[],string>{
+    accept = (o:string[],value:string)=> o.push(value)
+}
+new Test().accept(tab, "Accepted-2");
+````
+
+## Enum
+
+- Class : `abstract class Enum`
+
+Static method :
+
+- `valueOf<T>(value:string):T`
 - `equals(o:Object):boolean`
+
+Decorator : \@
+
+- `args( ...args:Object[] ):any`
+
+````typescript
+class TestDevice extends Enum{
+
+    @Enum.args("cellphone",200,300)
+    static IOS:TestDevice;
+
+    @Enum.args("desktop",1080,720)
+    static WINDOW:TestDevice;
+
+    private readonly device:string;
+    private readonly width:number;
+    private readonly height:number;
+
+    private constructor(device:string, width: number, height:number) {
+        super();
+        this.device = device;
+        this.width = width;
+        this.height= height;
+    }
+
+    public getDevice():string{return this.device;}
+
+    public getWidth():number{ return this.width; }
+
+    public getHeight():number{ return this.height; }
+}
+/***
+ *
+ */
+let window: TestDevice  = TestDevice.valueOf("WINDOW");
+let ios: TestDevice     = TestDevice.valueOf("IOS");
+````
+
+## Define<T>
+
+Method static :
 
 Public static Collections
 
@@ -293,19 +445,6 @@ Public static Collections
 - `static replaceAll<T>( list: List<T>, oldVal : T, newVal: T ): void`
 - `static reverseOrder<T extends comparable<T>>():Comparator<T>`
 
-Public class Comparator\<T\> implements comparator\<T\>
-
-- `compare(o1: T, o2: T) => number`
-- `equals(o: Object): boolean`
-- `reversed(): Comparator<T>`
-
-static
-
-- `nullsFirst<T>( comparator: comparator<T> ): Comparator<T>`
-- `nullsLast<T>( comparator: comparator<T> ): Comparator<T>`
-- `naturalOrder<T extends comparable<T>>( ): Comparator<T>`
-- `comparing<T,U extends comparable<T>>( comparatorFn: comparatorFn<T,U> ): Comparator<T>`
-- `comparingA<T,U extends comparable<T>>( comparatorFn: comparatorFn<T,U>, comparator: comparator<T> ): Comparator<T>`
 
 ##### Usage
 
@@ -1034,27 +1173,16 @@ let cookie: Cookie = q.getCookies()
 
 ## Feature 
 
-- 1.2.0-beta : Implementation and stabilisation of `ArrayList<E>`, `HashMap<E>`, `Stream<E>` ..
-- 1.3.0-beta : 
-    + Implementation of `Properties` class and wrap file class `FileReader` and `FileWriter`
-    + Featured flombok decorator annotation version 0.0.1 `Test version`, cause the decoration annotation is an experimental feature of TypeScript.
-    + Implementation of `RestHttp` and `RestHttps` feature
-    + Stabilisation of predicate class : `Predication<T>`
-    + Implementation of `Class`, `Constructor`,`FunctionA` class
-    + Implementation of `comparator`, `static Collections` class
-- 1.3.2-beta :
-    + Fix some error in net/Http, add FollowRedirect method
-    + Fix getType in Class & Constructor classes
-    + Implementation Json class
-- 1.3.3-beta :
-    + Fix method of importation for an absolute path name for the class.forName method
-    + Fix Cookie : add getter name
-    + Add merge method to Properties class
+- Old versions are deprecated
 - 2.0.0-stable :
     + Fix : Linux/Unix importation, Windows build some files in lowercase ( Stream &rarr; stream ), Now every release will be packaged in a Docker alpine:3.12 from a Jenkins pipeline
     + Implement job jenkins  
 - 2.1.0-stable :
-    + Big refactoring of Comparator classes 
-    + add : GetOpts class
-    + add : isPrime method in the native Number prototype
-    + Fix : http getCookie method 
+- 3.0.0 :
+    + Refactoring ArrayList :
+        + AbstractCollection
+        + AbstractArrayList 
+        + ArrayList
+    + Refactoring Native of the extensions
+    + Implements Arrays, Collections classes
+    + Refactoring Optional
