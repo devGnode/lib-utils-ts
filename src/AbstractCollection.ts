@@ -1,14 +1,17 @@
-import {collection, iterator, MapType, predicate, spliterator} from "./Interface";
+import {collection, consumer, iterator, MapType, predicate, spliterator} from "./Interface";
 import {UnsupportedOperationException} from "./Exception";
+import {Consumer} from "./Consumer";
 /***
  * @abstract
  * @AbstractCollection
  */
 export abstract class AbstractCollection<T> implements collection<T> {
+
+    protected abstract value:T[];
     /***
      *
      */
-    protected constructor() {}
+    constructor() {}
     /***
      *
      */
@@ -133,4 +136,11 @@ export abstract class AbstractCollection<T> implements collection<T> {
      * @toString
      */
     public abstract toString(): string
+    /****/
+    public forEach(consumer: consumer<T>): void {
+        Object.requireNotNull(consumer);
+        if(typeof consumer == "function")consumer=Consumer.of(consumer);
+        let itr: iterator<T> = this.iterator();
+        while(itr.hasNext())consumer.accept(itr.next());
+    }
 }

@@ -18,7 +18,7 @@ const {Predication} = require('../src/Predication');
 const {Class} = require('../src/Class')
 const {Constructor} = require('../src/Constructor')
 const {FunctionA} = require('../src/FunctionA')
-const {Collection} = require('../src/Collection')
+const {Collections} = require('../src/Collections')
 const {Comparator} = require('../src/Comparator')
 const {GetOpts} = require('../src/GetOpts')
 
@@ -67,7 +67,7 @@ module.exports = {
     Class:Class,
     Constructor:Constructor,
     FunctionA:FunctionA,
-    Collection:Collection,
+    Collections:Collections,
     Comparator:Comparator,
 
     IndexOfBoundException:IndexOfBoundException,

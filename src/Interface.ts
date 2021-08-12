@@ -58,7 +58,7 @@ export type newConstructorFunc<E>    = { (... args: Object[ ] ): E }
 export type newConstructorA<E>       = newConstructor<E> & newConstructorFunc<E>
 export type functionAConstructor     = (... args : Object[] ) => void
 export type constructorFunction      = Function
-/*3.0.0*/
+/***@v3.0.0*/
 export type Func<A,R> = (...args:A[]) => R
 /*@comparatorFunc*/
 export type comparatorFunc<T>                       = ( other1: T, other2: T ) => number
@@ -324,6 +324,7 @@ export interface IntStreamBuilder extends IStreamBuilder<number,intStream>{
 /***@Iterable<T> */
 export interface Iterable<T> {
     iterator( ): iterator<T>
+    forEach?(consumer:consumer<T>):void
 }
 /**
  * @V3.0.0
@@ -371,7 +372,7 @@ export interface collection<E> extends Iterable<E> {
     toArray( ) : E[]
     /***
      */
-    lasIndexOf( value : object ) : number
+    spliterator():spliterator<E>
     /***
      */
     toJson( ) : MapType<any, any>
@@ -436,10 +437,12 @@ export interface comparator<T> {
     equals(o:Object):boolean
     /***
      */
-    //reversed(): comparator<T>
-}
-export interface comparatorImpl<T> extends comparator<T>{
-    reversed(): comparatorImpl<T>
+    reversed?<U extends T>(): comparator<T>
+    reversed?(): comparator<T>
+    /**
+     */
+    //thenComparing?( comparator: comparator<T> ): comparator<T>
+    //thenComparingFn?<T, U extends comparable<U>>( comparator: comparatorFn<T,U> ): comparator<T>
 }
 /***
  * @AComparator<T> : usage as proxy interface for add some method
@@ -544,12 +547,7 @@ export interface Map<K,V> {
     valueCollection( ) : collection<V>
     /***
      */
-    each( callback : streamLambda<V> ): void
-    /***
-     */
-    stream( ) : StreamAble<K,V>
-    /***
-     */
+   // stream( ) : StreamAble<K,V>
 }
 /***
  * 
@@ -567,13 +565,13 @@ export interface Enumeration<E> {
     next(): E
 }
 /****
- * 
+ * @toDelete
  */
 export interface OptionalMapInterface<T,U> {
     /**
      * @param callback
      */
-    map( callback : streamLambda<T> ) : U
+    map<T,U>( callback : Func<T,U> ) : U
 }
 /**
  *
