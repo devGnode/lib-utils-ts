@@ -16,7 +16,7 @@ console.log("--", map.get("loggldsdsdssdsdsfsd"));
 map.remove(7452465456654)
 console.log("--", map.get("loggldsdsdssdsdsfsd"), map.size());
 //console.log(map)
-
+console.log("======================ENTRYSET==============================");
 map.entrySet().forEach(new class implements IConsumer<MapEntries<string, number>>{
     accept = (v:MapEntries<string, number>)=>{
         console.log( v.getValue()+" = " + v.getKey(), v.toString() );
@@ -25,7 +25,7 @@ map.entrySet().forEach(new class implements IConsumer<MapEntries<string, number>
         }
     }
 })
-
+console.log("=======================================================================");
 console.log(map.entrySet().toString(), map.get("loggl"))
 
 let entry: Set<MapEntries<string, number>> = map.entrySet();
@@ -38,4 +38,38 @@ entry.iterator().forEachRemaining((value:MapEntries<string, number>)=>{
 map.keySet().forEach(new class implements IConsumer<string>{
     accept = console.log
 });
-map.valueCollection().spliterator()
+map.valueCollection().spliterator();
+
+class Test{
+    public test:number=15;
+    constructor(value:number) {this.test=value;}
+
+    equals(o:Object):boolean{
+
+        if(o instanceof Test){return o.test == this.test;}
+        return false;
+    }
+
+    toString():string{
+        return "[ test = "+ this.test +" ]";
+    }
+}
+
+let mapper:HashMap<number, Test> = new HashMap();
+mapper.put(0, new Test(150));
+
+for(let i = 1; i < 20; i++ ){
+    mapper.put(i,new Test(i));
+}
+//mapper.remove(new Test(4997));
+console.log("=========================+9+++++==============================================");
+let entry1: Set<MapEntries<number, Test>> = mapper.entrySet();
+
+/*entry1.iterator().forEachRemaining((value:MapEntries<number, Test>)=>{
+    console.log(value.getKey(), value.getValue().test, value.toString())
+});*/
+
+console.log( mapper.entrySet().toString() );
+console.log( map.toString() );
+
+

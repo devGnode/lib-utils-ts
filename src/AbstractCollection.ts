@@ -163,7 +163,9 @@ export abstract class AbstractCollection<T> implements collection<T> {
             value = itr.next();
             out += ( tmp = `${j++} = `+( value ? value.toString() : "NULL" )+( itr.hasNext() ? ", " :"")+( i === 0 ?"\n":""));
             i += tmp.length;
+            if(j>=655535 ) break;
         }
+        if(j==655535&&this.size()-655535>0) out +=`... and more ${this.size()-655535} elements` ;
 
         return "[ "+(carry?"\n":"")+ out.replace(/,\s*$/,"")+(carry?"\n":" ")+"]";
     }

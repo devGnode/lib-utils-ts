@@ -72,14 +72,11 @@ export class ArrayList<T> extends AbstractArrayList<T> implements List<T>{
              * @override
              */
             public remove(): void {
-                let lenCtrl:number = list.value.length;
+                let lenCtrl:number = this.list.length;
 
-                list.value = Arrays.remove(list.value, this.iteration - 1 );
-                if(lenCtrl-list.value.length === 1 ){
-                    --this.end;
-                    --list.offset;
-                    --this.iteration
-                }
+                super.remove();
+                list.value = this.list;
+                if(lenCtrl-list.value.length === 1 )--list.offset;
             }
         }
     }

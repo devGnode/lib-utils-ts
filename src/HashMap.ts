@@ -1,11 +1,10 @@
-import {collection, consumer, iterator, List, Map, MapEntries, Set, spliterator} from "./Interface";
+import {collection, consumer, iterator, Map, MapEntries, Set, spliterator} from "./Interface";
 import {Consumer} from "./Consumer";
 import {MethodNotFoundException, RuntimeException, UnsupportedOperationException} from "./Exception";
 import {Iterator} from "./Iterator";
 import {AbstractMap} from "./AbtsractMap";
 import {AbstractSet} from "./AbstractSet";
 import {Spliterators} from "./Spliterators";
-import {ArrayList} from "./ArrayList";
 /***
  *
  */
@@ -48,7 +47,6 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
     public put(key: K, value: V): V {
         let exists:boolean = false;
 
-       // console.log(key, value);
         if(Object.isNull(this.value)) this.value = new HashMap.Node<K,V>(key,value);
         else{
             let tmp:Node<K, V> = this.value;
@@ -74,16 +72,27 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
         if(this.sizeOf===0) return null;
         if(this.sizeOf===1) return this.value.key.equals(key) ? this.value.value : null;
         else{
-            tmp = this.value;
-            while ( tmp ){
-                if( tmp.key.equals(key) ) {
-                    found=true;
-                    break;
+            if(Object.isNull(key)){
+                tmp = this.value;
+                while ( tmp ){
+                    if( tmp.key === null ) {
+                        found=true;
+                        break;
+                    }
+                    if(Object.isNull(tmp = tmp.next)) break;
                 }
-                // next
-                if(Object.isNull(tmp.next)) break;
-                tmp = tmp.next;
+            }else{
+                tmp = this.value;
+                while ( tmp ){
+                    if( tmp.key.equals(key) ) {
+                        found=true;
+                        break;
+                    }
+                    // next
+                    if(Object.isNull(tmp = tmp.next)) break;
+                }
             }
+
         }
         return found?tmp.value:null;
     }
@@ -101,17 +110,19 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
             this.next   = next;
         }
 
-        getKey(): K {return this.key;}
+        public getKey(): K {return this.key;}
 
-        getValue(): V {return this.value;}
+        public getValue(): V {return this.value;}
 
-        setValue(value: V): V {return this.value=value;}
+        public setValue(value: V): V {return this.value=value;}
 
-        equals(o:Object):boolean{
-            return null;
+        public equals(o:Object):boolean{
+            if(Object.isNull(o)) return false;
+            if( o instanceof Node )if(this.key.equals(o.key)&&this.value.equals(o.value)) return true;
+            return false;
         }
 
-        toString():string{return `${this.key} = ${this.value}`;}
+        public toString():string{return `${this.key} = ${this.value}`;}
 
     }
     /****
@@ -121,10 +132,6 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
 
         protected value: E[];
         protected offset: number = 0;
-
-        public addAll(collection: collection<E>): boolean {
-            return false;
-        }
         /***
          *
          */
@@ -132,11 +139,27 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
         /***
          *
          */
-        public spliterator(): spliterator<E> {return new Spliterators.ArraySpliterator(this.value,0,null, null);}
+        public spliterator(): spliterator<E> {return new Spliterators.ArraySpliterator(this.value,0,this.size());}
         /***
          *
          */
-        public toString(): string {return this.value.toString(); }
+        public toString(): string {
+           let out:string = "", tmp:string, j:number=0,
+                i:number= -1, itr: iterator<E> = this.iterator(),
+                value:E, carry:boolean =false;
+
+            if(this.size()===0) return "{}";
+            while(itr.hasNext()){
+                if( i > 80 ) { carry =true; i = 0; }
+                value = itr.next();
+                out += ( tmp = ( value ? value.toString() : "NULL" )+( itr.hasNext() ? ", " :"")+( i === 0 ?"\n":""));
+                i += tmp.length;
+                if(j++>=655535 ) break;
+            }
+            if(j==655535&&this.size()-655535>0) out +=`... and more ${this.size()-655535} elements` ;
+
+            return "[ "+(carry?"\n":"")+ out.replace(/,\s*$/,"")+(carry?"\n":" ")+"]";
+        }
 
     }
 
@@ -154,14 +177,17 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
             }
         } else{
             current = this.value;
+            let isNull:boolean = Object.isNull(o);
             while ( current ){
-                if( current.value.equals(o) ) {
+                if(isNull){
+                    if(current.value===null) found = true;
+                }else if( current.value.equals(o) ) {
                     found=true;
                     break;
                 }
                 // next
                 last = current;
-                if(Object.isNull(current.next)) break;
+                if(Object.isNull(current.next)||found) break;
                 current = current.next;
             }
             next = current.next;
@@ -169,7 +195,6 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
                 if(Object.isNull(last)&&current){
                     if(next) this.value = next;
                     else this.value = null;
-
                 }
                 if(last!=current&&next&&last){
                     last.next = next;
@@ -185,9 +210,9 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
         }
         return null;
     }
-
-    /****
-     *
+    /***
+     * @nodeToArray
+     * @returns {MapEntries<K, V>[]}
      */
     private nodeToArray():MapEntries<K, V>[]{
         let tmp:Node<K, V>, out:MapEntries<K, V>[] = [];
@@ -205,7 +230,10 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
         // temporize
         return this.lastMapEntries=out;
     }
-
+    /***
+     * @entrySet
+     * @returns {Set<MapEntries<K, V>>}
+     */
     public entrySet(): Set<MapEntries<K, V>> {
         let slf:this = this;
         return  new class EntrySet extends HashMap.EntrySet<MapEntries<K, V>> implements Set<MapEntries<K, V>>{
@@ -220,9 +248,12 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
                 public remove(value: Object): boolean {
                    let c:MapEntries<K, V> = <MapEntries<K, V>>value;
                     if(Object.isNull(c.getKey)||Object.isNull(c.getValue)) throw new MethodNotFoundException(`Bad implementation of interface MapEntries`);
-                    slf.remove(c.getValue());
-
-                    return true;
+                    if( super.remove(value) ){
+                        slf.remove(c.getValue());
+                        slf.lastMapEntries = this.value;
+                        return true;
+                    }
+                    return false;
                 }
 
                 public size(): number {return slf.sizeOf;}
@@ -239,11 +270,12 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
                         }
                     }
                 }
-
-                public toString(): string {return super.toString();}
         };
     }
-
+    /***
+     * @keySet
+     * @returns {Set<K>}
+     */
     public keySet(): Set<K> {
         let slf:this = this, tmp: K[] = [];
         let itr:iterator<MapEntries<K, V>> = new Iterator( this.lastMapEntries );
@@ -256,32 +288,22 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
             public spliterator(): spliterator<K> {return new Spliterators.ArraySpliterator(tmp);}
 
             public remove(value: Object): boolean {
-                slf.remove(value);
-                return true;
+                if( super.remove(value) ){
+                    slf.remove(slf.get(value));
+                    //slf.lastMapEntries = this.value;
+                    return true;
+                }
+                return false;
             }
 
             public size(): number {return slf.sizeOf;}
 
         }
     }
-
-    public valueCollection(): collection<V> {
-        let tmp:Node<K, V>, out: List<V> = new ArrayList();
-
-        if(this.sizeOf===0) return out;
-        else{
-            tmp = this.value;
-            while ( tmp ){
-                out.add(tmp.value);
-                if(Object.isNull(tmp.next)) break;
-                tmp = tmp.next;
-            }
-        }
-        return out;
-    }
-
-    public toString():string{
-       return this.entrySet().toString();
-    }
+    /***
+     * @toString
+     * @returns {string}
+     */
+    public toString():string{return this.entrySet().toString();}
 
 }

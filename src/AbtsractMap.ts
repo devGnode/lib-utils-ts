@@ -1,4 +1,5 @@
-import {collection, MapEntries, Map, Set, iterator} from "./Interface";
+import {collection, MapEntries, Map, Set, iterator, List} from "./Interface";
+import {ArrayList} from "./ArrayList";
 
 interface Node<K,V> extends MapEntries<K,V> {
     key:K;
@@ -10,8 +11,9 @@ export abstract class AbstractMap<K,V> implements Map<K, V>{
 
     protected abstract sizeOf:number;
     protected abstract value:Node<K,V>;
-
-
+    /***
+     *
+     */
     public clear(): void {
         let sItr: iterator<MapEntries<K, V>> = this.entrySet().iterator();
         while (sItr.hasNext()){
@@ -20,35 +22,60 @@ export abstract class AbstractMap<K,V> implements Map<K, V>{
         }
         this.sizeOf = 0;
     }
-
-    containsKey(key: K): boolean {
+    /***
+     *
+     * @param {K} key
+     * @returns {boolean}
+     */
+    public containsKey(key: K): boolean {
         if(this.sizeOf===0) return false;
-        /*   let node:Node<K, V>; let i :number=0;
-           while( (node = <Node<K, V>>this.value[i]) ){
-               if( Object.equals( node.getKey(), key ) )return true;
-               i++;
-           }
-           return false;*/
+        let entry: iterator<MapEntries<K, V>> = this.entrySet().iterator(),
+        isNull:boolean = Object.isNull(key), value:K;
+
+        while (entry.hasNext()){
+            value = entry.next().getKey();
+            if(isNull){
+                if(value===null) return true;
+            }else if(value.equals(key)) {
+                return true;
+            }
+        }
         return false;
     }
+    /***
+     *
+     * @param {V} value
+     * @returns {boolean}
+     */
+    public containsValue(value: V): boolean {
+        if(this.sizeOf===0) return false;
+        let entry: iterator<MapEntries<K, V>> = this.entrySet().iterator(),
+            isNullValue:boolean = Object.isNull(value), tmp:V;
 
-    containsValue(value: V): boolean {
-        /*  if(this.value.length===0) return false;
-          let node:Node<K, V>; let i :number=0;
-          while( (node = <Node<K, V>>this.value[i]) ){
-              if( Object.equals( node.getKey(), value ) )return true;
-              i++;
-          }
-          return false;*/
+        while (entry.hasNext()){
+            tmp = entry.next().getValue();
+            if(isNullValue){
+                if(tmp===null) return true;
+            }else if(tmp.equals(value)) return true;
+        }
         return false;
     }
-
+    /***
+     *
+     * @returns {Set<MapEntries<K, V>>}
+     */
     public abstract entrySet(): Set<MapEntries<K, V>>
+    /***
+     *
+     * @param {Object} key
+     * @returns {V}
+     */
+    public abstract get(key: Object): V;
 
-    get(key: Object): V {
-        return undefined;
-    }
-
+    /***
+     *
+     * @returns {boolean}
+     */
     public isEmpty(): boolean {return this.sizeOf === 0;}
 
     keySet(): Set<K> {
@@ -59,18 +86,39 @@ export abstract class AbstractMap<K,V> implements Map<K, V>{
         }
         return undefined;
     }
-
-    put(key: K, value: V): V {
-        if(this.containsKey(key)){}
-        return undefined;
-    }
-
+    /***
+     *
+     * @param {K} key
+     * @param {V} value
+     * @returns {V}
+     */
+    public abstract put(key: K, value: V): V;
+    /***
+     *
+     * @param {Object} o
+     * @returns {V}
+     */
     public abstract remove(o: Object): V;
-
+    /***
+     *
+     * @returns {number}
+     */
     public size(): number {return this.sizeOf;}
+    /****
+     *
+     * @returns {collection<V>}
+     */
+    public valueCollection(): collection<V> {
+        let tmp:Node<K, V>, out: List<V> = new ArrayList();
 
-    valueCollection(): collection<V> {
-        return undefined;
+        if(this.sizeOf===0) return out;
+        else{
+            tmp = this.value;
+            while ( tmp ){
+                out.add(tmp.value);
+                if(Object.isNull(tmp = tmp.next)) break;
+            }
+        }
+        return out;
     }
-
 }
