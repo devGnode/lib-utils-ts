@@ -21,7 +21,7 @@ export class Constructor<T extends Object> extends Function implements construct
     get name():string{return this.value.constructor.name;}
     /***
      */
-    public getName():string{return this.value.name||this.value.prototype.constructor.name||null; }
+    public getName():string{  return this.value.name||this.value.prototype.constructor.name||"Anonymous"; }
     /***
      */
     public getType(): string {return (typeof this.value).toLowerCase();}

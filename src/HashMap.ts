@@ -1,8 +1,8 @@
 import {collection, consumer, iterator, List, Map, MapEntries, Set, spliterator} from "./Interface";
 import {Consumer} from "./Consumer";
-import {RuntimeException, UnsupportedOperationException} from "./Exception";
+import {MethodNotFoundException, RuntimeException, UnsupportedOperationException} from "./Exception";
 import {Iterator} from "./Iterator";
-import {AbstractMap} from "./AbtsractHashMap";
+import {AbstractMap} from "./AbtsractMap";
 import {AbstractSet} from "./AbstractSet";
 import {Spliterators} from "./Spliterators";
 import {ArrayList} from "./ArrayList";
@@ -20,6 +20,7 @@ interface Node<K,V> extends MapEntries<K,V> {
 class EntrySet<E> extends AbstractSet<E> implements Set<E>{
 
     protected value: E[];
+    protected offset: number = 0;
 
     public addAll(collection: collection<E>): boolean {
         return false;
@@ -110,9 +111,7 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
             return null;
         }
 
-        toString():string{
-            return `${this.key} = ${this.value}`;
-        }
+        toString():string{return `${this.key} = ${this.value}`;}
 
     }
     /****
@@ -121,6 +120,7 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
     private static EntrySet = class EntrySet<E> extends AbstractSet<E> implements Set<E>{
 
         protected value: E[];
+        protected offset: number = 0;
 
         public addAll(collection: collection<E>): boolean {
             return false;
@@ -136,7 +136,7 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
         /***
          *
          */
-        public toString(): string {return Object.toString(this);}
+        public toString(): string {return this.value.toString(); }
 
     }
 
@@ -148,7 +148,7 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
         if(this.sizeOf===1) {
             if( this.value.value.equals(o) ){
                 let value:V = this.value.value;
-                if( this.value.next ) this.value =  this.value.next ? this.value.next : null;
+                this.value =  null;
                 --this.sizeOf;
                 return value;
             }
@@ -165,16 +165,13 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
                 current = current.next;
             }
             next = current.next;
-            console.log(found, "founder", last, "CURENT", current, "NEXT" ,next )
             if(found){
                 if(Object.isNull(last)&&current){
-                    console.log("herere")
                     if(next) this.value = next;
                     else this.value = null;
 
                 }
                 if(last!=current&&next&&last){
-                    console.log("herere---11")
                     last.next = next;
                 }
                 else if(last!==current&&Object.isNull(next)&&last){
@@ -202,9 +199,7 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
             tmp = this.value;
             while ( tmp ){
                 out.push(tmp);
-                // next
-                if(Object.isNull(tmp.next)) break;
-                tmp = tmp.next;
+                if(Object.isNull(tmp = tmp.next)) break;
             }
         }
         // temporize
@@ -215,13 +210,18 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
         let slf:this = this;
         return  new class EntrySet extends HashMap.EntrySet<MapEntries<K, V>> implements Set<MapEntries<K, V>>{
 
+                protected offset: number = 0;
+
                 constructor() {
                     super();
                    this.value = slf.nodeToArray();
                 }
 
-                remove(value: Object): boolean {
-                    slf.remove(value);
+                public remove(value: Object): boolean {
+                   let c:MapEntries<K, V> = <MapEntries<K, V>>value;
+                    if(Object.isNull(c.getKey)||Object.isNull(c.getValue)) throw new MethodNotFoundException(`Bad implementation of interface MapEntries`);
+                    slf.remove(c.getValue());
+
                     return true;
                 }
 
@@ -235,12 +235,12 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
 
                         while ( tmp ){
                             consumer.accept(tmp)
-                            // next
                             tmp = tmp.next;
                         }
                     }
                 }
-                /***/
+
+                public toString(): string {return super.toString();}
         };
     }
 
@@ -250,19 +250,17 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
         while(itr.hasNext())tmp.push(itr.next().getKey());
         return new class SetEntry extends AbstractSet<K> implements Set<K>{
 
-            protected value: K[] = tmp;
-
-            public size(): number {return slf.sizeOf;}
-
-            public addAll(collection: collection<K>): boolean {
-                return false;
-            }
+            protected value: K[]     = tmp;
+            protected offset: number = 0;
 
             public spliterator(): spliterator<K> {return new Spliterators.ArraySpliterator(tmp);}
 
-            public toString(): string {
-                throw new Error("Method not implemented.");
+            public remove(value: Object): boolean {
+                slf.remove(value);
+                return true;
             }
+
+            public size(): number {return slf.sizeOf;}
 
         }
     }
@@ -280,6 +278,10 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
             }
         }
         return out;
+    }
+
+    public toString():string{
+       return this.entrySet().toString();
     }
 
 }

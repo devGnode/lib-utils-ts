@@ -6,8 +6,14 @@ import {Consumer} from "./Consumer";
  * @AbstractCollection
  */
 export abstract class AbstractCollection<T> implements collection<T> {
-
+    /***
+     *
+     */
     protected abstract value:T[];
+    /***
+     *
+     */
+    protected abstract offset:number;
     /***
      *
      */
@@ -29,6 +35,7 @@ export abstract class AbstractCollection<T> implements collection<T> {
             itr.next();
             itr.remove();
         }
+        this.offset=0;
     }
     /***
      * @contains
@@ -118,7 +125,16 @@ export abstract class AbstractCollection<T> implements collection<T> {
     /***
      * @spliterator
      */
-    public abstract spliterator(): spliterator<T>;
+    public abstract spliterator(from?:number, to?:number): spliterator<T>;
+    /***
+     * @forEach
+     */
+    public forEach(consumer: consumer<T>): void {
+        Object.requireNotNull(consumer);
+        if(typeof consumer == "function")consumer=Consumer.of(consumer);
+        let itr: iterator<T> = this.iterator();
+        while(itr.hasNext())consumer.accept(itr.next());
+    }
     /***
      *  @toArray
      */
@@ -134,13 +150,21 @@ export abstract class AbstractCollection<T> implements collection<T> {
     public toJson(): MapType<any, any> {throw new UnsupportedOperationException(`toJson not implemented !`);}
     /***
      * @toString
+     * @returns {string}
      */
-    public abstract toString(): string
-    /****/
-    public forEach(consumer: consumer<T>): void {
-        Object.requireNotNull(consumer);
-        if(typeof consumer == "function")consumer=Consumer.of(consumer);
-        let itr: iterator<T> = this.iterator();
-        while(itr.hasNext())consumer.accept(itr.next());
+    public toString(): string {
+        let out:string = "", tmp:string, j:number=0,
+            i:number= -1, itr: iterator<T> = this.iterator(),
+            value:T, carry:boolean =false;
+
+        if(this.size()===0) return "{}";
+        while(itr.hasNext()){
+            if( i > 80 ) { carry =true; i = 0; }
+            value = itr.next();
+            out += ( tmp = `${j++} = `+( value ? value.toString() : "NULL" )+( itr.hasNext() ? ", " :"")+( i === 0 ?"\n":""));
+            i += tmp.length;
+        }
+
+        return "[ "+(carry?"\n":"")+ out.replace(/,\s*$/,"")+(carry?"\n":" ")+"]";
     }
 }

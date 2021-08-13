@@ -1,7 +1,7 @@
 import {collector, IConsumer, List, predicate, spliterator} from "./Interface";
-import {Streams} from "./Streams";
 import {biConsumer,supplier,Func} from "./Interface";
 import {ArrayList} from "./ArrayList";
+import {Streams} from "./Streams";
 
 
 /***/

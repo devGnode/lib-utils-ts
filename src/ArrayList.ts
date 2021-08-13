@@ -5,7 +5,7 @@ import {Spliterators} from "./Spliterators";
 import {IndexOfBoundException} from "./Exception";
 import {AbstractArrayList} from "./AbstractArrayList";
 import {Collections} from "./Collections";
-import {Consumer} from "./Consumer";
+import {AbstractCollection} from "./AbstractCollection";
 /***
  * @ArrayList<T>
  * @interface List<T>
@@ -14,16 +14,20 @@ export class ArrayList<T> extends AbstractArrayList<T> implements List<T>{
     /**
      *
      */
-    protected value:T[] = [];
+    protected value:T[]         = [];
+    protected offset:number     = 0;
     /***
      *
      * @param value
      */
-    public constructor(value:T[]|number = null ) {
+    public constructor(value:T[]|collection<T>|number = null ) {
         super();
-        if(!Object.isNull(value)&&typeof value != "number")this.value = value;
-        if(typeof value === "number"){
-            this.value = Arrays.fill([],value,null);
+
+        if(typeof value === "number")this.value  = Arrays.fill([],value,null);
+        if(value instanceof AbstractCollection ) this.addAll(value);
+        if(value instanceof Array ){
+            this.value  = value;
+            this.offset = value.length;
         }
     }
     /***
@@ -38,7 +42,7 @@ export class ArrayList<T> extends AbstractArrayList<T> implements List<T>{
      */
     public add(value: T): boolean {
         // gown : JS no limit capacity
-        this.value[this.size()] = value;
+        this.value[this.offset++] = value;
         return true;
     }
     /****
@@ -59,9 +63,8 @@ export class ArrayList<T> extends AbstractArrayList<T> implements List<T>{
      * @throws IndexOfBoundException
      */
     public iterator(): iterator<T> {
-        let list: ArrayList<T> = this;
-        return new class extends Iterator<T> implements iterator<T> {
-            private delCounter: number = 0;
+        let list: this = this;
+        return new class Itr extends Iterator<T> implements iterator<T> {
             /***
              */
             constructor() {super(list.value);}
@@ -69,25 +72,36 @@ export class ArrayList<T> extends AbstractArrayList<T> implements List<T>{
              * @override
              */
             public remove(): void {
-                list.value = Arrays.remove(list.value, this.iteration - (1 + this.delCounter));
-                this.delCounter++;
+                let lenCtrl:number = list.value.length;
+
+                list.value = Arrays.remove(list.value, this.iteration - 1 );
+                if(lenCtrl-list.value.length === 1 ){
+                    --this.end;
+                    --list.offset;
+                    --this.iteration
+                }
             }
         }
     }
     /***
      * @size
      */
-    public size(): number {return this.value.length;}
+    public size(): number {return this.offset;}
     /**
      * @spliterator
      */
-    public spliterator(): spliterator<T> {return new Spliterators.ArraySpliterator<T>(this.value);}
+    public spliterator(from?:number, to?:number): spliterator<T> {return new Spliterators.ArraySpliterator<T>(this.value, from, to);}
     /***
      * @set
      * @param index
      * @param value
      */
-    public set(index: number, value: T): void {this.value[index] = value;}
+    public set(index: number, value: T): void {
+        if(!this.contains(value)) this.add(value);
+        else{
+            this.value[index] = value;
+        }
+    }
     /**
      * @get
      * @param index
@@ -96,14 +110,6 @@ export class ArrayList<T> extends AbstractArrayList<T> implements List<T>{
         if(index<0&&index>this.size()) throw new IndexOfBoundException(`${this.getClass().getName()} out of range : ${index}`);
         return this.value[index];
     }
-    /**
-     * @toString
-     */
-    public toString(): string {
-        let out:string = "", i:number=0;
-        this.spliterator().forEachRemaining(Consumer.of((value:T)=>out +=(i++)+" = "+value.toString()+",\n"))
-        return "[ \n"+out.replace(/\,\s*$/,"")+"\n]";
-    }
     /***
      * @reverse
      */
@@ -111,18 +117,46 @@ export class ArrayList<T> extends AbstractArrayList<T> implements List<T>{
     /****
      *
      */
-    public clone():List<T>{
-        return new ArrayList<T>(Arrays.copyOfRange(this.value,0,this.size()));
-    }
+    public clone():List<T>{return new ArrayList<T>(Arrays.copyOfRange(this.value,0,this.size()));}
     /****
      *
      */
-    public listIterator(): ListIterator<T> {return new ListIterator<T>(this.value);}
+    public listIterator(): ListIterator<T> {
+        let list: this = this;
+        return new class ListItr extends ListIterator<T> implements iterator<T> {
+            /***
+             */
+            constructor() {super(list.value);}
+            /**
+             * @override
+             */
+            public add(e: T) {
+                let merge:T[] = Arrays.copyOfRange(list.value, 0,this.iteration-1);
+                merge[merge.length] = e;
+                list.value = Arrays.merge(merge, Arrays.copyOfRange(list.value, this.iteration+1, this.end));
+                this.end++;
+                list.offset++;
+            }
+            /***
+             * @override
+             */
+            public remove(): void {
+                let lenCtrl:number = list.value.length;
+
+                list.value = Arrays.remove(list.value, this.iteration - 1 );
+                if(lenCtrl-list.value.length === 1 ){
+                    --this.end;
+                    --list.offset;
+                    --this.iteration
+                }
+            }
+        }
+    }
     /***
      *
      * @param value
      */
-    public static of<T>(value:T[]|number):List<T>{
+    public static of<T>(value:T[]|number|collection<T>):List<T>{
         return new ArrayList<T>(value);
     }
 }

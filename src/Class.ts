@@ -28,7 +28,7 @@ export class Class<T extends Object> implements classInterface<T>{
      * name & getSimpleName give back name of class, i dont't have want to change that,
      * and make an hot fix
      */
-    public getName():string{ return this.value.constructor.name; }
+    public getName():string{ return this.value.constructor.name.orDefault("Anonymous"); }
     /***
      * @getEntries : get Array of Object (this)
      */
