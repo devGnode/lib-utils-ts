@@ -1,4 +1,4 @@
-import {comparable, comparator, IConsumer, int, iterator, List} from "./Interface";
+import {collection, comparable, comparator, IConsumer, int, iterator, List} from "./Interface";
 import {Random} from "./Random";
 import {ListIterator} from "./Iterator";
 import {Comparator} from "./Comparator";
@@ -8,6 +8,13 @@ import {NullPointerException} from "./Exception";
  * @Abstract
  */
 export abstract class Collections {
+    /***
+     *
+     */
+    public static addAll<T>(list:collection<T>, obj:T[]):void{
+        if(obj.length===0||Object.isNull(list)||Object.isNull(obj)) return;
+        for(let i=0; i < obj.length; i++ )list.add(obj[i]);
+    }
     /***
      * @sort
      * @param list

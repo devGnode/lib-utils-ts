@@ -382,6 +382,18 @@ export interface collection<E> extends Iterable<E> {
 }
 /***@Set<E>*/
 export interface Set<E> extends collection<E>{}
+/***
+ *
+ */
+export interface SortedSet<E> extends Set<E>{
+    comparator():comparator<E>
+    first():E
+    last():E
+    headSet():E
+    spliterator():spliterator<E>
+    subSet(from:E,to:E):SortedSet<E>
+    tailSet():SortedSet<E>
+}
 /**@v3.0.0*/
 export interface List<E> extends collection<E> {
     /***
