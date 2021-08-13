@@ -1,11 +1,9 @@
-import { List, predicateFn, properties, Set} from "../Interface";
+import {iterator, List, MapEntries, predicateFn, properties, Set} from "../Interface";
 import {FileReader, FileWriter, OutputStreamWriter,InputStreamReader} from "./IOStream";
 import {Define} from "../Define";
 import {JSONException, NullPointerException} from "../Exception";
-/***@toFix*/
-//import { HashMap} from "../List";
 import {Iterator} from "../Iterator";
-import "../globalUtils";
+import {HashMap} from "../HashMap";
 /***
  * Properties class, exportable :
  *   interface properties<V> extends IProperties<string,V>
@@ -24,7 +22,7 @@ export abstract class AbstractProperties<V> implements properties<V>{
     /***
      *
      */
-    protected prop : /*HashMap<string, V>*/any = null//new HashMap({});
+    protected prop : HashMap<string, V> = new HashMap();
     protected path : string;
     /***
      *
@@ -68,8 +66,7 @@ export abstract class AbstractProperties<V> implements properties<V>{
         Define.of(input).orElseThrow(new NullPointerException("target is null !"));
         let chunk:string = null,chunkKey:string,push:boolean=false;
 
-        /***@toFix*/
-        this.prop = null; // new HashMap({});
+        this.prop = new HashMap();
         this.path = input.getPath();
         input.getLines()
             .stream()
@@ -100,8 +97,12 @@ export abstract class AbstractProperties<V> implements properties<V>{
      *
      */
     public store( output: OutputStreamWriter ): void{
-        let out:string="";
-        this.prop.stream().each((value,key)=>{out+= `${key}=${value}\n`;});
+        let out:string="", itr: iterator<MapEntries<string, V>> = this.prop.entrySet().iterator(),
+        next:MapEntries<string, V>;
+        while (itr.hasNext()){
+            next = itr.next();
+            out+= `${next.getKey()}=${next.getValue().toString()}\n`;
+        }
         output.write(out,false,"utf8",true);
     }
     /***
@@ -113,7 +114,6 @@ export abstract class AbstractProperties<V> implements properties<V>{
     public update( ) :void{
         Define.of(this.path).orElseThrow(new NullPointerException("path is null !"));
         let file : List<string> = new FileReader(this.path).getLines(),
-            /***@toFix*/
             itr : Iterator<string> = <Iterator<string>>this.prop.keySet().iterator(),
             str:string,found:boolean=false;
 
@@ -132,7 +132,6 @@ export abstract class AbstractProperties<V> implements properties<V>{
     }
 
     public merge<T extends V,Object>( properties:AbstractProperties<V>,  exclude: predicateFn<T> = null ):void{
-        /***@toFix*/
         let key:Iterator<string> = <Iterator<string>>properties.stringPropertiesName().iterator(),
             value:string, pass:boolean=false,dexclude:Define<predicateFn<T>> = Define.of(exclude);
         while( key.hasNext() ){
@@ -175,7 +174,7 @@ export class PropertiesJson extends AbstractProperties<Object>{
     public load( input : InputStreamReader ) : void{
         Define.of(input).orElseThrow(new NullPointerException("target is null !"));
         this.path = input.getPath();
-        try{this.prop = /*new HashMap<string, Object>*/(JSON.parse(input.toString()));}catch (e) {
+        try{this.prop = HashMap.of<string, Object>(JSON.parse(input.toString()));}catch (e) {
             throw new JSONException(`Wrong parsing file : ${input.getPath()}`);
         }
     }
@@ -183,9 +182,13 @@ export class PropertiesJson extends AbstractProperties<Object>{
      *
      */
     public store( output: OutputStreamWriter ): void{
-        let out:string="";
-        Define.of(output).orElseThrow(new NullPointerException("target output stream is null !"));
-        this.prop.stream().each((value,key)=>{out+= `\t"${key}":"${value}",\n`;});
+        Object.requireNotNull(output,"target output stream is null !");
+        let out:string="", itr: iterator<MapEntries<string, Object>> = this.prop.entrySet().iterator(),
+            next:MapEntries<string, Object>;
+        while (itr.hasNext()){
+            next = itr.next();
+            out+= `${next.getKey()}=${next.getValue().toString()}\n`;
+        }
         output.write("{\n%s\n}".format(out.replace(/,\n*$/,"")),this.truncate);
         this.truncate=false;
     }
