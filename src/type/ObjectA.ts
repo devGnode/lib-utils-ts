@@ -146,5 +146,3 @@ export abstract class ObjectA extends Object implements comparator<Object>{
         return true;
     }
 }
-
-console.log( (<any>this).__decorate)

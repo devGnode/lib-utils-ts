@@ -9,8 +9,6 @@ import {Stream} from "./Stream";
  * @AbstractArrayList
  */
 export abstract class AbstractArrayList<T> extends AbstractCollection<T> implements List<T> {
-
-    protected abstract value:T[] = [];
     /***
      *
      */

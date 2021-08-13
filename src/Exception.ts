@@ -56,3 +56,7 @@ export class UnsupportedOperationException extends Error{
     public name:string = UnsupportedOperationException.class().getName();
     constructor( message : string = null) {super(message);}
 }
+export class MethodNotFoundException extends Error{
+    public name:string = MethodNotFoundException.class().getName();
+    constructor( message : string = null) {super(message);}
+}

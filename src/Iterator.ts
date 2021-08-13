@@ -1,4 +1,4 @@
-import {iterator, listIteratorInterface,consumer} from "./Interface";
+import {iterator, listIteratorInterface, consumer, collection} from "./Interface";
 import {NoSuchElementException} from "./Exception";
 import {Consumer} from "./Consumer";
 import {Arrays} from "./type/Arrays";
@@ -10,7 +10,8 @@ export class Iterator<E> implements iterator<E>{
     /***
      *
      */
-   protected iteration : number = 0;
+    protected iteration : number;
+    protected end : number = 0;
     /***
      *
      */
@@ -18,8 +19,14 @@ export class Iterator<E> implements iterator<E>{
     /***
      *
      * @param value
+     * @param start
+     * @param end
      */
-    constructor( value : E[] ) {this.list = value;}
+    constructor( value : E[], start:number = null, end:number = null ) {
+        this.list       = value;
+        this.iteration  = start || 0;
+        this.end        = end || value.length || 0;
+    }
     /***
      *
      * @param key
@@ -32,7 +39,7 @@ export class Iterator<E> implements iterator<E>{
      *
      */
     public hasNext(): boolean {
-        return this.iteration < this.list.length;
+        return this.iteration < this.end;
     }
     /***
      *
@@ -41,10 +48,13 @@ export class Iterator<E> implements iterator<E>{
         return this.get(this.iteration++);
     }
     /***
-     *
+     * @toOverride
      */
     public remove():void {
+        let arrLen:number = this.list.length;
+
         this.list = Arrays.remove(this.list, this.iteration-1);
+        if( arrLen-this.list.length == 1 ){  --this.end; --this.iteration; }
     }
     /***
      *
@@ -59,12 +69,17 @@ export class Iterator<E> implements iterator<E>{
  * @ListIterator
  */
 export class ListIterator<E> extends Iterator<E> implements listIteratorInterface<E>{
+
+    protected test: collection<E>;
     /***
-     *
+     * @toOverride
      * @param e
      */
     public add(e: E) : void{
-        this.list[this.iteration++] = e;
+        let merge:E[] = Arrays.copyOfRange(this.list, 0,this.iteration-1);
+        merge[merge.length] = e;
+        this.list = Arrays.merge(merge, Arrays.copyOfRange(this.list, this.iteration+1, this.end));
+        this.end++;
     };
     /***
      *
@@ -94,7 +109,7 @@ export class ListIterator<E> extends Iterator<E> implements listIteratorInterfac
      *
      */
     public previous() :E{
-        this.iteration--;
+       --this.iteration;
         return this.get(this.iteration);
     }
     /***
@@ -102,6 +117,6 @@ export class ListIterator<E> extends Iterator<E> implements listIteratorInterfac
      * @param e
      */
     public set (e: E) : void{
-        this.list[this.iteration-1]= e;
+        this.list[this.iteration-1] = e;
     }
 }

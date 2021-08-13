@@ -13,12 +13,12 @@ export abstract class AbstractMap<K,V> implements Map<K, V>{
 
 
     public clear(): void {
-        let node:Node<K, V>; let i :number=0;
-        while( (node = <Node<K, V>>this.value.next) ){
-            node.setValue(null);
-            this.sizeOf--;
-            i++;
+        let sItr: iterator<MapEntries<K, V>> = this.entrySet().iterator();
+        while (sItr.hasNext()){
+            sItr.next();
+            sItr.remove();
         }
+        this.sizeOf = 0;
     }
 
     containsKey(key: K): boolean {
@@ -65,9 +65,7 @@ export abstract class AbstractMap<K,V> implements Map<K, V>{
         return undefined;
     }
 
-    remove(o: Object): V {
-        return undefined;
-    }
+    public abstract remove(o: Object): V;
 
     public size(): number {return this.sizeOf;}
 

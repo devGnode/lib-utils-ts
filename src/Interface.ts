@@ -372,7 +372,7 @@ export interface collection<E> extends Iterable<E> {
     toArray( ) : E[]
     /***
      */
-    spliterator():spliterator<E>
+    spliterator(from?:number, to?:number):spliterator<E>
     /***
      */
     toJson( ) : MapType<any, any>
@@ -382,19 +382,38 @@ export interface collection<E> extends Iterable<E> {
 }
 /***@Set<E>*/
 export interface Set<E> extends collection<E>{}
-
 /**@v3.0.0*/
 export interface List<E> extends collection<E> {
+    /***
+     */
     get(index:number):E
+    /***
+     */
     set(index:number,value:E):void
+    /***
+     */
     indexOf(o:Object):number
     //lastIndexOf(Object o)
+    /***
+     */
     replaceAll(oldValue:E, newValue:E):void
+    /***
+     */
     listIterator( ): ListIterator<E>
+    /***
+     */
     stream(): Stream<E>
+    /***
+     */
     sort(comparator?:Comparator<E>):void
+    /***
+     */
     reverse():void
+    /***
+     */
     subList( from:number, to:number ):List<E>
+    /***
+     */
     clone():List<E>
 }
 /***

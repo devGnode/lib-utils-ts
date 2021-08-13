@@ -89,7 +89,6 @@ export abstract class Spliterators{
             consumer = <IntConsumer>this.cast(action);
             if (Object.isNull(action)) throw new NullPointerException();
             if ((a = this.array).length >= (hi = this.fence) && (i = this.index) >= 0 && i < (this.index = hi)) {
-                console.log("ok")
                 do { consumer.accept(a[i]); } while (++i < hi);
             }
         }
