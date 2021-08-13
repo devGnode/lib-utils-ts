@@ -26,7 +26,7 @@ export class ArrayList<T> extends AbstractArrayList<T> implements List<T>{
         if(typeof value === "number")this.value  = Arrays.fill([],value,null);
         if(value instanceof AbstractCollection ) this.addAll(value);
         if(value instanceof Array ){
-            this.value  = value;
+            this.value  = Arrays.copyOfRange(value,0,value.length);
             this.offset = value.length;
         }
     }

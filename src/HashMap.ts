@@ -1,4 +1,4 @@
-import {collection, consumer, iterator, Map, MapEntries, Set, spliterator} from "./Interface";
+import {collection, consumer, iterator, ListKey, Map, MapEntries, MapType, Set, spliterator} from "./Interface";
 import {Consumer} from "./Consumer";
 import {MethodNotFoundException, RuntimeException, UnsupportedOperationException} from "./Exception";
 import {Iterator} from "./Iterator";
@@ -43,6 +43,8 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
     protected value: Node<K, V>;
 
     private lastMapEntries: MapEntries<K, V>[] = [];
+
+    public constructor() {super();}
 
     public put(key: K, value: V): V {
         let exists:boolean = false;
@@ -305,5 +307,14 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
      * @returns {string}
      */
     public toString():string{return this.entrySet().toString();}
-
+    /****
+     *
+     * @param {MapType<K, V>} value
+     * @returns {HashMap<K, V>}
+     */
+    public static of<K extends ListKey, V>(value:MapType<K, V>):HashMap<K, V>{
+        let hash:HashMap<K, V> = new HashMap(), tmp:K;
+        for( tmp in value)hash.put(tmp,value[tmp]);
+        return hash;
+    }
 }
