@@ -72,4 +72,21 @@ let entry1: Set<MapEntries<number, Test>> = mapper.entrySet();
 console.log( mapper.entrySet().toString() );
 console.log( map.toString() );
 
+let mapDel: HashMap<string, number> = new HashMap();
+mapDel.put("Hello",125);
+mapDel.put("dele",12545465);
+mapDel.entrySet().iterator().forEachRemaining(new class implements IConsumer<MapEntries<string,number>>{
+    accept = (value:MapEntries<string, number>)=> console.log(value.getValue());
+});
+
+console.log("ddmqsdùsqdlsqùldùlsùdlqsldùsqd");
+mapDel.clear();
+//mapDel.remove(125)
+
+console.log("ddmqsdùsqdlsqùldùlsùdlqsldùsqd", mapDel.size(), mapDel);
+mapDel.entrySet().iterator().forEachRemaining(new class implements IConsumer<MapEntries<string,number>>{
+    accept = (value:MapEntries<string, number>)=> console.log(value.getValue());
+
+});
+
 

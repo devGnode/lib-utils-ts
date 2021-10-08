@@ -138,9 +138,9 @@ export class ArrayList<T> extends AbstractArrayList<T> implements List<T>{
              * @override
              */
             public remove(): void {
-                let lenCtrl:number = list.value.length;
+                let lenCtrl:number = list.value.length, key:number = this.iteration;
 
-                list.value = Arrays.remove(list.value, this.iteration - 1 );
+                list.value = Arrays.remove(list.value, key-1>=0 ? --key : key );
                 if(lenCtrl-list.value.length === 1 ){
                     --this.end;
                     --list.offset;

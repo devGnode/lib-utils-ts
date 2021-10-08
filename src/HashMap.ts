@@ -5,6 +5,7 @@ import {Iterator} from "./Iterator";
 import {AbstractMap} from "./AbtsractMap";
 import {AbstractSet} from "./AbstractSet";
 import {Spliterators} from "./Spliterators";
+import {Arrays} from "./type/Arrays";
 /***
  *
  */
@@ -104,10 +105,10 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
     private static Node = class Node<K,V> implements MapEntries<K,V>{
         key:K;
         value:V;
-        next:Node<K,V>
+        next:Node<K,V>;
 
         public constructor(key:K, value:V, next:Node<K, V> = null ) {
-            this.key    = key
+            this.key    = key;
             this.value  = value;
             this.next   = next;
         }
@@ -198,7 +199,7 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
                     if(next) this.value = next;
                     else this.value = null;
                 }
-                if(last!=current&&next&&last){
+                else if(last!=current&&next&&last){
                     last.next = next;
                 }
                 else if(last!==current&&Object.isNull(next)&&last){
@@ -237,41 +238,70 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
      * @returns {Set<MapEntries<K, V>>}
      */
     public entrySet(): Set<MapEntries<K, V>> {
-        let slf:this = this;
-        return  new class EntrySet extends HashMap.EntrySet<MapEntries<K, V>> implements Set<MapEntries<K, V>>{
+        let slf: this = this;
+        console.log("dqflùsqldsqdq-1551515");
+        return new class EntrySet extends HashMap.EntrySet<MapEntries<K, V>> implements Set<MapEntries<K, V>> {
 
-                protected offset: number = 0;
+            constructor() {
+                super();
+                this.value = slf.nodeToArray();
+                this.offset = 0;
+            }
 
-                constructor() {
-                    super();
-                   this.value = slf.nodeToArray();
+            public remove(value: Object): boolean {
+                let c: MapEntries<K, V> = <MapEntries<K, V>>value;
+                if (Object.isNull(c.getKey) || Object.isNull(c.getValue)) throw new MethodNotFoundException(`Bad implementation of interface MapEntries`);
+                if (super.remove(value)) {
+                    //slf.remove(c.getValue());
+                    slf.lastMapEntries = Arrays.copyOfRange(this.value, 0, this.value.length);
+                    return true;
                 }
+                return false;
+            }
 
-                public remove(value: Object): boolean {
-                   let c:MapEntries<K, V> = <MapEntries<K, V>>value;
-                    if(Object.isNull(c.getKey)||Object.isNull(c.getValue)) throw new MethodNotFoundException(`Bad implementation of interface MapEntries`);
-                    if( super.remove(value) ){
-                        slf.remove(c.getValue());
-                        slf.lastMapEntries = this.value;
-                        return true;
+            public size(): number {return slf.sizeOf;}
+
+            public forEach(consumer: consumer<MapEntries<K, V>>) {
+                Object.requireNotNull(consumer);
+                if (typeof consumer === "function") consumer = Consumer.of(consumer);
+                if (!Object.isNull(slf)) {
+                    let tmp: Node<K, V> = slf.value;
+
+                    while (tmp) {
+                        consumer.accept(tmp);
+                        tmp = tmp.next;
                     }
-                    return false;
                 }
+            }
 
-                public size(): number {return slf.sizeOf;}
+            public iterator(): iterator<MapEntries<K, V>> {
+                let slfSet: this = this;
+                return new class extends Iterator<MapEntries<K, V>> implements iterator<MapEntries<K, V>> {
 
-                public forEach(consumer: consumer<MapEntries<K, V>>) {
-                    Object.requireNotNull(consumer);
-                    if(typeof consumer === "function") consumer = Consumer.of(consumer);
-                    if(!Object.isNull(slf)){
-                        let tmp:Node<K, V> = slf.value;
+                    constructor() {
+                        super(slfSet.value, 0, slfSet.offset);
+                    }
 
-                        while ( tmp ){
-                            consumer.accept(tmp)
-                            tmp = tmp.next;
-                        }
+                    /***
+                     * @override
+                     */
+                    public remove(): void {
+                        let lenCtrl: number = slfSet.value.length,
+                            key: number = this.iteration;
+
+                        if (this.iteration - 1 >= 0) --key;
+                        console.log("999999", this.list);
+                        //   slf.remove(this.get(key).getValue());
+
+                        // slfSet.value = this.list;
+                        slf.remove(this.get(key).getValue());
+                        super.remove();
+                        slf.lastMapEntries = slfSet.value = Arrays.remove(slfSet.value, key);
+                        if (lenCtrl - slfSet.value.length === 1) --slfSet.offset;
+
                     }
                 }
+            }
         };
     }
     /***

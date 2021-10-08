@@ -36,7 +36,7 @@ export abstract class AbstractArrayList<T> extends AbstractCollection<T> impleme
      */
     public indexOf(o: Object): number {
         let itr: iterator<T> = this.iterator(),
-            found: boolean = false, loop: number = 0;
+            found:boolean = false, loop:number = 0;
         while (itr.hasNext()) {
             if (o.equals(itr.next())) {
                 found = !found;
