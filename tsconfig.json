@@ -4,7 +4,7 @@
     "target": "es2020",
     "sourceMap": true,
     "declaration": true,
-    "removeComments": true,
+    "removeComments": false,
     "experimentalDecorators": true
   },
   "include": ["src/**/*.ts","test/**/*.ts"],
