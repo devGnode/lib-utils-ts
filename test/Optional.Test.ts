@@ -3,6 +3,7 @@ import {optional, supplier} from "../src/Interface";
 import {Optional} from "../src/Optional";
 import assert = require("assert");
 import {RuntimeException} from "../src/Exception";
+import {OptionalInt} from "../src/OptionalInt";
 
 try{
     Optional.of(null);
@@ -61,3 +62,4 @@ try{
     console.log(e)
 }
 
+console.log( "toStrinf : ",  Optional.of(12).toString(), OptionalInt.empty().toString() );

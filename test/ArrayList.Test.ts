@@ -3,6 +3,9 @@ import "../src/globalUtils";
 //
 import {IConsumer, iterator, List, PredicationConstructor} from "../src/Interface";
 import {ArrayList} from "../src/ArrayList";
+import {HashSet} from "../src/HashSet";
+import {Iterator} from "../src/Iterator";
+import {HashMap} from "../src/HashMap";
 
 
 console.log("==================== ArrayList ==================")
@@ -88,7 +91,43 @@ oo.reverse();
 console.log(oo);
 
 console.log("==================== Clone ==================");
-console.log(oo.clone(),);
+console.log(oo.clone());
 
 
-let lm: PredicationConstructor<string> = (value:string) => true;
+let tr:List<number> = new ArrayList([null,14,66,4,8,11,3,66,2]);
+
+tr.listIterator().add(1400);
+tr.forEach(console.log);
+console.log(new ArrayList([null,14,66,4,8,11,3,66,2]).iterator().getClass().getName());
+console.log(new ArrayList([null,14,66,4,8,11,3,66,2]).listIterator());
+
+let set: HashSet<number> = new HashSet(5);
+
+set.add(1);
+set.add(2);
+set.add(2);
+console.log(set.size(),set.toString());
+
+let irr:iterator<number> = set.iterator();
+irr.next();
+irr.next();
+irr.remove();
+console.log(set.size(),set.toString());
+
+let irr0: Iterator<number> = new Iterator([1,2,3,4,5]);
+
+console.log(irr0.next());
+console.log(irr0.next());
+irr0.remove();
+console.log(irr0.next());
+irr0.remove();
+console.log(irr0.next());
+console.log(irr0.next());
+console.log(irr0);
+
+
+let lf:List<number> = new ArrayList([null,14,66,4,8,11,3,66,2]);
+let lfs:List<number> = new ArrayList([1,4,5,6,8]);
+
+lf.addAll(lfs);
+lf.forEach(console.log);

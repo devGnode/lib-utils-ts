@@ -1,5 +1,5 @@
 import "../src/globalUtils";
-import {IntStreams, IntStreamsPipe} from "../src/IntStreams";
+import {IntPipelineImpl, IntPipeline} from "../src/stream/IntPipeline";
 import {Spliterators} from "../src/Spliterators";
 import {
     biConsumer,
@@ -15,17 +15,17 @@ import {
 import {Streams} from "../src/Streams";
 import {Collectors} from "../src/Collectors";
 import {Predication} from "../src/Predication";
-import {Collections} from "../src/Collections";
 import {Arrays} from "../src/type/Arrays";
-import {Consumer} from "../src/Consumer";
 import {Iterator} from "../src/Iterator";
+import {IntConsumer} from "../src/Consumer";
 
 
-let etre: IntStreams = new IntStreamsPipe.Head<number>(new Spliterators.IntArraySpliterator([1,2,3]));
 
-console.log( etre.filter(value => value.equals(4)).filter(value => value.equals(4)).each(v=>void 0) )
+//let etre: IntPipeline = new IntPipelineImpl.Head<number>(new Spliterators.IntArraySpliterator([1,2,3]));
 
-//IntStreams.builder().add(6).build().
+//console.log( etre.filter(value => value.equals(4)).filter(value => value.equals(4)).each( IntConsumer.of((v:number)=>v)) )
+
+//IntPipeline.builder().add(6).build().
 
 
 

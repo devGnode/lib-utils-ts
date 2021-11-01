@@ -98,4 +98,8 @@ export class Optional<T> implements optional<T>{
      *  @valueOf
      */
     public valueOf( ):Object{return <Object>this.value; }
+    /***/
+    public toString( ):string{
+        return this.isPresent() ? `Optional[${this.value}]` : "Optional.empty";
+    }
 }

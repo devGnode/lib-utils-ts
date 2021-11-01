@@ -1,7 +1,8 @@
-import {IntStream} from "./IntStream";
-import {consumer, IConsumer, IntStreamBuilder, IStreamBuilder, spliterator} from "./Interface";
-import {IntStreams, IntStreamsPipe} from "./IntStreams";
+
+import {consumer, IConsumer, intStream, IntStreamBuilder, IStreamBuilder, spliterator} from "./Interface";
+import {IntPipelineImpl, IntPipeline} from "./stream/IntPipeline";
 import { Spliterators} from "./Spliterators";
+import {Exception} from "./Exception";
 
 /**MOCK*/
 interface Stream<T> {
@@ -40,10 +41,10 @@ export abstract class Streams{
         }
     }
 
-    public static StreamBuild = class StreamBuilderImpl<T> extends Streams.StreamImpl<T> implements IStreamBuilder<T,Stream<T>> {
+    public static StreamBuilder = class StreamBuilderImpl<T> extends Streams.StreamImpl<T> implements IStreamBuilder<T,Stream<T>> {
 
         add(t: T): StreamBuilderImpl<T> {
-            this.accept(t);
+            super.accept(t);
             return this;
         }
 
@@ -57,12 +58,17 @@ export abstract class Streams{
         accept(o: number): void {super.accept(o);}
 
         add(t: number): IntStreamBuilder {
-            this.accept(t);
+            if( this.counter > 0  ) super.accept(t);
+            else{
+                throw new Exception();
+            }
             return this;
         }
 
-        build(): IntStreams {
-           return new IntStreamsPipe.Head<number>(new Spliterators.IntArraySpliterator([1,2,3])) ;
+        build(): intStream {
+            if(this.counter<0) return;
+            this.counter = -this.counter;
+           return new IntPipelineImpl.Head<number>(new Spliterators.IntArraySpliterator(this.buffer)) ;
         }
     }
 }
