@@ -99,6 +99,18 @@ export abstract class AbstractMap<K,V> implements Map<K, V>{
      * @returns {V}
      */
     public abstract remove(o: Object): V;
+
+    /***
+     *
+     */
+    public putAll( map:Map<K, V> ): void{
+        let itr: iterator<MapEntries<K, V>> = map.entrySet().iterator(),
+        tmp: MapEntries<K, V>;
+        while(itr.hasNext()){
+            tmp = itr.next();
+            this.put(tmp.getKey(),tmp.getValue());
+        }
+    }
     /***
      *
      * @returns {number}

@@ -302,6 +302,10 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
                     }
                 }
             }
+
+            lasIndexOf(value: object): number {
+                return 0;
+            }
         };
     }
     /***
@@ -329,6 +333,10 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
             }
 
             public size(): number {return slf.sizeOf;}
+
+            lasIndexOf(value: object): number {
+                return 0;
+            }
 
         }
     }

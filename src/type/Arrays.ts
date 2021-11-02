@@ -1,6 +1,8 @@
 import { RuntimeException} from "../Exception";
 import {Spliterators} from "../Spliterators";
-import {predicate, primitiveArray, spliterator} from "../Interface";
+import {consumer, predicate, primitiveArray, spliterator} from "../Interface";
+import {Consumer} from "../Consumer";
+import {Predication} from "../Predication";
 /***
  * @Arrays
  * @Abstract
@@ -145,5 +147,51 @@ export abstract class Arrays{
      */
     public static spliterator<T>(value:T[], from:number = 0, to:number = null ):spliterator<T>{
         return new Spliterators.ArraySpliterator(value,from,to);
+    }
+    /*****
+     *
+     */
+    public static cp = class cp<T> implements spliterator<T>{
+
+        value:T[];
+        from:number;
+        to:number;
+        direction:number;
+
+        constructor(source:T[], from:number, to:number, direction:number = 0 ) {
+
+            Object.requireNotNull(this.value = source);
+            this.from  = from||0;
+            this.to    = to || source.length;
+            to = this.from;
+
+            this.from       = direction===0? this.from:this.to-1;
+            this.to         = direction===0? this.to:to-1;
+            this.direction  = direction;
+        }
+
+        forEachRemaining(action: consumer<T>): void {
+            let consumer:Consumer<T>, c:number = this.direction===0?1:-1,
+                predicate: predicate<number> = Predication.of((from:number)=>this.direction===0? from<this.to: from>this.to );
+
+            if(typeof action === "function") consumer =Consumer.of(action); else consumer = action;
+
+            if(!predicate.test(this.from)) return;
+            if( this.value.length >= this.to && this.from >= 0 )
+            do{consumer.accept(this.value[this.from])}while(predicate.test(this.from+=c));
+        }
+
+        tryAdvance(action: consumer<T>): boolean {
+            return false;
+        }
+
+        trySplit(): spliterator<T> {
+            return undefined;
+        }
+
+        estimateSize(): number {
+            return 0;
+        }
+
     }
 }

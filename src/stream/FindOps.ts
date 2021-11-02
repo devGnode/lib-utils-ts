@@ -1,6 +1,6 @@
 import {terminalOps, terminalSink} from "./TerminalOps";
 import {PipelineHelper} from "./PipelineHelper";
-import {predicate, supplier} from "../Interface";
+import { predicate, supplier, supplierFn} from "../Interface";
 import {StreamShape} from "./StreamShape";
 import {Spliterator} from "../Spliterator";
 import {Optional} from "../Optional";
@@ -76,17 +76,27 @@ export class FindOps {
             /**@override**/
             public get():Optional<T> {return this.hasValue ? Optional.of(this.value) : null;}
 
-          /*  public static readonly OP_FIND_FIRST = new FindOps.FindOp(
-                true,
-                StreamShape.REFERENCE,
-                Optional.empty(),
-                null,
-                new class a<T> implements supplier<terminalSink<T, Optional<T>>>{
-                   // get = ()=> new FindOps.FindSinkImpl.OfRef();
-                }
-            );*/
+           public static readonly OP_FIND_FIRST =  class OF_FIND_ANY<T> implements supplier<terminalOps<T, Optional<T>>>{
+                     get = ()=> new FindOps.FindOp<T,Optional<T>>(
+                             true,
+                             StreamShape.REFERENCE,
+                             <Optional<T>>Optional.empty(),
+                             null,
+                             new class implements supplier<terminalSink<T, Optional<T>>>{
+                                  get : supplierFn<terminalSink<T, Optional<T>>> = () =>  new FindOps.FindSinkImpl.OfRef();
+                             })
+           }
 
-            public static readonly OP_FIND_ANY: terminalOps<number, OptionalInt> =null;
+           public static readonly OP_FIND_ANY = class OF_FIND_ANY<T> implements supplier<terminalOps<T, Optional<T>>>{
+                     get = ()=> new FindOps.FindOp<T,Optional<T>>(
+                             false,
+                             StreamShape.REFERENCE,
+                             <Optional<T>>Optional.empty(),
+                             null,
+                             new class implements supplier<terminalSink<T, Optional<T>>>{
+                                  get : supplierFn<terminalSink<T, Optional<T>>> = () =>  new FindOps.FindSinkImpl.OfRef();
+                             })
+           }
         }
 
         public static readonly OfInt = class OfInt extends FindOps.FindSink<number, OptionalInt> implements ofInt{
@@ -121,6 +131,13 @@ export class FindOps {
 
     public static makeInt( findFirst:boolean ):terminalOps<number, OptionalInt>{
         return findFirst ? FindOps.FindSinkImpl.OfInt.OP_FIND_FIRST : FindOps.FindSinkImpl.OfInt.OP_FIND_ANY;
+    }
+
+    public static makeRef<T>( findFirst:boolean ):terminalOps<T, Optional<T>>{
+        return (
+            findFirst ?
+            new FindOps.FindSinkImpl.OfRef.OP_FIND_FIRST<T>() :
+            new FindOps.FindSinkImpl.OfRef.OP_FIND_ANY<T>() ).get();
     }
 }
 
