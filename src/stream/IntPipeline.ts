@@ -19,14 +19,15 @@ import {Sink, sink} from "./Sink";
 import {StreamShape} from "./StreamShape";
 import {Predication} from "../Predication";
 import {ReduceOps} from "./ReduceOps";
+import {FindOps} from "./FindOps";
 
 
 export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, intStream> implements intStream {
 
     /****
      */
-     protected constructor(value:Spliterator<number>|AbstractPipeline<any, E_IN, any>|supplier<spliterator<number>>) {
-         super(value);
+     protected constructor(value:Spliterator<number>|AbstractPipeline<any, E_IN, any>|supplier<spliterator<number>>, sourceFlag:number) {
+         super(value,sourceFlag);
      }
 
      public getOutputShape(): StreamShape{return StreamShape.INT_VALUE;}
