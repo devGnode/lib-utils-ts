@@ -1,11 +1,15 @@
+/** *
+ * Here need to load really the natives
+ * classes,  by this way i avoid error
+ * with another classes like Enum.
+ * some classes need of extended method
+ * of an object that not be yet loaded.
+ *
+ * Warning Keep this loading order.
+ * */
 import {Class} from "./Class";
-import {NumberA} from "./type/NumberA";
-import {DateA} from "./type/DateA";
-import {BooleanA} from "./type/BooleanA";
-import {ArrayA} from "./type/ArrayA";
 import {ObjectA} from "./type/ObjectA";
 import {FunctionA} from "./type/FunctionA";
-import {StringA} from "./type/StringA";
 /****
  * Native Object extension area
  *
@@ -16,6 +20,47 @@ import {StringA} from "./type/StringA";
  * + Date
  * ....
  */
+/***
+ Object extension
+ */
+Object.nonNull                      = ObjectA.nonNull;
+Object.isNull                       = ObjectA.isNull;
+Object.requireNotNull               = ObjectA.requireNotNull;
+Object.toString                     = ObjectA.toString;
+Object.equals                       = ObjectA.equals;
+Object.compare                      = ObjectA.compare;
+Object.deepEquals                   = ObjectA.deepEquals;
+Object.typeof                       = ObjectA.typeof;
+Object.prototype.equals             = ObjectA.prototype.equals;
+Object.prototype.getClass           = function<T>():Class<T> { return new Class<T>(this); };
+Object.prototype.toString           = function():string {return ObjectA.toString(this);};
+Object.prototype.hash               = ObjectA.hash;
+Object.defineProperty(Object.prototype,"hash",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"__serial__",{enumerable: false, writable: true, configurable: true, value:null});
+Object.defineProperty(Object,"nonNull",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"isNull",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"requireNotNull",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object,"toString",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"getClass",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"equals",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"deepEquals",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"typeof",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"toString",{enumerable: false, writable: true, configurable: true});
+/***
+ FunctionA extension
+ */
+Function.prototype.class            = FunctionA.prototype.class;
+Object.defineProperty(Function.prototype,"class",{enumerable: false, writable: true, configurable: true});
+/** *
+ * Other extended classes
+ *
+ * Warning Keep this loading order.
+ * */
+import {NumberA} from "./type/NumberA";
+import {DateA} from "./type/DateA";
+import {BooleanA} from "./type/BooleanA";
+import {ArrayA} from "./type/ArrayA";
+import {StringA} from "./type/StringA";
 /****
  * equals method extended for all native Object
  */
@@ -69,34 +114,3 @@ Array.newList                       = ArrayA.prototype.newList;
 Array.sum                           = ArrayA.prototype.sum;
 Array.prototype.equals              = ArrayA.prototype.equals;
 Object.defineProperty(Array.prototype,"equals",{enumerable: false, writable: true, configurable: true});
-/***
- Object extension
- */
-Object.nonNull                      = ObjectA.nonNull;
-Object.isNull                       = ObjectA.isNull;
-Object.requireNotNull               = ObjectA.requireNotNull;
-Object.toString                     = ObjectA.toString;
-Object.equals                       = ObjectA.equals;
-Object.compare                      = ObjectA.compare;
-Object.deepEquals                   = ObjectA.deepEquals;
-Object.typeof                       = ObjectA.typeof;
-Object.prototype.equals             = ObjectA.prototype.equals;
-Object.prototype.getClass           = function<T>():Class<T> { return new Class<T>(this); };
-Object.prototype.toString           = function():string {return ObjectA.toString(this);};
-Object.prototype.hash               = ObjectA.hash;
-Object.defineProperty(Object.prototype,"hash",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"__serial__",{enumerable: false, writable: true, configurable: true, value:null});
-Object.defineProperty(Object,"nonNull",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"isNull",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"requireNotNull",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object,"toString",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"getClass",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"equals",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"deepEquals",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"typeof",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"toString",{enumerable: false, writable: true, configurable: true});
-/***
- FunctionA extension
- */
-Function.prototype.class            = FunctionA.prototype.class;
-Object.defineProperty(Function.prototype,"class",{enumerable: false, writable: true, configurable: true});

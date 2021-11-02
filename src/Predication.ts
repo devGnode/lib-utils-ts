@@ -17,6 +17,7 @@ export class Predication<T> implements predicate<T>{
         let predication: predicateFn<T> = (value)=> this.test(value)&& Define.of<predicateFn<T>>(other.test).orNull(()=>false).call(other,value);
 
         return new class extends Predication<T> implements predicate<T>{
+            /**@override**/
             public test: predicateFn<T> = predication;
         };
     }
@@ -29,6 +30,7 @@ export class Predication<T> implements predicate<T>{
         let predication :  predicateFn<T> = (value:T) => this.test(value)||Define.of<predicateFn<T>>(other.test).orNull(()=>false).call(other,value);
 
         return new class extends Predication<T> implements predicate<T>{
+            /**@override**/
             public test: predicateFn<T> = predication;
         }
     }
@@ -51,9 +53,11 @@ export class Predication<T> implements predicate<T>{
      * @static of
      * @param test
      */
-    public static of<T>( test: predicateFn<T> ): predicate<T> {
+    public static of<T>( test: predicateFn<T>|Predication<T> ): predicate<T> {
+        if(test instanceof Predication) return test;
         return new class extends Predication<T> implements predicate<T>{
-            public test: predicateFn<T> = test;
+            /**@ts-ignore**/
+            public test: predicateFn<T> =  test;
         };
     }
 }

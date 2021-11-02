@@ -62,9 +62,10 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
          this.evaluate(ForEachOps.makeInt(consumer));
     }
 
-    forEachWithCancel(spliterator: spliterator<number>, sink: sink<number>): boolean {
-
-        return false;
+    forEachWithCancel(sink: sink<number>,spliterator: spliterator<number>): boolean {
+         let canceled:boolean;
+         do{}while( !( canceled = sink.cancellationRequested() ) && spliterator.tryAdvance(sink) );
+        return canceled;
     }
 
     filter(predicate: predicateFn<number>): intStream {
@@ -72,7 +73,7 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
             slf:this = this;
 
         return new class extends StatelessOp<number>{
-            constructor() {super(slf);}
+            constructor() {super(slf,0);}
 
             opWrapSink(flags: number, sink: sink<number>): sink<number> {
                 return new class extends Sink.ChainedInt<number>{
@@ -90,12 +91,12 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
 
     count(): number {return 0;}
 
-    findAny(consumer:IntConsumer): void {
-      //  this.evaluate(ForEachOps.makeInt(consumer));
-
+    findAny(consumer:IntConsumer): OptionalInt {
+        return this.evaluate(FindOps.makeInt(false))
     }
 
-    findFirst(): void {
+    findFirst(): OptionalInt {
+         return this.evaluate(FindOps.makeInt(true))
     }
 
     map(supplier: Func<number,number>): intStream {
@@ -103,7 +104,7 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
 
          return new class extends StatelessOp<number>{
 
-             constructor() {super(slf);}
+             constructor() {super(slf,0);}
 
              opWrapSink(flags: number, sink: sink<number>): sink<number> {
                  return new class extends Sink.ChainedInt<number>{
@@ -125,8 +126,8 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
 
 class Head<E_IN> extends IntPipeline<E_IN> implements intStream {
 
-    constructor(split:Spliterator<number>|supplier<spliterator<number>>) {
-        super(split);
+    constructor(split:Spliterator<number>|supplier<spliterator<number>>, sourceFlag:number) {
+        super(split,sourceFlag);
     }
 
     opIsStateful(): boolean { throw new UnsupportedOperationException(); }
@@ -136,42 +137,45 @@ class Head<E_IN> extends IntPipeline<E_IN> implements intStream {
     }
 
     each(consumer: IntConsumer) {
-        // no parallel supported
-        console.log("HERERERERRERERERE ---- - !!! !")
         super.each(consumer);
     }
 }
 
 class StatelessOp<E_IN> extends IntPipeline<E_IN> implements intStream {
 
-    constructor(streamParent: AbstractPipeline<any, E_IN, any>) {
-        super(streamParent);
+    constructor(streamParent: AbstractPipeline<any, E_IN, any>, sourceFlag:number) {
+        super(streamParent,sourceFlag);
     }
 
     opIsStateful(): boolean {return false;}
 
     opWrapSink(flags: number, sink: sink<number>): sink<E_IN> {
-        return undefined;
+        return null;
     }
 
 }
 
 class StateFulOp<E_IN> extends IntPipeline<E_IN> implements intStream {
 
-    constructor(streamParent: AbstractPipeline<any, E_IN, any>) {
-        super(streamParent);
+    constructor(streamParent: AbstractPipeline<any, E_IN, any>, opFlags:number) {
+        super(streamParent,opFlags);
     }
 
     opIsStateful(): boolean {return true;}
 
     opWrapSink(flags: number, sink: sink<number>): sink<E_IN> {
-        return undefined;
+        return null;
     }
 
 }
 
 export abstract class IntPipelineImpl {
-
+    /****
+     *
+     */
     public static Head      = Head;
+    /****
+     *
+     */
     public static StaleFull = StateFulOp;
 }

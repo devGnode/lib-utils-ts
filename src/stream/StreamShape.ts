@@ -5,10 +5,10 @@ import {Enum} from "../Enum";
 export abstract class StreamShape extends Enum{
 
     @Enum.args("REFERENCE")
-    static REFERENCE;
+    static readonly REFERENCE;
 
     @Enum.args("INT_VALUE")
-    static INT_VALUE;
+    static readonly INT_VALUE;
 
     private readonly value:string;
 

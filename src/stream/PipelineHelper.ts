@@ -29,7 +29,7 @@ export abstract class PipelineHelper<P_OUT>{
      * @wrapAndCopyInto:
      * + ForEachOps
      */
-    abstract copyIntoWithCancel<P_IN>(wrappedSink:sink<P_IN>, spliterator:Spliterator<P_IN>):void;
+    abstract copyIntoWithCancel<P_IN extends P_OUT>(wrappedSink:sink<P_IN>, spliterator:Spliterator<P_IN>):void;
     /**/
     abstract wrapSink<P_IN>(sin:sink<P_OUT> ):sink<P_IN>;
     /**/

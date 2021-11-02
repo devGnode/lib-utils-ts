@@ -8,20 +8,15 @@ export abstract class Spliterators{
     public static EmptySpliterator = class EmptySpliterator<T, S extends spliterator<T>, C> {
         constructor() {}
 
-        public trySplit():S {
-            return null;
-        }
+        public trySplit():S {return null;}
 
-        public tryAdvance(consumer: C):boolean {
-            // Object.requireNonNull(consumer);
-            return false;
-        }
+        public tryAdvance(consumer: C):boolean { return false;}
 
-        public  forEachRemaining( consumer: C) :void{
-            //Objects.requireNonNull(consumer);
-        }
+        public  forEachRemaining( consumer: C) :void{}
 
-        public static OfInt = class OfInt extends EmptySpliterator<Number, Spliterator<number>, IntConsumer> {
+        public estimateSize(): number {return 0;}
+
+        public static OfInt = class OfInt extends EmptySpliterator<number, Spliterator<number>, IntConsumer> {
             constructor() {super();}
         };
     };
@@ -67,6 +62,8 @@ export abstract class Spliterators{
             return lo >= mid ? null : new Spliterators.ArraySpliterator(this.array, lo,this.index = mid );
         }
 
+        estimateSize(): number {return this.fence - this.index;}
+
     }
 
     public static IntArraySpliterator = class IntArraySpliterator extends Spliterator.OfInt{
@@ -109,5 +106,7 @@ export abstract class Spliterators{
             let lo:number = this.index, mid = lo+ Math.floor(this.fence/2);
             return lo >= mid ? null : new Spliterators.IntArraySpliterator(this.array, lo,this.index = mid );
         }
+
+        estimateSize(): number {return this.fence - this.index;}
     }
 }

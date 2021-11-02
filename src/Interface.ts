@@ -11,7 +11,9 @@ import {Response} from "./net/Http";
 import {Class} from "./Class";
 import {Constructor} from "./Constructor";
 import {Comparator} from "./Comparator";
-import {Consumer} from "./Consumer";
+import {BiConsumer, Consumer, IntConsumer} from "./Consumer";
+import {OptionalInt} from "./OptionalInt";
+import {Collectors} from "./Collectors";
 /**
  * typeOf
  */
@@ -38,8 +40,6 @@ export type MapType<K extends ListKey,V>    = { [J in K] : V };
  */
 export type predicateFnA<T>          = ( value : T, key? : ascii )=> boolean;
 export type predicateFn<T>           = predicateFnA<T> & Function
-export type predicationKA<K,V>       = ( value :V, key : K, ) => boolean
-export type predicationK<K,V>        = predicationKA<K,V> & Function
 export type predication<T>           = predicateFn<T> | Predication<T> | PredicationConstructor<T>
 
 export type intPredicate             =  predication<number>
@@ -166,6 +166,10 @@ export interface Serial {
 export interface supplier<T> {
     get: supplierFn<T>
 }
+/***@objIntConsumer*/
+export interface ObjIntConsumer<T> {
+    accept?( t:T, value:number ):void
+}
 /***@biConsumer*/
 export interface biConsumer<T,P> {
     accept?(p:T, q:P ): void
@@ -184,6 +188,8 @@ export interface spliterator<T> {
     forEachRemaining(action:  consumer<T>):void
     /***/
     trySplit():spliterator<T>
+    /***/
+    estimateSize():number
 }
 /***@classLoader<T>*/
 export interface classLoader<T> extends constructor<T>{
@@ -294,17 +300,60 @@ export interface predicate<T> {
  **************************************************************
  */
 export interface intStream{
-    each(consumer: consumerFn<number>): void
+
+    map(supplier:Func<number,number>): intStream
+
+    each(consumer: IntConsumer): void
 
     filter(predicate: predicateFn<number>): intStream
 
-    allMatch(predicate: intPredicate)
+    allMatch(predicate: intPredicate): boolean
 
-    anyMatch(predicate: intPredicate)
+    anyMatch(predicate: intPredicate): boolean
 
-    average(): Optional<number>
+    findAny(consumer:IntConsumer):OptionalInt
 
-    collect<R>(supplier: supplier<number>): R
+    findFirst(): OptionalInt
+
+    average(): OptionalInt
+
+    count():number
+
+    collect<R>(supplier: supplier<R>, consumer?:ObjIntConsumer<R>, finisher?:BiConsumer<R,R>): R
+
+    collector<R>(collector:collector<number, R, R>):R
+}
+
+/**MOCK*/
+export interface Stream<T> {
+
+    allMatch(predicate:predication<T>):boolean
+
+    anyMatch(predicate:predication<T>):boolean
+
+    filter(predicate:predication<T>):Stream<T>
+
+    noneMatch(predicate:predication<T>):boolean
+
+    collector<R,A>(collector:collector<T,A,R>):R
+
+    limit(maxValue:number):Stream<T>
+
+    findAny( ):optional<T>
+
+    findFirst():optional<T>
+
+    count():number
+
+    map<R>(mapper:Func<T, R>):Stream<R>
+
+    each(consumer:consumer<T>):void
+
+    sort( comparator: comparator<T> ):Stream<T>
+
+    sum():number
+
+    toArray():Object[]
 }
 /***@IConsume*/
 export interface IConsumer<T>{
@@ -369,6 +418,9 @@ export interface collection<E> extends Iterable<E> {
     size( ) :number
     /***
      */
+    stream(): Stream<E>
+    /***
+     */
     toArray( ) : E[]
     /***
      */
@@ -412,9 +464,6 @@ export interface List<E> extends collection<E> {
     /***
      */
     listIterator( ): ListIterator<E>
-    /***
-     */
-    stream(): Stream<E>
     /***
      */
     sort(comparator?:Comparator<E>):void

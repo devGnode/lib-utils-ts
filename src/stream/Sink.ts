@@ -21,7 +21,7 @@ abstract class ChainedReference<T, E_OUT> implements sink<T>{
      */
     protected  downstream:sink<E_OUT>
 
-    protected constructor(downstream:sink<E_OUT>) {
+     constructor(downstream:sink<E_OUT>) {
         this.downstream = Object.requireNotNull(downstream);
     }
     /***

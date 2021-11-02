@@ -64,8 +64,7 @@ export class ReduceOps {
             combine(other: ReduceSink): void {
             }
 
-            end(): void {
-            }
+            end(): void {}
 
         }
 

@@ -1,4 +1,4 @@
-import {Func, optional, predication, consumer, IConsumer, supplier} from "./Interface";
+import {Func, optional, predication, consumer, IConsumer, supplier, NullType} from "./Interface";
 import {Predication} from "./Predication";
 import {flombok} from "./flombok";
 import {Consumer} from "./Consumer";
@@ -7,6 +7,9 @@ import {Consumer} from "./Consumer";
  * @interface optional<T>
  */
 export class Optional<T> implements optional<T>{
+    /**
+     */
+    private static readonly EMPTY = new Optional(void 0);
 
     @flombok.ENUMERABLE(false)
     protected value : T;
@@ -94,6 +97,10 @@ export class Optional<T> implements optional<T>{
      *  @ofNullable
      */
     public static ofNullable<T>(  value : T ): Optional<T>{return new Optional<T>( value );}
+    /***
+     * @empty
+     */
+    public static empty<T>():optional<T>{return Optional.EMPTY;}
     /***
      *  @valueOf
      */
