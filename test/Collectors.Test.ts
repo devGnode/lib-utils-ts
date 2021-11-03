@@ -96,6 +96,7 @@ class Listor<T> {
     }
 }
 
+// @ts-ignore
 let it:StreamImpl<string> = new Streams.StreamImpl();
 it.accept("2");
 it.accept("0");

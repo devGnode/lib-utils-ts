@@ -88,13 +88,13 @@ console.log(  Number(12).compareTo(12), Number(12).compareTo(15), Number(15).com
 
 let array1: List<number> = Array.newList(2,95,2,55,11,45,30,15,8 ), ctrl:number=Number.MAX_VALUE;
 Collections.sortComparator(array1,Comparator.naturalOrder());
-array1.stream().each(v=>{
+/*array1.stream().each(v=>{
     console.log(v)
     if( v < ctrl ) ctrl = v;
     else{
         assert.strictEqual( v < ctrl, false )
     }
-})
+})*/
 
 assert.strictEqual( Define.of(null).isNull(), true );
 assert.strictEqual( Define.of(null).orNull("foo"), "foo");

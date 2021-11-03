@@ -1,11 +1,10 @@
 // INSERT ALL
 import "../src/globalUtils";
 //
-import {IConsumer, iterator, List, PredicationConstructor} from "../src/Interface";
+import {IConsumer, iterator, List} from "../src/Interface";
 import {ArrayList} from "../src/ArrayList";
 import {HashSet} from "../src/HashSet";
 import {Iterator} from "../src/Iterator";
-import {HashMap} from "../src/HashMap";
 
 
 console.log("==================== ArrayList ==================")
@@ -63,7 +62,7 @@ class Testor{
         this.value = rand;
     }
 
-   public static gen():List<Testor>{
+    public static gen():List<Testor>{
         let out:List<Testor> = new ArrayList();
 
         for(let i=0;i < 10;i++){
@@ -131,3 +130,12 @@ let lfs:List<number> = new ArrayList([1,4,5,6,8]);
 
 lf.addAll(lfs);
 lf.forEach(console.log);
+
+console.log( "4------", Array.list<string>("10","150","14555","2")
+    .stream()
+   // .map((value:string)=>parseInt(value))
+    .findFirst()
+    .get() );
+    /*.each(new class implements IConsumer<number>{
+    accept = (value:number) => console.log("Heloo ", value);
+});*/
