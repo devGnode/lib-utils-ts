@@ -10,7 +10,7 @@ import {
     spliterator
 } from "../src/Interface";
 import {Collectors} from "../src/Collectors";
-import {Streams} from "../src/Streams";
+import {Streams} from "../src/stream/Streams";
 import {BiConsumer} from "../src/Consumer";
 import {Predication} from "../src/Predication";
 /***

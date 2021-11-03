@@ -12,7 +12,7 @@ import {
     List,
     supplierFn, spliterator
 } from "../src/Interface";
-import {Streams} from "../src/Streams";
+import {Streams} from "../src/stream/Streams";
 import {Collectors} from "../src/Collectors";
 import {Predication} from "../src/Predication";
 import {Arrays} from "../src/type/Arrays";

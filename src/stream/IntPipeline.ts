@@ -8,7 +8,7 @@ import {
     supplier,
     collector, ObjIntConsumer
 } from "../Interface";
-import {Streams} from "../Streams";
+import {Streams} from "./Streams";
 import { Spliterator } from "../Spliterator";
 import {OptionalInt} from "../OptionalInt";
 import {ForEachOps} from "./ForEachOps";

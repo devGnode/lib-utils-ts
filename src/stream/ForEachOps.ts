@@ -51,9 +51,7 @@ export class ForEachOps {
 
         public inputShape(): StreamShape {return StreamShape.REFERENCE;}
 
-        begin(value: number): void {
-            console.log("begin", value)
-        }
+        begin(value: number): void {}
 
         cancellationRequested(): boolean {
             return false;

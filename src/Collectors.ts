@@ -2,7 +2,7 @@ import {collector, IConsumer, List, predicate} from "./Interface";
 import {biConsumer,supplier,Func} from "./Interface";
 import {ArrayList} from "./ArrayList";
 // @ts-ignore
-import {StreamImpl, Streams} from "./Streams";
+import {StreamImpl, Streams} from "./stream/Streams";
 
 
 /***/

@@ -5,10 +5,10 @@ import {
     IntStreamBuilder,
     IStreamBuilder,
     spliterator, Stream
-} from "./Interface";
-import { Spliterators} from "./Spliterators";
-import {Exception} from "./Exception";
-import {StreamSupport} from "./stream/StreamSupport";
+} from "../Interface";
+import { Spliterators} from "../Spliterators";
+import {Exception} from "../Exception";
+import {StreamSupport} from "./StreamSupport";
 
 /**MOCK*/
 export interface StreamImpl<T> extends IConsumer<T>, spliterator<T>{
