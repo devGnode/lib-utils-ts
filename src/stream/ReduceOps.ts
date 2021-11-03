@@ -1,9 +1,10 @@
 import {TerminalOps, terminalOps, terminalSink} from "./TerminalOps";
 import {StreamShape} from "./StreamShape";
 import {PipelineHelper} from "./PipelineHelper";
-import {biConsumer, ObjIntConsumer, spliterator, supplier} from "../Interface";
+import {ObjIntConsumer, supplier} from "../Interface";
 import {UnsupportedOperationException} from "../Exception";
 import {Spliterator} from "../Spliterator";
+import {OptionalInt} from "../OptionalInt";
 
 interface AccumulatingSink<T, R, K extends AccumulatingSink<T, R, K>> extends terminalSink<T, R> {
    combine(other:K):void;
@@ -44,7 +45,48 @@ export class ReduceOps {
 
     }
 
-    public static makeIntBinaryOperator<R>(supplier:supplier<R>, accumulator: ObjIntConsumer<R>):TerminalOps<number, R>{
+    public static makeIntOperator(op:Function):TerminalOps<number, OptionalInt>{
+        Object.requireNotNull(op);
+        class ReduceSink implements AccumulatingSink<number, OptionalInt, ReduceSink>{
+            private empty:boolean;
+            private state:number;
+
+            accept(o: number): void {
+                if (this.empty) {
+                    this.empty = false;
+                    this.state = o;
+                }
+                else {
+                    this.state = op.call(null,this.state, o);
+                }
+            }
+
+            get(): OptionalInt {return this.empty ? OptionalInt.empty() : OptionalInt.of(this.state);}
+
+            begin(value: number): void {
+                this.empty = true;
+                this.state = 0;
+            }
+
+            cancellationRequested(): boolean {return false;}
+
+            combine(other: ReduceSink): void {
+                //
+            }
+
+            end(): void {}
+
+        }
+        return new class extends ReduceOps.ReduceOp<number,OptionalInt,ReduceSink>{
+
+            constructor() {super(StreamShape.INT_VALUE);}
+
+            makeSink(): ReduceSink {return new ReduceSink();}
+
+        }
+    }
+
+    public static makeIntSupplier<R>(supplier:supplier<R>, accumulator: ObjIntConsumer<R>):TerminalOps<number, R>{
 
         class ReduceSink extends ReduceOps.Box<R> implements AccumulatingSink<number, R, ReduceSink>{
 
