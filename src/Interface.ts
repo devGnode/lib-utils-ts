@@ -1,7 +1,6 @@
 /****
  * Array
  */
-import {Stream} from "./Stream";
 import {Predication} from "./Predication";
 import {Optional} from "./Optional";
 import {Iterator, ListIterator} from "./Iterator";
@@ -13,7 +12,6 @@ import {Constructor} from "./Constructor";
 import {Comparator} from "./Comparator";
 import {BiConsumer, Consumer, IntConsumer} from "./Consumer";
 import {OptionalInt} from "./OptionalInt";
-import {Collectors} from "./Collectors";
 /**
  * typeOf
  */
@@ -59,7 +57,7 @@ export type newConstructorA<E>       = newConstructor<E> & newConstructorFunc<E>
 export type functionAConstructor     = (... args : Object[] ) => void
 export type constructorFunction      = Function
 /***@v3.0.0*/
-export type Func<A,R> = (...args:A[]) => R
+export type Func<A,R>                = (...args:A[]) => R
 /*@comparatorFunc*/
 export type comparatorFunc<T>                       = ( other1: T, other2: T ) => number
 export type comparatorFn<T,V extends comparable<V>> = ( other1: T, other2: T ) => V
@@ -297,7 +295,7 @@ export interface predicate<T> {
 
 }
 /****
- **************************************************************
+ *
  */
 export interface intStream{
 
@@ -311,6 +309,8 @@ export interface intStream{
 
     anyMatch(predicate: intPredicate): boolean
 
+    noneMatch(predicate: intPredicate):boolean
+
     findAny(consumer:IntConsumer):OptionalInt
 
     findFirst(): OptionalInt
@@ -318,6 +318,14 @@ export interface intStream{
     average(): OptionalInt
 
     count():number
+
+    sum():number
+
+    min():OptionalInt
+
+    max():OptionalInt
+
+    reduce(op:Function):OptionalInt
 
     collect<R>(supplier: supplier<R>, consumer?:ObjIntConsumer<R>, finisher?:BiConsumer<R,R>): R
 
@@ -354,6 +362,10 @@ export interface Stream<T> {
     sum():number
 
     toArray():Object[]
+}
+/**@IntBinaryOperator*/
+export interface IntBinaryOperator {
+    applyAsInt(left:number, right:number):number
 }
 /***@IConsume*/
 export interface IConsumer<T>{
