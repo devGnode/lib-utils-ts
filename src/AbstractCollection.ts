@@ -1,6 +1,8 @@
-import {collection, consumer, iterator, MapType, predicate, spliterator} from "./Interface";
+import {collection, consumer, iterator, MapType, predicate, spliterator, Stream} from "./Interface";
 import {UnsupportedOperationException} from "./Exception";
 import {Consumer} from "./Consumer";
+import {StreamSupport} from "./stream/StreamSupport";
+import {Spliterator} from "./Spliterator";
 /***
  * @abstract
  * @AbstractCollection
@@ -135,6 +137,9 @@ export abstract class AbstractCollection<T> implements collection<T> {
         let itr: iterator<T> = this.iterator();
         while(itr.hasNext())consumer.accept(itr.next());
     }
+    /**
+     * */
+    stream(): Stream<T> {return StreamSupport.stream(<Spliterator<T>>this.spliterator(0));}
     /***
      *  @toArray
      */

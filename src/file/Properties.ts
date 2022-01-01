@@ -119,12 +119,12 @@ export abstract class AbstractProperties<V> implements properties<V>{
 
         while(itr.hasNext()){
             str=itr.next();
-            file.stream().each((value,key) => {
+           /* file.stream().each((value:string) => {
                 if(value.contains(new RegExp(`^\s*${str}\s*`))) {
-                    file.set(Number(key),`${str}=${this.getProperty(str)}`);
+                   // file.set(Number(key),`${str}=${this.getProperty(str)}`);
                     found=true;
                 }
-            });
+            });*/
             if(!found) file.add(`${str}=${this.getProperty(str)}`);
             found=false;
         }

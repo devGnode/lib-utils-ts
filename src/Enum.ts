@@ -1,5 +1,6 @@
-import {ClassNotFoundException} from "./Exception";
+import {ClassNotFoundException, RuntimeException} from "./Exception";
 import {ObjectA} from "./type/ObjectA";
+import {Optional} from "./Optional";
 /***
  * @AbstractClassEnum
  *
@@ -18,7 +19,10 @@ export abstract class Enum{
     public static valueOf<T>(value:string):T{
         if( this.class().getStaticEntries().indexOf(value.toUpperCase()).equals( -1) )
             throw new ClassNotFoundException(`ValueOf : Enum Unknown '${value}' definition`);
-        return <T>Object.create(this[value.toUpperCase()]);
+        return <T>Optional
+            .ofNullable(this[value.toUpperCase()])
+            .orElseThrow(new RuntimeException(`Enumeration [ ${value} ] is not defined !`));
+        //<T>Object.create(this[value.toUpperCase()]);
     }
     /***
      * @equals
@@ -27,7 +31,7 @@ export abstract class Enum{
         return Object.deepEquals(this,o);
     }
     /***
-     * @decoration
+     * @decorationHandler
      * @args ... args: Object[]
      */
     public static args( ...args:Object[] ):any{

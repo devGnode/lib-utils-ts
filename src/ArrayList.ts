@@ -128,24 +128,19 @@ export class ArrayList<T> extends AbstractArrayList<T> implements List<T>{
              * @override
              */
             public add(e: T) {
-                let merge:T[] = Arrays.copyOfRange(list.value, 0,this.iteration-1);
-                merge[merge.length] = e;
-                list.value = Arrays.merge(merge, Arrays.copyOfRange(list.value, this.iteration+1, this.end));
-                this.end++;
+                super.add(e);
+                list.value = this.list;
                 list.offset++;
             }
             /***
              * @override
              */
             public remove(): void {
-                let lenCtrl:number = list.value.length, key:number = this.iteration;
+                let lenCtrl:number = list.value.length;
 
-                list.value = Arrays.remove(list.value, key-1>=0 ? --key : key );
-                if(lenCtrl-list.value.length === 1 ){
-                    --this.end;
-                    --list.offset;
-                    --this.iteration
-                }
+                super.remove();
+                list.value = this.list;
+                if(lenCtrl-list.value.length === 1 ) --list.offset;
             }
         }
     }

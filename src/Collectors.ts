@@ -1,14 +1,10 @@
-import {collector, IConsumer, List, predicate, spliterator} from "./Interface";
+import {collector, IConsumer, List, predicate} from "./Interface";
 import {biConsumer,supplier,Func} from "./Interface";
 import {ArrayList} from "./ArrayList";
-import {Streams} from "./Streams";
+// @ts-ignore
+import {StreamImpl, Streams} from "./stream/Streams";
 
 
-/***/
-//MOCK
-interface StreamImpl<T> extends IConsumer<T>, spliterator<T>{
-
-}
 /***/
 //MOCK
 interface stringBuilder extends IConsumer<string>{
@@ -30,28 +26,6 @@ class StringBuilder implements stringBuilder{
 
     toString():string{return this.value.join(this.delimiter);}
 }
-
-class tampon<T, A, R> implements IConsumer<T>,supplier<R>{
-
-    protected collector:A;
-
-    accept(q: T) {}
-
-    public get():R{return null;}
-}
-
-class toArr<T> extends tampon<T, T[], T[]> implements IConsumer<T>,supplier<T[]>{
-
-    constructor() {
-        super();
-        this.collector = [];
-    }
-
-    accept =  (q: T):void => { this.collector.push(q); }
-
-    get = ():T[] => this.collector
-}
-
 
 class CollectorsImpl<T, A, R> implements collector<T, A, R>{
     /****
@@ -213,9 +187,10 @@ export abstract class Collectors{
 
             supplier(): supplier<StreamImpl<T>> {
                 return new class implements supplier<StreamImpl<T>>{
-                    get = ():StreamImpl<T> => new Streams.StreamImpl<T>();
+                    get = ():StreamImpl<T> => new Streams.StreamBuilder<T>();
                 };
             }
+
             accumulator(): biConsumer<StreamImpl<T>, T> {
                 return new class implements biConsumer<StreamImpl<T>, T>{
                     accept = (ta: StreamImpl<T>, v: T) => ta.accept(v);

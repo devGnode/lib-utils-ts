@@ -22,7 +22,7 @@ export abstract class ArrayA<T> extends Array<T> implements comparator<T>{
     /***
      * @test
      */
-    public sum( ): number{return Number(new ArrayList<T>(this).stream().sum().orElse(-1));};
+    public sum( ): number{return /*Number(new ArrayList<T>(this).stream().sum().orElse(-1))*/-1;};
     /***
      *
      */

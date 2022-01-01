@@ -15,9 +15,12 @@
     "test": "ts-node test.ts",
     "netTest": "ts-node testnet.ts",
     "Enum": "ts-node test/EnumTest.ts",
+    "test:ArrayList": "ts-node ./test/ArrayList.Test.ts",
+    "test:Optional": "ts-node ./test/Optional.Test.ts",
+    "test:HashMap": "ts-node ./test/HashMap.ts",
+    "test:ForEachOp": "ts-node ./test/stream/ForEachOpTest.ts",
     "test:Comparator0": "ts-node ./test/TestComparator6.ts",
-    "test:Intstream": "ts-node ./test/Instream.ts",
-    "test:HashMap": "ts-node ./test/HashMap.ts"
+    "test:Intstream": "ts-node ./test/Instream.ts"
   },
   "engines": {
     "node": ">= 12.14.1"

@@ -10,7 +10,7 @@ import {
     spliterator
 } from "../src/Interface";
 import {Collectors} from "../src/Collectors";
-import {Streams} from "../src/Streams";
+import {Streams} from "../src/stream/Streams";
 import {BiConsumer} from "../src/Consumer";
 import {Predication} from "../src/Predication";
 /***
@@ -96,6 +96,7 @@ class Listor<T> {
     }
 }
 
+// @ts-ignore
 let it:StreamImpl<string> = new Streams.StreamImpl();
 it.accept("2");
 it.accept("0");

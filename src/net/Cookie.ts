@@ -1,5 +1,7 @@
 import "../globalUtils"
 import {Define} from "../Define";
+import {ArrayList} from "../ArrayList";
+import {List} from "../Interface";
 /***@toFix*/
 
 export type cookieSameSite = "lax"|"strict"|"none"
@@ -124,8 +126,8 @@ export class Cookie{
 
     /***@toFix*/
     public static parse( cookie : string ){
-       /* let cook : ArrayList<string> = cookie.explodeAsList(";"),
-            tmp: ArrayList<string>, out : Cookie = new Cookie();
+       /*let cook : List<string> = cookie.explodeAsList(";"),
+            tmp: List<string>, out : Cookie = new Cookie();
         tmp = cook.shift().explodeAsList("=");
         out.setName(tmp.get(0)).setValue(tmp.get(1));
         cook.stream().each(value=>{
