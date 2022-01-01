@@ -22,7 +22,11 @@ export class OptionalInt {
     /***
      * @getAsInt
      */
-    public getAsInt():number{return this.value;}
+    public getAsInt():number{return Math.round(this.value);}
+    /***
+     * @getAsDouble
+     */
+    public getAsDouble():number{ return this.value;}
     /***
      * @orElse
      */

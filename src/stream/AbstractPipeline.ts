@@ -114,17 +114,16 @@ export abstract class AbstractPipeline<E_IN,E_OUT,S> extends PipelineHelper<E_OU
 
         wrappedSink.begin(spliterator.estimateSize());
         // @ts-ignore
-        canceled = tmp.forEachWithCancel(wrappedSink,spliterator)
+        canceled = tmp.forEachWithCancel(wrappedSink,spliterator);
         wrappedSink.end();
         return canceled;
     }
 
     public wrapSink<P_IN>(sk:sink<E_OUT>): sink<P_IN> {
-        let ptr: AbstractPipeline<any, E_OUT, any> = this;
 
         for(let ptr: AbstractPipeline<any, E_OUT, any> = this; ptr.depth >  0; ptr = ptr.previousStage ){
             console.log("======== =====================================")
-            console.log(ptr.depth )
+           // console.log(ptr.depth )
             console.log("=======================================================================================================================================")
             sk = ptr.opWrapSink(0, sk);
             console.log(sk)

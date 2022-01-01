@@ -4,9 +4,8 @@ import {fileStream, List, reader, writer} from "../Interface";
 import {Define} from "../Define";
 import {mkdirSync, statSync, writeFileSync} from "fs";
 import {Path} from "./Path";
-import "../globalUtils";
+console.log("IOStream - d")
 import {Iterator} from "../Iterator";
-
 /***
  *
  */

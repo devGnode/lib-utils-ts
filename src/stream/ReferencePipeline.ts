@@ -3,11 +3,24 @@ import {StreamShape} from "./StreamShape";
 import {Sink, sink} from "./Sink"
 import {UnsupportedOperationException} from "../Exception";
 import {Spliterator} from "../Spliterator";
-import {collector,comparator, Func, optional, predication, spliterator, Stream, supplier} from "../Interface";
+import {
+    collector,
+    comparator,
+    Func,
+    optional,
+    predicate,
+    predication,
+    spliterator,
+    Stream,
+    supplier,
+    consumer
+} from "../Interface";
 import {Supplier} from "../Supplier";
 import {ForEachOps} from "./ForEachOps";
 import {Consumer} from "../Consumer";
 import {FindOps} from "./FindOps";
+import {Predication} from "../Predication";
+import {MatchOps} from "./MatchOps";
 
 
 export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_IN, P_OUT, Stream<P_OUT>> implements Stream<P_OUT>{
@@ -20,11 +33,11 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
 
     abstract opWrapSink(flags: number, sink: sink<P_OUT>): sink<P_IN>;
 
-    each(consumer:Consumer<P_OUT>): void {
-        this.evaluate(new ForEachOps.OfRef(consumer))
+    public each(consumer:consumer<P_OUT>): void {
+        this.evaluate(new ForEachOps.OfRef(Consumer.of(consumer)))
     }
 
-    map<R>(mapper: Func<P_OUT, R>): Stream<R> {
+    public map<R>(mapper: Func<P_OUT, R>): Stream<R> {
         let slf:this = this;
         Object.requireNotNull(mapper);
         return new class extends StateOps<P_OUT,R>{
@@ -48,7 +61,7 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
     }
 
 
-    findAny(): optional<P_OUT> {
+    public findAny(): optional<P_OUT> {
         return this.evaluate(FindOps.makeRef(false));
     }
 
@@ -60,23 +73,43 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
         return 0;
     }
 
-    allMatch(predicate: predication<P_OUT>): boolean {
-        return false;
+    public allMatch(predicate: predication<P_OUT>): boolean {
+        return this.evaluate(MatchOps.makeRef(predicate,MatchOps.MatchKind.ALL));
     }
 
-    anyMatch(predicate: predication<P_OUT>): boolean {
-        return false;
+    public anyMatch(predicate: predication<P_OUT>): boolean {
+        return this.evaluate(MatchOps.makeRef(predicate,MatchOps.MatchKind.ANY));
     }
 
     count(): number {
         return 0;
     }
 
-    filter(predicate: predication<P_OUT>): Stream<P_OUT> {
-        return undefined;
+    public filter(predicate: predication<P_OUT>): Stream<P_OUT> {
+        let slf:this = this, p:predicate<P_OUT>;
+
+        Object.requireNotNull(predicate);
+        p = Predication.of(predicate);
+        return new class extends StateOps<P_OUT,P_OUT>{
+
+            constructor() {super(slf);}
+
+            opWrapSink(flags: number, sink: sink<P_OUT>): sink<P_OUT> {
+
+                return new class extends Sink.ChainedReference<P_OUT,P_OUT>{
+
+                    constructor() {super(sink);}
+
+                    /**@override**/
+                    accept(o: P_OUT) {
+                        if( p.test(o) ) this.downstream.accept(o);
+                    }
+                };
+            }
+        };
     }
 
-    findFirst(): optional<P_OUT> {
+    public findFirst(): optional<P_OUT> {
         return this.evaluate(FindOps.makeRef(true));
     }
 
@@ -84,15 +117,15 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
         return undefined;
     }
 
-    noneMatch(predicate: predication<P_OUT>): boolean {
-        return false;
+   public noneMatch(predicate: predication<P_OUT>): boolean {
+        return this.evaluate(MatchOps.makeRef(predicate, MatchOps.MatchKind.NONE));
     }
 
     collector<R, A>(collector: collector<P_OUT, A, R>): R {
         return undefined;
     }
 
-    forEachWithCancel(sink: sink<P_OUT>,spliterator: spliterator<P_OUT>): boolean {
+    public forEachWithCancel(sink: sink<P_OUT>,spliterator: spliterator<P_OUT>): boolean {
         let canceled:boolean;
         do{}while( !( canceled = sink.cancellationRequested() ) && spliterator.tryAdvance(sink) );
         return canceled;

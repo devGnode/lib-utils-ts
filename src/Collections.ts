@@ -55,6 +55,7 @@ export abstract class Collections {
      */
     public static swap<T>( list: List<T>,i : int, j: int ): void{
         Object.requireNotNull(list,"list instance is null");
+       // console.log("SWAP - ", i , j)
         let tmp: T = list.get(i);
         list.set(i,list.get(j));
         list.set(j,tmp);

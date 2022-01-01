@@ -1,6 +1,3 @@
-/****
- * Really simply basic class
- */
 import {double, int} from "./Interface";
 
 export class Random {
@@ -18,3 +15,4 @@ export class Random {
 
     public static nextInt( a: number = 100, b: number = 0 ):int{return Math.floor(Random.nextDouble(a,b));}
 }
+Object.package(this);

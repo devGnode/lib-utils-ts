@@ -1,3 +1,4 @@
+console.log("STREAMSUPPORT - d ")
 import {IntPipelineImpl} from "./IntPipeline";
 import {intStream, spliterator, Stream, supplier} from "../Interface";
 import {Spliterator} from "../Spliterator";

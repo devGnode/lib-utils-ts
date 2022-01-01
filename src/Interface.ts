@@ -12,22 +12,21 @@ import {Constructor} from "./Constructor";
 import {Comparator} from "./Comparator";
 import {BiConsumer, Consumer, IntConsumer} from "./Consumer";
 import {OptionalInt} from "./OptionalInt";
+import {Integer} from "./type/Integer";
+import {Method} from "./Reflect/Method";
+import {Field} from "./Reflect/Field";
 /**
  * typeOf
  */
 export type primitiveArray          = number[]|string[]|boolean[]|Number[]|String[]|Boolean[]
 export type PrimitiveTypes          = "function" |  "object" | "number" | "string"
-export type NullType                = null | undefined
-export type Null<T>                 = T | NullType
 type PrimAscii                      = number|string
 export type int                     = number
 export type double                  = number
 export type ascii                   = Number|String|PrimAscii
-export type lambda                  = ((value : any ,key?: ascii)=> void ) | Function /*...*/;
 /***
  * List<T>
  */
-export type primitiveOptional<T,V>          = T & {__sizeof__:V};
 export type ListKey                         = number | string;
 export type array<T>                        = T[] | Array<T> | null
 export type MapType<K extends ListKey,V>    = { [J in K] : V };
@@ -39,23 +38,10 @@ export type MapType<K extends ListKey,V>    = { [J in K] : V };
 export type predicateFnA<T>          = ( value : T, key? : ascii )=> boolean;
 export type predicateFn<T>           = predicateFnA<T> & Function
 export type predication<T>           = predicateFn<T> | Predication<T> | PredicationConstructor<T>
-
 export type intPredicate             =  predication<number>
 /**/
-export type streamLambda<T>          = ( value : T, key?: ascii ) => T | void
-export type streamLambdaK<V,K>       = ( value : V, key?: K ) => V | void
 export type streamLambdaTo<T,U>      = ( value : T, key?: ascii ) => U | void
-export type lambdaType<T,U>          = streamLambdaTo<T,U> | streamLambda<T> | streamLambdaK<T,U>
-export type asyncStreamLambdaTo<T,U> = ( value : T, key?: ascii ) => Promise<U>
-export type asyncStreamLambda<T>     = ( value : T, key?: ascii ) => Promise<T> | void
 /**@v3.0.0.*/
-
-/**/
-export type newConstructor<E>        = { new( ... args: Object[ ] ) :E }
-export type newConstructorFunc<E>    = { (... args: Object[ ] ): E }
-export type newConstructorA<E>       = newConstructor<E> & newConstructorFunc<E>
-export type functionAConstructor     = (... args : Object[] ) => void
-export type constructorFunction      = Function
 /***@v3.0.0*/
 export type Func<A,R>                = (...args:A[]) => R
 /*@comparatorFunc*/
@@ -69,11 +55,10 @@ export type consumer<T>     = IConsumer<T> |consumerFn<T> | Consumer<T>
 export type biConsumerFn<T,P> = (p:T, q:P ) => void;
 /*@supplierFn*/
 export type supplierFn<R> = () => R;
-
+export type decoratorSupplierFn<T,P,R> = (p:T, q:P )=>R;
 /***
  * Global Extended native object prototype
  */
-
 declare global {
 
     interface String {
@@ -101,6 +86,7 @@ declare global {
     interface NumberConstructor{
         of( value: Object) : number
         compare( x:number, y:number):number
+        sum( a:number, b:number):number
     }
     interface Date{
         plusDays( days : number ) : Date
@@ -140,6 +126,7 @@ declare global {
         requireNotNull<T>( other: T, message?: string ) :T
         equals(o1:Object, o2:Object):boolean
         nonNull( obj: Object ): boolean
+        package(o:Object):void
         toString( o: Object ): string
     }
 
@@ -150,8 +137,9 @@ declare global {
         deepEquals( o1: Object, o2:Object ):boolean
         typeof(o:Object):PrimitiveTypes
         hash():number
+
     }
-    
+
     interface Function {
         class<T extends Object>(): Constructor<T>
     }
@@ -163,6 +151,9 @@ export interface Serial {
 /***@Supplier*/
 export interface supplier<T> {
     get: supplierFn<T>
+}
+export interface decoratorSupplier<T,P,R> {
+    get:decoratorSupplierFn<T,P,R>
 }
 /***@objIntConsumer*/
 export interface ObjIntConsumer<T> {
@@ -190,13 +181,13 @@ export interface spliterator<T> {
     estimateSize():number
 }
 /***@classLoader<T>*/
-export interface classLoader<T> extends constructor<T>{
+export interface classLoader<T>{
     /***
      */
-    setPrototype(proto: Function | Object): classLoader<T>
-    /***
+    setMethod(method:Method): classLoader<T>
+    /**
      */
-    setMethod(name :string, proto: Function): classLoader<T>
+    setField(field:Field):classLoader<T>
     /***
      */
     instance(...argArray: Object[]): T
@@ -204,62 +195,42 @@ export interface classLoader<T> extends constructor<T>{
 /***
  *
  */
-export interface constructor<T> {
+export interface ObjectStructure<T> {
     /***
      * @getName : return name of Class
      */
     getName():string
+    /**/
+    isAnonymousClass():boolean
+    /***/
+    isEnum():boolean
+    /**/
+    isArray():boolean
+    /**/
+    isAnnotation():boolean
+    /**/
+    isPrimitive():boolean
+    /**/
+    getPackage():string
+    /***/
+    getFields(type:number):Field[]
+    /**/
+    getField(name:string, type:number):Field
+    /***/
+    getMethod(name:string, type:number):Method
+    /**/
+    getMethods( ):Method[]
     /***
      * @getType
      */
     getType(): string
     /***
-     * @getEntries : get Array of Object (this)
-     */
-    getEntries( ): [any, string ][]
-    /***
-     * @getKeys
-     */
-    getKeys( ): string[]
-    /***
      * @newInstance return new Instance
      * @args : Object[]
      */
     newInstance(...args: Object[]): T
-    /***
-     * @getResourcesAsStream
-     * @args file path
-     */
-    getResourcesAsStream( name: string): InputStreamReader
-    /***
-     *
-     */
-    getStaticEntries( ):string[]
 }
 /***
- * @interface: classA
- */
-export interface classInterface<T> extends constructor<T>{
-    /***
-     * @getInstance : give back instance of T
-     */
-    getInstance( ):T
-    /***
-     * @cast
-     */
-    cast( other: Object ):T
-    /***
-     * @notNull : return an anonymous object without any null value
-     */
-    notNullProperties( ) : MapType<string, Object>
-}
-/***
- * @deprecated
- * @Alternative classInterface<T>
- * */
-export interface classA<T> extends classInterface<T>{}
-/***
- *
  */
 export interface PredicationConstructor<T> extends Function{
     /***
@@ -299,9 +270,13 @@ export interface predicate<T> {
  */
 export interface intStream{
 
+    mapToObj<R>(supplier: Func<number,R>):Stream<R>
+
     map(supplier:Func<number,number>): intStream
 
     each(consumer: IntConsumer): void
+
+    limit(value:number):intStream
 
     filter(predicate: predicateFn<number>): intStream
 
@@ -311,7 +286,7 @@ export interface intStream{
 
     noneMatch(predicate: intPredicate):boolean
 
-    findAny(consumer:IntConsumer):OptionalInt
+    findAny():OptionalInt
 
     findFirst(): OptionalInt
 
@@ -325,7 +300,11 @@ export interface intStream{
 
     max():OptionalInt
 
+    boxed( ):Stream<Integer>
+
     reduce(op:Function):OptionalInt
+
+    reduceIdentity(identity:number, op:Function):number
 
     collect<R>(supplier: supplier<R>, consumer?:ObjIntConsumer<R>, finisher?:BiConsumer<R,R>): R
 
@@ -490,27 +469,6 @@ export interface List<E> extends collection<E> {
     clone():List<E>
 }
 /***
- *
- * *****************************************************
-export interface NativeExportable<T> {
-    /***
-     *
-
-    shift() : T
-    /***
-     *
-
-    pop() : T
-}
-/***
- *
- ****************************************************
-export interface ArrayListInterfaceA<E> {
-    /***
-     * Extend ArrayList
-
-}***************************************************/
-/***
  * @comparable
  * @comparator
  * @comparatorImpl
@@ -656,15 +614,6 @@ export interface Enumeration<E> {
     hasMoreElement( ) :boolean
     next(): E
 }
-/****
- * @toDelete
- */
-export interface OptionalMapInterface<T,U> {
-    /**
-     * @param callback
-     */
-    map<T,U>( callback : Func<T,U> ) : U
-}
 /**
  *
  */
@@ -724,84 +673,6 @@ export interface define<T>{
      *
      */
     valueOf( ): T
-}
-/***
- *
- */
-export interface StreamAble<K extends string|number,V> {
-    /***
-     */
-    each( callback : lambda ) : StreamAble<K,V>
-    /***
-     */
-    limit( limit: number) : StreamAble<K,V>
-    /***
-     */
-    allMatch( callback : predication<V>) : boolean
-    /***
-     */
-    anyMatch( callback : predication<V> ) : boolean
-    /***
-     */
-    noneMatch( callback : predication<V> ) : boolean
-    /***
-     */
-    filter( predicate : predication<V> ) : StreamAble<K,V>
-    /***
-     */
-    findFirst( ) : Optional<V>
-    /***
-     */
-   // findLast( ) : Optional<V>
-    /***
-     */
-    findAny( ) : Optional<V>
-    /***
-     */
-    count() : number
-}
-
-export interface ArrayStream<T> extends StreamAble<number,T>{
-    /***
-     */
-    hasPeer( callback : predication<T> ) : boolean
-    /***
-     */
-    mapToInt( callback : streamLambda<T> ) : ArrayStream<Number>
-    /***
-     */
-    sum() : Optional<Number>
-    /***
-     */
-    min() : Optional<Number>
-    /***
-     */
-    max() : Optional<Number>
-    /***
-     * @sorted : use native sort method of Array
-     */
-    sorted( compareFn : (a: T, b: T) => number ) : Stream<T>
-    /***
-     *
-     */
-    sort( comparatorFn: IComparator<T> ): Stream<T>
-    /***
-     */
-    iterator() : Iterator<T>
-    /***
-     */
-    listIterator() : ListIterator<T>
-    /***
-     */
-    toArray() : array<T>
-    /***
-     */
-    getList() :  List<T>
-}
-/***
- */
-export interface objectStream<K extends string|number,V> extends StreamAble<K,V>{
-    valueOfOptional( ): Optional<MapType<K,V>>
 }
 
 export interface path {

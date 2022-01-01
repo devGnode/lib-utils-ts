@@ -24,7 +24,7 @@ export class ReduceOps {
 
         public get():T{ return this.state; }
 
-    }
+    };
 
     private static ReduceOp = class ReduceOp<T, R, S extends AccumulatingSink<T, R, S>> implements terminalOps<T, R>{
 
@@ -33,7 +33,7 @@ export class ReduceOps {
         constructor(shape:StreamShape) {this.shape = shape;}
 
         // @toOverriding
-        public  makeSink():S{throw new UnsupportedOperationException();}
+        public makeSink():S{throw new UnsupportedOperationException();}
 
         evaluateSequential<P_IN>(helper: PipelineHelper<T>, spliterator: Spliterator<P_IN>): R {
             return helper.wrapAndCopyInto(this.makeSink(),spliterator).get();
@@ -43,7 +43,7 @@ export class ReduceOps {
 
         inputShape(): StreamShape {return this.shape;}
 
-    }
+    };
 
     public static makeIntOperator(op:Function):TerminalOps<number, OptionalInt>{
         Object.requireNotNull(op);
@@ -78,6 +78,38 @@ export class ReduceOps {
 
         }
         return new class extends ReduceOps.ReduceOp<number,OptionalInt,ReduceSink>{
+
+            constructor() {super(StreamShape.INT_VALUE);}
+
+            makeSink(): ReduceSink {return new ReduceSink();}
+
+        }
+    }
+
+    public static makeIntOperatorN(start:number, op:Function):TerminalOps<number, number>{
+        Object.requireNotNull(op);
+        class ReduceSink implements AccumulatingSink<number, number, ReduceSink>{
+
+            private state:number;
+
+            accept(o: number): void {
+                    this.state = op.call(null,this.state, o);
+            }
+
+            get(): number {return this.state;}
+
+            begin(value: number): void {this.state = start;}
+
+            cancellationRequested(): boolean {return false;}
+
+            combine(other: ReduceSink): void {
+                //
+            }
+
+            end(): void {}
+
+        }
+        return new class extends ReduceOps.ReduceOp<number,number,ReduceSink>{
 
             constructor() {super(StreamShape.INT_VALUE);}
 

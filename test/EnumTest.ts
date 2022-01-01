@@ -1,22 +1,22 @@
 import "../src/globalUtils"
 import {Enum} from "../src/Enum";
 import {Optional} from "../src/Optional";
-/***
- * ENUM
- */
+import {System} from "../src/System";
+
 class TestDevice extends Enum{
 
     @Enum.args("cellphone",200,300)
-    static readonly IOS:TestDevice;
+   // @Enum.args("cellphone",200,300)
+    static IOS:TestDevice;
 
     @Enum.args("desktop",1080,720)
-    static readonly WINDOW:TestDevice;
+    static WINDOW:TestDevice;
 
     private readonly device:string;
     private readonly width:number;
     private readonly height:number;
 
-    private constructor(device:string, width: number, height:number) {
+    private constructor( device:string, width: number, height:number) {
         super();
         this.device = device;
         this.width = width;
@@ -43,7 +43,7 @@ console.log( TestDevice.IOS.equals(TestDevice.valueOf("IOS")), "=== true ;" ,ios
  *
  */
 console.log( TestDevice.IOS.equals(TestDevice.valueOf("WINDOW")),"=== false ;");
-
+console.log( TestDevice.WINDOW.equals(TestDevice.valueOf("WINDOW")),"=== false ;");
 
 class A extends Enum{
 
@@ -78,5 +78,31 @@ class A extends Enum{
         })
     }
 }
+console.log(A.PROD.getUrl());
+console.log(TestDevice.WINDOW.toString());
+console.log(TestDevice.WINDOW.equals("WINDOW"));
 
-console.log(A.PROD.getUrl())
+
+console.log(TestDevice.WINDOW.ordinal());
+console.log(TestDevice.IOS.ordinal());
+//
+console.log(")))====");
+console.log(TestDevice.WINDOW.compareTo(TestDevice.IOS));
+console.log(TestDevice.IOS.compareTo(TestDevice.WINDOW));
+
+let er: TestDevice[] = TestDevice.values();
+let tmpt:TestDevice;
+
+for( tmpt of er ){
+    System.Out.println( "{}", tmpt)
+}
+
+// switch
+switch (TestDevice.WINDOW) {
+    case TestDevice.WINDOW: console.log("XIDJD---------------------"); break;
+    case TestDevice.IOS: console.log("dsddsd6qs6d56sq6d6sqdsqdsq");break;
+}
+
+class tet{}
+
+console.log( TestDevice.IOS.toString());

@@ -1,11 +1,17 @@
-import {Comparator} from "../Comparator";
 import {comparable, comparator} from "../Interface";
+import {Optional} from "../Optional";
 /***
- * @NumberA : Proxy class, allow to extend the prototype of the native Number Object.
+ * @Integer : Proxy class, allow to extend the prototype of the native Number Object.
  * Dont forget to implement your method in global interface ObjectConstructor,
  * Location of this interface is in Interfaces.ts
  */
-export abstract class NumberA extends Number implements comparator<number>,comparable<number>{
+export class Integer extends Number implements comparator<number>,comparable<number>{
+    /***
+     * @param value
+     */
+    public constructor(value?:number) {
+        super(Optional.ofNullable(value).orElse(0));
+    }
     /***
      *
      */
@@ -18,11 +24,17 @@ export abstract class NumberA extends Number implements comparator<number>,compa
             if(Object.isNull(o1)&&Object.isNull(o2)||Object.isNull(o1)||Object.isNull(o2)) return 0;
             return ( o1 > o2 ) ? 1 : o1 == o2 ? 0 :  -1;
         }
+    };
+    /**
+     *
+     */
+    public static sum(a:number, b:number):number{
+        return Object.requireNotNull(a)+Object.requireNotNull(b);
     }
     /***
      *
      */
-    public compare( x :number, y:number):number{ return NumberA.compareNumber.compare(x,y); }
+    public compare( x :number, y:number):number{ return Integer.compareNumber.compare(x,y); }
     /***
      *
      */

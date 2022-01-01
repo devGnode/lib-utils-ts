@@ -6,11 +6,12 @@ import {
     predicateFn,
     spliterator,
     supplier,
-    collector, ObjIntConsumer
+    collector, ObjIntConsumer, supplierFn, Stream
 } from "../Interface";
 import {Streams} from "./Streams";
 import { Spliterator } from "../Spliterator";
 import {OptionalInt} from "../OptionalInt";
+console.log("IntPieplie - d ")
 import {ForEachOps} from "./ForEachOps";
 import {BiConsumer, IntConsumer} from "../Consumer";
 import {UnsupportedOperationException} from "../Exception";
@@ -22,6 +23,11 @@ import {ReduceOps} from "./ReduceOps";
 import {FindOps} from "./FindOps";
 import {ArrayA} from "../type/ArrayA";
 import {MatchOps} from "./MatchOps";
+import {ReferencePipelineImpl} from "./ReferencePipeline";
+import {flombok} from "../flombok";
+import {SliceOps} from "./SliceOps";
+console.log("Support0e")
+import {Integer} from "../type/Integer";
 
 
 export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, intStream> implements intStream {
@@ -34,19 +40,30 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
      public getOutputShape(): StreamShape{return StreamShape.INT_VALUE;}
 
     public allMatch(predicate: intPredicate) :boolean {
-        return this.evaluate(MatchOps.makeInt(predicate, MatchOps.MatchKind.ALL));
+        return this.evaluate(MatchOps.makeInt(Predication.of(predicate), MatchOps.MatchKind.ALL));
     }
 
     public anyMatch(predicate: intPredicate):boolean {
-         return this.evaluate(MatchOps.makeInt(predicate, MatchOps.MatchKind.ANY ));
+         return this.evaluate(MatchOps.makeInt(Predication.of(predicate), MatchOps.MatchKind.ANY ));
     }
 
     public noneMatch(predicate: intPredicate): boolean {
-        return this.evaluate(MatchOps.makeInt(predicate, MatchOps.MatchKind.NONE ));
+        return this.evaluate(MatchOps.makeInt(Predication.of(predicate), MatchOps.MatchKind.NONE ));
     }
+    /***
+     *
+     */
+    public average(): OptionalInt {
+         let av = new class Average implements supplier<Array<number>>, ObjIntConsumer<Array<number>>{
+             get: supplierFn<Array<number>> = ()=> [0,0];
+             accept(t: Array<number>, value: number): void {
+                 t[0]++;
+                 t[1] += value;
+             }
+         };
+         let tmp: Array<number> = this.collect(av, av);
 
-    average(): OptionalInt {
-        return OptionalInt.of(0);
+        return tmp[0] > 0 ? OptionalInt.of(tmp[1] / tmp[0] ) : OptionalInt.empty();
     }
     /***
      * @param {supplier<R>} supplier
@@ -54,7 +71,7 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
      * @param {BiConsumer<R, R>} combiner
      * @returns {R}
      */
-    public collect<R>(supplier: supplier<R>, consumer?:ObjIntConsumer<R>, combiner?:BiConsumer<R,R>): R {
+    public collect<R>(supplier: supplier<R>, consumer:ObjIntConsumer<R>, combiner?:BiConsumer<R,R>): R {
         return this.evaluate(ReduceOps.makeIntSupplier(supplier,consumer));
     }
     /****
@@ -90,6 +107,11 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
          do{}while( !( canceled = sink.cancellationRequested() ) && spliterator.tryAdvance(sink) );
         return canceled;
     }
+    /**
+     * */
+    public limit(value: number): intStream {
+        return SliceOps.makeInt(this,0,value);
+    }
     /***
      *
      * @param {predicateFn<number>} predicate
@@ -118,17 +140,14 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
     }
 
     count(): number {return 0;}
-
-    sum(): number {
-        return 0;
-    }
-
+    /**
+     * **/
+    public sum(): number {return this.reduceIdentity(0,Number.sum);}
     /***
      *
-     * @param {IntConsumer} consumer
      * @returns {OptionalInt}
      */
-    public findAny(consumer:IntConsumer): OptionalInt {
+    public findAny(): OptionalInt {
         return this.evaluate(FindOps.makeInt(false))
     }
     /***
@@ -164,6 +183,36 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
          };
     }
     /***
+     *
+     * @param supplier
+     */
+    public mapToObj<R>(supplier: Func<number,R>):Stream<R> {
+        let slf:this = this;
+        Object.requireNotNull(supplier);
+        return new class extends ReferencePipelineImpl.StateOps<number,R>{
+
+            constructor() {super(slf);}
+
+            opWrapSink(flags: number, sink: sink<R>): sink<number> {
+                return new class extends Sink.ChainedInt<R>{
+
+                    constructor() {super(sink);}
+
+                    /**@override**/
+                    accept(o: number) {
+                        this.downstream.accept(supplier.call(null,o))
+                    }
+                };
+            }
+
+        };
+    }
+    /**
+     * */
+    public boxed( ):Stream<Integer>{
+        return this.mapToObj(Integer.of);
+    }
+    /***
      * @returns {OptionalInt}
      */
     public max(): OptionalInt {return this.reduce(Math.max);}
@@ -174,7 +223,16 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
     /***
      * @returns {OptionalInt}
      */
+    @flombok.FINAL()
     public reduce(op:Function): OptionalInt {return this.evaluate(ReduceOps.makeIntOperator(op));}
+    /***
+     * @param identity
+     * @param op
+     */
+    @flombok.FINAL()
+    public reduceIdentity(identity:number, op:Function):number{
+        return this.evaluate(ReduceOps.makeIntOperatorN(identity, op));
+    }
     /****
      * @returns {IntStreamBuilder}
      */
