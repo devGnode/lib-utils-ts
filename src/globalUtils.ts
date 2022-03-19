@@ -5,25 +5,32 @@
  * some classes need of extended method
  * of an object that not be yet loaded.
  *
- * Warning Keep this loading order.
  * */
 /***
- * First init package
- */
+ * 0 - make first init
+ * Warning Keep this importation order.
+ *
+ * @init: Package.Package
+ * ***/
 import {Package} from "./Package/Package";
-Object.package  = Package;
-Object.defineProperty(Object,"package",{enumerable:false,configurable:false,writable:false})
-/***
- *
- */
+Object.package  = Package.Package;
+Object.defineProperty(Object,"package",{enumerable:false,configurable:false,writable:false});
+/***tmp init Function.class**/
+import {Constructor} from "./init/Constructor";
+Function.prototype.class = <any>Constructor.clazz;
+Object.defineProperty(Function.prototype,"class",{enumerable: false, writable: true, configurable: true});
+/***init Object.getClass**/
 import {Objects} from "./type/Objects";
-import {FunctionA} from "./type/FunctionA";
 import {Class} from "./Class";
+Object.prototype.getClass           = function<T>():Class<T> { return new Class<T>(this); };
+Object.defineProperty(Object.prototype,"getClass",{enumerable: false, writable: false, configurable: false});
+/***final Function.getClass**/
+import {Functions} from "./type/Functions";
+Function.prototype.class            = Functions.prototype.class;
+Object.defineProperty(Function.prototype,"class",{enumerable: false, writable: false, configurable: false});
 /****
- * Native Object extension area
+ * 1 - Native Object extension area
  *
- *  update Interfaces each time
- *  there is a new extension
  * + String
  * + Number
  * + Date
@@ -32,44 +39,28 @@ import {Class} from "./Class";
 /***
  Object extension
  */
-Object.nonNull                      = Objects.nonNull;
-Object.isNull                       = Objects.isNull;
-Object.requireNotNull               = Objects.requireNotNull;
-
+/***/
 Object.toString                     = Objects.toString;
 Object.equals                       = Objects.equals;
 Object.compare                      = Objects.compare;
-Object.deepEquals                   = Objects.deepEquals;
-Object.typeof                       = Objects.typeof;
 //
 Object.prototype.equals             = Objects.prototype.equals;
-Object.prototype.getClass           = function<T>():Class<T> { return new Class<T>(this); };
 Object.prototype.toString           = function():string {return Objects.toString(this);};
 Object.prototype.hash               = Objects.hash;
-Object.defineProperty(Object,"nonNull",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"isNull",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"requireNotNull",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"deepEquals",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"typeof",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object,"toString",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"getClass",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"equals",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"toString",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"hash",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object,"equals",{enumerable: false, writable: true, configurable: false});
+Object.defineProperty(Object,"compare",{enumerable: false, writable: false, configurable: false});
+Object.defineProperty(Object,"toString",{enumerable: false, writable: true, configurable: false});
+Object.defineProperty(Object.prototype,"equals",{enumerable: false, writable: true, configurable: false});
+Object.defineProperty(Object.prototype,"toString",{enumerable: false, writable: true, configurable: false});
+Object.defineProperty(Object.prototype,"hash",{enumerable: false, writable: true, configurable: false});
 Object.defineProperty(Object.prototype,"__serial__",{enumerable: false, writable: true, configurable: true, value:null});
-/***
- * @Function Area
- */
-Function.prototype.class            = FunctionA.prototype.class;
-Object.defineProperty(Function.prototype,"class",{enumerable: false, writable: false, configurable: false});
 /** *
  * Other extended classes
- *
  * Warning Keep this loading order.
  * */
 import {Integer} from "./type/Integer";
-import {DateA} from "./type/DateA";
-import {BooleanA} from "./type/BooleanA";
+import {Dates} from "./type/Dates";
+import {Booleans} from "./type/Booleans";
 import {ArrayA} from "./type/ArrayA";
 import {Strings} from "./type/Strings";
 /****
@@ -102,20 +93,20 @@ Number.sum                          = Integer.sum;
 /***
  Date Extension
  */
-Date.prototype.plusDays             = DateA.prototype.plusDays;
-Date.prototype.lessDays             = DateA.prototype.lessDays;
-Date.prototype.plusYears            = DateA.prototype.plusYears;
-Date.prototype.lessYears            = DateA.prototype.lessYears;
-Date.prototype.elapsedTime          = DateA.prototype.elapsedTime;
-Date.prototype.compareTo            = DateA.prototype.compareTo;
-Date.dateFormat                     = DateA.prototype.dateFormat;
+Date.prototype.plusDays             = Dates.prototype.plusDays;
+Date.prototype.lessDays             = Dates.prototype.lessDays;
+Date.prototype.plusYears            = Dates.prototype.plusYears;
+Date.prototype.lessYears            = Dates.prototype.lessYears;
+Date.prototype.elapsedTime          = Dates.prototype.elapsedTime;
+Date.prototype.compareTo            = Dates.prototype.compareTo;
+Date.dateFormat                     = Dates.prototype.dateFormat;
 /***
  Boolean extension
  */
-Boolean.prototype.state             = BooleanA.prototype.state;
-Boolean.prototype.compareTo         = BooleanA.prototype.compareTo;
-Boolean.of                          = BooleanA.of;
-Boolean.compare                     = BooleanA.compare;
+Boolean.prototype.state             = Booleans.prototype.state;
+Boolean.prototype.compareTo         = Booleans.prototype.compareTo;
+Boolean.of                          = Booleans.of;
+Boolean.compare                     = Booleans.compare;
 Object.defineProperty(Boolean.prototype,"state",{enumerable: false, writable: true, configurable: true});
 /***
  Array extension

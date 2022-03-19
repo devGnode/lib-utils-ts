@@ -1,47 +1,83 @@
 /****
+ * In this package no importation
+ * work in native js
+ *
  * @Package: Method init the class
  * @param target
  * @constructor
  */
-export function Package(target:any):void{
-    let {ClassNotFoundException} = require("../Exception"),
-        packPath:string= new Error()
-        .stack.trim()
-        .split(/\n|\r\n|\r/)[2];
+import {PackageException} from "./PackageException";
 
-    // cannot find package
-    if(packPath===undefined||packPath===null) return target;
-    packPath = /.*\(([^\)]*)\)/.exec(packPath)[1] // path
-        .replace(/:\d+:\d+$/,"")            // delete :line:column
-        .replace(/\.(js|ts)/,"")            // delete extension
-        .replace(/\\|\//gi,".")             // replace \\ or /  by .
-        .replace(/([a-zA-Z]{1})\:/,"$1");   // Window include Drive
-    // Unix - Fake drive
-    if(/^\./.test(packPath))packPath="R"+packPath;
+/***no import accepted**/
+export class Package {
 
-    if(process.env.PROJECT_ROOT){
-        console.log(process.env.PROJECT_SRC)
-        packPath =packPath.replace(
-            /*require("path").dirname(process.env.PROJECT_ROOT)*/
-            process.env.PROJECT_SRC
-            .replace(/\\|\//gi,".")
-            .replace(/([a-zA-Z]{1})\:/,"$1")+".",
-            ""
-        );
+    private static cleanUp(src:string):any{
+        let {Path} = require("../file/Path"),
+            actualPath:any = new Path(src);
+
+        if(process.env.PROJECT_SRC!==undefined)actualPath = new Path(process.env.PROJECT_SRC).relativize( actualPath );
+        if( /node_modules/.test( actualPath.toString() ) && process.env.PROJECT_ROOT!==undefined ){
+            actualPath = Path.get(process.env.PROJECT_ROOT).resolve(Path.get("node_modules")).relativize( actualPath );
+        }
+        if(/lib-utils-ts|jstrip/.test(actualPath.toString())){
+            actualPath = new Path(String(process.env["JSTRIP_HOME"])).getParent().relativize(actualPath);
+        }
+
+        return actualPath;
     }
-    // get class export
-    let last:string[] = packPath.split("."),
-        element:string = last[last.length-1];
 
-    last = null;
-    packPath = packPath.replace(new RegExp("."+element+"$"),"");
-    if(element===null||element===undefined) throw new ClassNotFoundException(`Package Error ${packPath}`);
-    if( target[element] === undefined ) throw new ClassNotFoundException(`Class @${packPath}.${element} was been badly implemented, no element found !`);
-    Object.defineProperty(
-        target[element],
-        "@Package",
-        {enumerable:false, writable:false,configurable:false, value:packPath}
-    );
-    // return target
-    return target;
+    private static define(target:Object, value:Object):void{
+        Object.defineProperty( target,"@Package",{
+            configurable:false, enumerable:true,
+            writable:false, value:value
+        });
+    }
+
+    public static Package0(target:any):void{
+        let {ClassNotFoundException, NullPointerException} = require("../Exception"),
+            {System} = require("../lang/System"),
+            {Path} = require("../file/Path"),
+
+            element:string, actualPath:any,
+            packPath:string= new PackageException().getLines()[2];
+
+        // cannot find package
+        if(packPath===undefined||packPath===null) return target;
+        actualPath = Package.cleanUp(packPath);
+
+        // get class export
+        element = actualPath.getFileName().toString();
+        // Error
+        if(Object.getOwnPropertyDescriptor(target[element], "@Package")!==undefined) return;
+        if(element===null||element===undefined){
+            throw new ClassNotFoundException(`Package Error ${actualPath.getParent().toForNamePath()}`);
+        }
+        if( target[element] === undefined ){
+            throw new ClassNotFoundException(`Class @${actualPath.toForNamePath()} was been badly implemented, no element found !`);
+        }
+        if( target[element] === null ){
+            throw new NullPointerException(`Class @${actualPath.toForNamePath()} return null value element`);
+        }
+
+        try{console.log("Module loaded",actualPath.getParent().toForNamePath()+"."+element);}catch (e) {
+            System.out.println("Module loaded",actualPath.getParent().toForNamePath()+"."+element);
+        }
+        // Set descriptor
+        Package.define(target[element],actualPath.getParent().toForNamePath());
+        // return target
+        return target;
+    }
+
+    /***/
+    public static Package(target:any):void {Package.Package0(target);}
+
+    /***/
+    public static fromAnnotation(target:any):void {
+        Package.Package0(target);
+    }
+
+    /***/
+    public static fromClazzName(target:Object, packageSrc:string):void {
+        Package.define(target,Package.cleanUp(packageSrc).toForNamePath());
+    }
 }

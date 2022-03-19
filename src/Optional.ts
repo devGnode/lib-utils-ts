@@ -2,6 +2,7 @@ import {Func, optional, predication, consumer,supplier} from "./Interface";
 import {flombok} from "./flombok";
 import {Consumer} from "./Consumer";
 import {Predication} from "./Predication";
+import {Objects} from "./type/Objects";
 /****
  * @class Optional<T>
  * @interface optional<T>
@@ -49,7 +50,7 @@ export class Optional<T> implements optional<T>{
      * @alternatives map
      * @param callback
      */
-    public mapTo<T, U>( callback:Func<T,U> ): Optional<U> {return this.map(callback);}
+    //public mapTo<T, U>( callback:Func<T,U> ): Optional<U> {return this.map(callback);}
     /***
      *  @filter
      */
@@ -91,7 +92,7 @@ export class Optional<T> implements optional<T>{
      *  @of
      */
     public static of<T>( value : T ) : Optional<T>{
-        return new Optional<T>(Object.requireNotNull(value,"Optional value is null use ofNullable method"));
+        return new Optional<T>(Objects.requireNotNull(value,"Optional value is null use ofNullable method"));
     }
     /***
      *  @ofNullable

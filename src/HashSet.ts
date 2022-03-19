@@ -3,6 +3,7 @@ import {collection,  Set, spliterator} from './Interface';
 import {Spliterators} from "./Spliterators";
 import {Arrays} from "./type/Arrays";
 import {AbstractCollection} from "./AbstractCollection";
+import {Objects} from "./type/Objects";
 /****
  * @HashSet :
  *
@@ -27,7 +28,7 @@ export class HashSet<E> extends AbstractSet<E> implements Set<E>{
         super();
         if(typeof  value === "number") this.value = Arrays.fill([],value,null);
         if(value instanceof AbstractCollection ) this.addAll(value);
-        if(!Object.isNull(value)&& value instanceof Array ) {
+        if(!Objects.isNull(value)&& value instanceof Array ) {
             this.value = Arrays.copyOfRange(value,0,value.length);
             this.offset= value.length;
         }
@@ -41,3 +42,4 @@ export class HashSet<E> extends AbstractSet<E> implements Set<E>{
      */
     public static of<T>(value:number|T[]|collection<T>):HashSet<T>{ return new HashSet<T>(value); }
 }
+Object.package(this);

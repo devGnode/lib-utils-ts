@@ -3,6 +3,7 @@ import {iterator, List, Stream} from "./Interface";
 import {ListIterator} from "./Iterator";
 import {Collections} from "./Collections";
 import {Comparator} from "./Comparator";
+import {Objects} from "./type/Objects";
 /****
  * @v3.0.0
  * @AbstractArrayList
@@ -56,7 +57,7 @@ export abstract class AbstractArrayList<T> extends AbstractCollection<T> impleme
      * @param comparator
      */
     public sort(comparator: Comparator<T>){
-        Collections.sortComparator(this,!Object.isNull(comparator) ?comparator: Comparator.naturalOrder());
+        Collections.sortComparator(this,!Objects.isNull(comparator) ?comparator: Comparator.naturalOrder());
     }
     /***
      *
@@ -75,5 +76,5 @@ export abstract class AbstractArrayList<T> extends AbstractCollection<T> impleme
      */
     stream(): Stream<T> {return super.stream();}
 }
-
+Object.package(this);
 

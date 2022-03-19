@@ -1,4 +1,5 @@
 import {biConsumer, biConsumerFn, consumerFn, IConsumer} from "./Interface";
+import {Objects} from "./type/Objects";
 /****
  * @Consumer<T> : Class
  * @Interface   : IConsumer
@@ -13,13 +14,13 @@ export class Consumer<T> implements IConsumer<T>{
      * @param consumer
      */
     public static of<T>( consumer: Consumer<T>|consumerFn<T> ):Consumer<T>{
-        if(consumer instanceof  Consumer ) return consumer;
+        if(consumer instanceof Consumer ) return consumer;
 
         /***@ts-ignore**/
         return new class extends Consumer<T>{
 
             /***@ts-ignore**/
-            accept = Object.requireNotNull(consumer);
+            accept = Objects.requireNotNull(consumer);
         };
     }
 }
@@ -42,7 +43,7 @@ export class IntConsumer implements IConsumer<number>{
         return new class extends IntConsumer{
 
             /***@ts-ignore**/
-            accept = Object.requireNotNull(consumer);
+            accept = Objects.requireNotNull(consumer);
         };
     }
 }
@@ -58,7 +59,7 @@ export class BiConsumer<T,P> implements biConsumer<T,P>{
      */
     public static of<T,P>( consumer: biConsumerFn<T,P> ):BiConsumer<T,P>{
         return new class extends BiConsumer<T,P>{
-            accept = Object.requireNotNull(consumer);
+            accept = Objects.requireNotNull(consumer);
         };
     }
 }

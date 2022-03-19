@@ -25,6 +25,7 @@ export abstract class Spliterator<T> implements spliterator<T> {
     trySplit(): spliterator<T> {
         throw new UnsupportedOperationException();
     }
+
     cast(action: consumer<T>): consumer<T> {
         if (typeof action === "function") return Consumer.of(action);
         return action;
@@ -45,3 +46,4 @@ export abstract class Spliterator<T> implements spliterator<T> {
         }*/
     }
 }
+Object.package(this);

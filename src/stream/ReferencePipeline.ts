@@ -21,6 +21,7 @@ import {Consumer} from "../Consumer";
 import {FindOps} from "./FindOps";
 import {Predication} from "../Predication";
 import {MatchOps} from "./MatchOps";
+import {Objects} from "../type/Objects";
 
 
 export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_IN, P_OUT, Stream<P_OUT>> implements Stream<P_OUT>{
@@ -39,7 +40,7 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
 
     public map<R>(mapper: Func<P_OUT, R>): Stream<R> {
         let slf:this = this;
-        Object.requireNotNull(mapper);
+        Objects.requireNotNull(mapper);
         return new class extends StateOps<P_OUT,R>{
 
             constructor() {super(slf);}
@@ -88,7 +89,7 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
     public filter(predicate: predication<P_OUT>): Stream<P_OUT> {
         let slf:this = this, p:predicate<P_OUT>;
 
-        Object.requireNotNull(predicate);
+        Objects.requireNotNull(predicate);
         p = Predication.of(predicate);
         return new class extends StateOps<P_OUT,P_OUT>{
 
@@ -175,3 +176,4 @@ export abstract class ReferencePipelineImpl{
     public static readonly StateOps = StateOps;
 
 }
+Object.package(this);

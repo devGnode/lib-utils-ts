@@ -142,5 +142,5 @@ export class MatchOps {
         inputShape(): StreamShape {return this.shape;}
     }
 
-
 }
+Object.package(this);

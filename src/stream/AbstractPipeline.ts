@@ -8,7 +8,6 @@ import {Supplier} from "../Supplier";
 import {RuntimeException} from "../Exception";
 import assert = require("assert");
 
-
 export abstract class AbstractPipeline<E_IN,E_OUT,S> extends PipelineHelper<E_OUT>{
 
     private readonly sourceStage:AbstractPipeline<E_IN,E_OUT, S>;
@@ -159,3 +158,4 @@ export abstract class AbstractPipeline<E_IN,E_OUT,S> extends PipelineHelper<E_OU
     public abstract forEachWithCancel( sink:sink<E_OUT>, spliterator:spliterator<E_OUT>):boolean;
 
 }
+Object.package(this);

@@ -3,6 +3,7 @@ import {comparable, comparator,comparatorFn} from "./Interface";
 import {NullPointerException, RuntimeException} from "./Exception";
 import {Collections} from "./Collections";
 import {Comparator} from "./Comparator";
+import {Objects} from "./type/Objects";
 /****
  *  1 . By chance, I managed to see the source code so I have decided to stay ISO code
  */
@@ -26,13 +27,13 @@ export abstract class Comparators<T> {
         constructor(comparator:comparator<T>) { this.comparator = comparator;}
 
         public compare(o1: T, o2: T): number {
-            return Object.isNull(this.comparator) ? 0 : -this.comparator.compare(o1,o2);
+            return Objects.isNull(this.comparator) ? 0 : -this.comparator.compare(o1,o2);
         }
 
         public reversed<T>(): comparator<T>{return <comparator<T>><comparator<Object>>Comparators.naturalOrder;}
 
         public thenComparing<U extends T>( other: comparator<T> ):Reversed<T>{
-            return new Reversed<T>( Object.isNull(other) ? other : this.comparator );
+            return new Reversed<T>( Objects.isNull(other) ? other : this.comparator );
         }
 
         public thenComparingFn<T, U extends comparable<U>>(comparatorFn: comparatorFn<T, U>, comparator: comparator<T> = null ): comparator<T> {
@@ -47,8 +48,8 @@ export abstract class Comparators<T> {
          * @throws NullPointerException : when compareTo is not defined
          */
         public compare(o1: comparable<Object>, o2: comparable<Object>): number {
-            if(Object.isNull(o1)&&Object.isNull(o2)||Object.isNull(o1)||Object.isNull(o2)) return 0;
-            if(Object.isNull(o2.compareTo)) throw new NullPointerException(`${o2.getClass().getName()} class doesn't not implement comparable interface`);
+            if(Objects.isNull(o1)&&Objects.isNull(o2)||Objects.isNull(o1)||Objects.isNull(o2)) return 0;
+            if(Objects.isNull(o2.compareTo)) throw new NullPointerException(`${o2.getClass().getName()} class doesn't not implement comparable interface`);
             return o1.compareTo(o2);
         }
 
@@ -83,12 +84,12 @@ export abstract class Comparators<T> {
         }
 
         public reversed<U extends T>(): comparator<T>{
-            return new NullComparators<T>(!this.nullFirst, Object.isNull(this.comparator) ? null : this.comparator.reversed());
+            return new NullComparators<T>(!this.nullFirst, Objects.isNull(this.comparator) ? null : this.comparator.reversed());
         }
 
         public thenComparing?<U extends T>( other: comparator<T> ):NullComparators<T>{
-             Object.requireNotNull(other);
-            return new NullComparators<T>(this.nullFirst, Object.isNull(other) ? other : this.comparator );
+             Objects.requireNotNull(other);
+            return new NullComparators<T>(this.nullFirst, Objects.isNull(other) ? other : this.comparator );
         }
 
         public thenComparingFn?<T, U extends comparable<U>>(comparatorFn: comparatorFn<T, U>, comparator: comparator<T> = null): comparator<T> {
@@ -98,3 +99,4 @@ export abstract class Comparators<T> {
     }
     /***/
 }
+Object.package(this);

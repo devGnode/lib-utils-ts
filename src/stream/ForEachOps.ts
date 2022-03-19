@@ -1,4 +1,3 @@
-console.log("FOREACHOPS - d")
 import {terminalOps, TerminalOps, terminalSink} from "./TerminalOps";
 import {Spliterator} from "../Spliterator";
 import {StreamShape} from "./StreamShape";
@@ -7,6 +6,7 @@ import {ofInt} from "./Sink";
 import {consumerFn, IConsumer, supplierFn} from "../Interface";
 import {UnsupportedOperationException} from "../Exception";
 import {PipelineHelper} from "./PipelineHelper";
+import {Objects} from "../type/Objects";
 /**
  * @ForEachOps
  * */
@@ -74,10 +74,11 @@ export class ForEachOps {
 
 
     public static makeRef<T>(consumer:IConsumer<T>):TerminalOps<T, void>{
-        return new ForEachOps.OfRef<T>(Object.requireNotNull(consumer));
+        return new ForEachOps.OfRef<T>(Objects.requireNotNull(consumer));
     }
 
     public static makeInt(consumer:IntConsumer):TerminalOps<number, void>{
-        return new ForEachOps.OfInt(Object.requireNotNull(consumer));
+        return new ForEachOps.OfInt(Objects.requireNotNull(consumer));
     }
 }
+Object.package(this);

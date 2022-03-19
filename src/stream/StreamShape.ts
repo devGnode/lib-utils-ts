@@ -4,14 +4,11 @@ import {Enum} from "../Enum";
  */
 export abstract class StreamShape extends Enum{
 
-    @Enum.args("REFERENCE")
+    @Enum.args()
     static readonly REFERENCE;
 
-    @Enum.args("INT_VALUE")
+    @Enum.args()
     static readonly INT_VALUE;
 
-    private readonly value:string;
-
-    protected constructor(value:string) {super(); this.value=value;}
-
 }
+Object.package(this);

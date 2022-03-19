@@ -3,6 +3,7 @@ import {biConsumer,supplier,Func} from "./Interface";
 import {ArrayList} from "./ArrayList";
 // @ts-ignore
 import {StreamImpl, Streams} from "./stream/Streams";
+import {Objects} from "./type/Objects";
 
 
 /***/
@@ -48,15 +49,15 @@ class CollectorsImpl<T, A, R> implements collector<T, A, R>{
     /****
      *
      */
-    public supplier(): supplier<A> {return Object.requireNotNull(this.supplierFn);}
+    public supplier(): supplier<A> {return Objects.requireNotNull(this.supplierFn);}
     /****
      *
      */
-    public accumulator(): biConsumer<A, T> {return Object.requireNotNull(this.consumerFn);}
+    public accumulator(): biConsumer<A, T> {return Objects.requireNotNull(this.consumerFn);}
     /****
      *
      */
-    public finisher(): Func<A, R> {return Object.requireNotNull(this.finisherFn);}
+    public finisher(): Func<A, R> {return Objects.requireNotNull(this.finisherFn);}
 
 }
 
@@ -202,3 +203,4 @@ export abstract class Collectors{
     }
 
 }
+Object.package(this);

@@ -1,5 +1,6 @@
 import {collection, MapEntries, Map, Set, iterator, List} from "./Interface";
 import {ArrayList} from "./ArrayList";
+import {Objects} from "./type/Objects";
 
 interface Node<K,V> extends MapEntries<K,V> {
     key:K;
@@ -30,7 +31,7 @@ export abstract class AbstractMap<K,V> implements Map<K, V>{
     public containsKey(key: K): boolean {
         if(this.sizeOf===0) return false;
         let entry: iterator<MapEntries<K, V>> = this.entrySet().iterator(),
-        isNull:boolean = Object.isNull(key), value:K;
+        isNull:boolean = Objects.isNull(key), value:K;
 
         while (entry.hasNext()){
             value = entry.next().getKey();
@@ -50,7 +51,7 @@ export abstract class AbstractMap<K,V> implements Map<K, V>{
     public containsValue(value: V): boolean {
         if(this.sizeOf===0) return false;
         let entry: iterator<MapEntries<K, V>> = this.entrySet().iterator(),
-            isNullValue:boolean = Object.isNull(value), tmp:V;
+            isNullValue:boolean = Objects.isNull(value), tmp:V;
 
         while (entry.hasNext()){
             tmp = entry.next().getValue();
@@ -128,9 +129,10 @@ export abstract class AbstractMap<K,V> implements Map<K, V>{
             tmp = this.value;
             while ( tmp ){
                 out.add(tmp.value);
-                if(Object.isNull(tmp = tmp.next)) break;
+                if(Objects.isNull(tmp = tmp.next)) break;
             }
         }
         return out;
     }
 }
+Object.package(this);

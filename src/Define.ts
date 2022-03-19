@@ -9,7 +9,6 @@ import {Optional} from "./Optional";
  * older class v1.0.0, before Optional implementation,
  * stay here for upward compatibility of my dev.
  */
-console.log(Optional)
 export class Define<T> extends Optional<T> implements define<T>{
     /***
      *
@@ -47,3 +46,4 @@ export class Define<T> extends Optional<T> implements define<T>{
      */
     public static of<T>( value : T ): Define<T>{return new Define<T>(value);}
 }
+Object.package(this);

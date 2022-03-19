@@ -33,3 +33,4 @@ export abstract class ArrayA<T> extends Array<T> implements comparator<T>{
         return true;
     }
 }
+Object.package(this);

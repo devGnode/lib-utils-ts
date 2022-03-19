@@ -152,3 +152,4 @@ export class ArrayList<T> extends AbstractArrayList<T> implements List<T>{
         return new ArrayList<T>(value);
     }
 }
+Object.package(this);
