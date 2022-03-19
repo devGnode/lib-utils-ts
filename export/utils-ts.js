@@ -1,8 +1,6 @@
 const {flombok} = require("../src/flombok");
 const {HttpOptions, Response, RestHttp, RestHttps} = require("../src/net/Http");
-const  {AbstractProperties, Properties, PropertiesA, PropertiesJson}  = require("../src/file/Properties");
-const  {Path}  = require("../src/file/Path");
-const  {AbstractIOFile, InputStreamReader, FileReader, OutputStreamWriter, FileWriter}  = require("../src/file/IOStream");
+const  {AbstractProperties, Properties, PropertiesJson}  = require("../src/file/Properties");
 const  {Define} = require("../src/Define");
 const {Stream,AbstractObjectStream,ObjectStream} = require("../src/Stream");
 const {Optional}  = require("../src/Optional");
@@ -17,7 +15,7 @@ const {Random} = require('../src/Random');
 const {Predication} = require('../src/Predication');
 const {Class} = require('../src/Class')
 const {Constructor} = require('../src/Constructor')
-const {FunctionA} = require('../src/FunctionA')
+const {FunctionA} = require('../src/Functions')
 const {Collections} = require('../src/Collections')
 const {Comparator} = require('../src/Comparator')
 const {GetOpts} = require('../src/GetOpts')
@@ -42,16 +40,9 @@ module.exports = {
     Define:Define,
 
     AbstractProperties:AbstractProperties,
-    PropertiesA:PropertiesA,
     Properties: Properties,
     PropertiesJson: PropertiesJson,
 
-    Path: Path,
-    AbstractIOFile:AbstractIOFile,
-    InputStreamReader:InputStreamReader,
-    FileReader:FileReader,
-    OutputStreamWriter:OutputStreamWriter,
-    FileWriter:FileWriter,
 
     RestHttp:RestHttp,
     RestHttps:RestHttps,

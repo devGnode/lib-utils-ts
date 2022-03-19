@@ -11,7 +11,6 @@ import {
 import {Streams} from "./Streams";
 import { Spliterator } from "../Spliterator";
 import {OptionalInt} from "../OptionalInt";
-console.log("IntPieplie - d ")
 import {ForEachOps} from "./ForEachOps";
 import {BiConsumer, IntConsumer} from "../Consumer";
 import {UnsupportedOperationException} from "../Exception";
@@ -26,8 +25,8 @@ import {MatchOps} from "./MatchOps";
 import {ReferencePipelineImpl} from "./ReferencePipeline";
 import {flombok} from "../flombok";
 import {SliceOps} from "./SliceOps";
-console.log("Support0e")
 import {Integer} from "../type/Integer";
+import {Objects} from "../type/Objects";
 
 
 export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, intStream> implements intStream {
@@ -83,10 +82,10 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
         return this.collect(
             collector.supplier(),
             new class implements ObjIntConsumer<R>{
-            accept(t: R, value: number) {
-                collector.accumulator().accept(t,value);
-            }
-        },
+                accept(t: R, value: number) {
+                    collector.accumulator().accept(t,value);
+                }
+            },
             null);
     }
     /***
@@ -118,7 +117,7 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
      * @returns {intStream}
      */
     public filter(predicate: predicateFn<number>): intStream {
-        let p:predicate<number> = Predication.of(Object.requireNotNull(predicate)),
+        let p:predicate<number> = Predication.of(Objects.requireNotNull(predicate)),
             slf:this = this;
 
         return new class extends StatelessOp<number>{
@@ -188,7 +187,7 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
      */
     public mapToObj<R>(supplier: Func<number,R>):Stream<R> {
         let slf:this = this;
-        Object.requireNotNull(supplier);
+        Objects.requireNotNull(supplier);
         return new class extends ReferencePipelineImpl.StateOps<number,R>{
 
             constructor() {super(slf);}

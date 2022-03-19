@@ -1,8 +1,8 @@
 import {iterator, listIteratorInterface, consumer, collection} from "./Interface";
 import {NoSuchElementException} from "./Exception";
 import {Consumer} from "./Consumer";
-console.log("ITERATOR - d")
 import {Arrays} from "./type/Arrays";
+import {Objects} from "./type/Objects";
 /***
  * @Iterator
  * @interface iterator<E>
@@ -61,7 +61,7 @@ export class Iterator<E> implements iterator<E>{
      *
      */
     public forEachRemaining(consumer: consumer<E>): void {
-        Object.requireNotNull(consumer);
+        Objects.requireNotNull(consumer);
         if(typeof consumer === "function") consumer = Consumer.of(consumer);
         while(this.hasNext()) consumer.accept(this.next());
     }
@@ -121,3 +121,4 @@ export class ListIterator<E> extends Iterator<E> implements listIteratorInterfac
         this.list[this.iteration-1] = e;
     }
 }
+//Object.package(this);
