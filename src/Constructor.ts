@@ -1,56 +1,170 @@
 import {flombok} from "./flombok";
-import {constructorFunction, constructor} from "./Interface";
-import {FileReader, InputStreamReader} from "./file/IOStream";
+import {ObjectStructure} from "./Interface";
+//import {FileReader, InputStreamReader} from "./file/IOStream";
 import {Class} from "./Class";
 import {ClassNotFoundException} from "./Exception";
+import {Objects} from "./type/Objects";
+import {Define} from "./Define";
+import {Enum} from "./Enum";
+import {ClassLoader} from "./ClassLoader";
+import {Method} from "./Reflect/Method";
+import { Field } from "./Reflect/Field";
+import {Annotation} from "./annotation/Annotation";
+import {ObjectsReflector} from "./Reflect/ObjectsReflector";
+
 /***
  * @Constructor : in Js an Object it's just a function with an object prototype
  * @Interface   : constructor<T>
  */
-export class Constructor<T extends Object> extends Function implements constructor<T> {
+export class Constructor<T extends Object> implements ObjectStructure<T> {
     /***
      */
     @flombok.ENUMERABLE(false)
-    protected value: constructorFunction;
+    protected value: Function;
+    /**/
+    private objectReflector:ObjectsReflector;
     /***
      * @param value
      */
-    constructor( value : constructorFunction ) { super(); this.value = value;}
+    constructor(value: Function) {
+        this.value = value;
+        this.objectReflector = new ObjectsReflector(value.prototype, value,null);
+    }
     /***
+     * This method return if target is an Annotation type
+     * @isAnnotation
+     * @returns boolean returns true if success otherwise false
+     */
+    public isAnnotation(): boolean {return Annotation.prototype.isPrototypeOf(this.value.prototype);}
+    /***
+     * This method returns if target is an anonymous class type
+     * @isAnonymousClass
+     * @returns boolean returns true if success otherwise false
+     */
+    public isAnonymousClass(): boolean {return this.getName().equals("Anonymous");}
+    /***
+     * This method return if target is an Enum class type
+     * @isEnum
+     * @returns boolean returns true if success otherwise false
+     */
+    public isEnum(): boolean {return Enum.prototype.isPrototypeOf(this.value.prototype); }
+    /***
+     * This method returns if target is an Array class type
+     * @isArray
+     * @returns boolean returns true if success otherwise false
+     */
+    public isArray(): boolean {return Array.prototype.isPrototypeOf(this.value.prototype);}
+    /***
+     * <pre>
+     * This method returns if target is a Primitive class type
+     *  Number type
+     *  String type
+     *  Boolean type
+     *  Array type
+     *  Function type
+     *  </pre>
+     * @isPrimitive
+     * @returns boolean returns true if success otherwise false
+     */
+    public isPrimitive(): boolean {
+        return  Number.prototype.isPrototypeOf(this.value.prototype) ||
+                String.prototype.isPrototypeOf(this.value.prototype) ||
+                Boolean.prototype.isPrototypeOf(this.value.prototype) ||
+                // Function.prototype.isPrototypeOf(this.value.prototype) ||
+                Array.prototype.isPrototypeOf(this.value.prototype);
+    }
+    /***
+     * This method returns name of package class
+     * @getPackage
+     * @returns string name of package
+     */
+    public getPackage(): string { return Define.of(this.value["@Package"]).orNull(null);}
+    /***
+     * <pre>
+     *     Return an Array of Enumeration of Enum class
+     *     See how make an Enumeration
+     * </pre>
+     * @getEnumConstants
+     * @returns T[]
+     */
+    public getEnumConstants():T[]{
+        if(!this.isEnum()) return null;
+        return this
+            .getFields(Field.STATIC)
+            .filter(field=>field.getValue().getClass().isEnum())
+            .map(field=><T>field.getValue());
+    }
+    /***
+     * @getName
+     * @returns string
      */
     get name():string{return this.value.constructor.name;}
     /***
+     * @getName
+     * @return screen
      */
     public getName():string{  return this.value.name||this.value.prototype.constructor.name||"Anonymous"; }
     /***
+     * @getType
+     * @returns string
      */
     public getType(): string {return (typeof this.value).toLowerCase();}
     /***
+     * @getDeclaringClass
+     * @returns Class<T>
      */
     public getDeclaringClass(): Class<T>{ return new Class<T>(this.value.class<T>().newInstance()); }
     /***
+     * @getClassLoader
+     * @returns ClassLoader<T>
+     */
+    public getClassLoader():ClassLoader<T>{ return new ClassLoader<T>(this.value); }
+    /***
      * @newInstance return new Instance
-     * @ClassNotFoundException when constructor is null
-     * @NullPointerException if value target is null
+     * @throw ClassNotFoundException
+     * @returns T new instance of T
      */
     public newInstance(...args: Object[]): T {
-        let tmp : any = Object.create(Object.requireNotNull(this.value));
+       /* let tmp : any = Object.create(Objects.requireNotNull(this.value));
+        tmp.constructor = this.value;*/
+        let tmp:any = new class{};
         tmp.constructor = this.value;
-        if(Object.isNull(tmp.constructor)) throw new ClassNotFoundException('Class constructor not found !');
+        if(Objects.isNull(tmp.constructor)) throw new ClassNotFoundException('Class constructor not found !');
         return <T>(new tmp.constructor(...args));
     }
     /***
+     * @getMethod
+     * @param name
+     * @param type
+     * @returns Method
      */
-    public getResourcesAsStream( name: string): InputStreamReader{return new FileReader(name);}
+    public getMethod(name:string, type:number = Method.INSTANCED ):Method{return this.objectReflector.getMethod(name,type);}
     /***
+     * @getMethods
+     * @returns Method[]
      */
-    public getEntries( ): [any, string][]{return Object.entries(this.value.prototype);}
+    public getMethods( ):Method[]{return this.objectReflector.getMethods();}
     /***
-     *
+     * @getFields
+     * @params type
+     * @returns Field[]
      */
-    public getKeys( ): string[]{return Object.keys(this.value.prototype);}
+    public getFields(type: number = (Field.INSTANCED|Field.STATIC)): Field[] {return this.objectReflector.getFields(type);}
     /***
-     * @test
+     * @getField
+     * @params name
+     * @params type
+     * @returns Field
+     */
+    public getField(name: string, type: number): Field {return this.objectReflector.getField(name,type);}
+    /***
+     * @getResourcesAsStream
+     * @param name
+     * @returns InputStreamReader
+     */
+    public getResourcesAsStream( name: string): any/* InputStreamReader*/{return null /*new FileReader(name)*/;}
+    /***
+     * @deprecated
      */
     public getStaticEntries( ):string[]{
         let out:string[]=[];
@@ -58,3 +172,4 @@ export class Constructor<T extends Object> extends Function implements construct
         return out;
     }
 }
+Object.package(this);

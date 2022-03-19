@@ -63,7 +63,7 @@ export abstract class Streams{
         }
 
         estimateSize(): number {return this.counter;}
-    }
+    };
 
     public static IntStreamBuilder = class IntStreamBuilderImpl extends Streams.StreamImpl<number> implements IntStreamBuilder {
 

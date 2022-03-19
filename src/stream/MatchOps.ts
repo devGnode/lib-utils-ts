@@ -6,6 +6,7 @@ import {Enum} from "../Enum";
 import {sink} from "./Sink";
 import {Spliterator} from "../Spliterator";
 import { UnsupportedOperationException} from "../Exception";
+import {Predication} from "../Predication";
 
 
 interface BooleanTerminalSink<T> extends sink<T>{
@@ -78,7 +79,7 @@ export class MatchOps {
      * @param {MatchKind} matcher
      * @returns {TerminalOps<number, boolean>}
      */
-    public static makeInt(predicate:any, matcher:MatchKind):TerminalOps<number, boolean>{
+    public static makeInt(predicate:Predication<number>, matcher:MatchKind):TerminalOps<number, boolean>{
 
         class MatchSink extends MatchOps.BooleanTerminalSink<number>{
 
@@ -117,13 +118,13 @@ export class MatchOps {
 
         end(): void {}
 
-    }
+    };
 
     private static readonly MatchOp = class MatchOp<T> implements terminalOps<T, boolean>{
 
         private readonly shape: StreamShape;
         private readonly matchKind: MatchKind;
-        private readonly sinkSupplier:supplier<BooleanTerminalSink<T>>
+        private readonly sinkSupplier:supplier<BooleanTerminalSink<T>>;
 
         constructor(shape:StreamShape, matchKind: MatchKind,sinkSupplier: supplier<BooleanTerminalSink<T>> ) {
             this.shape          = shape;

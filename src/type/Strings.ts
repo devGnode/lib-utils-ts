@@ -1,13 +1,12 @@
-
 import {format} from "util";
 import {comparable, comparator, Func, List} from "../Interface";
 import {ArrayList} from "../ArrayList";
 /***
- * @StringA : Proxy class, allow to extend the prototype of the native String or string
+ * @Strings : Proxy class, allow to extend the prototype of the native String or string
  * Object. Dont forget to implement your method in global interface ObjectConstructor,
  * Location of this interface is in Interfaces.ts
  */
-export abstract class StringA extends String implements comparable<string>{
+export abstract class Strings extends String implements comparable<string>{
     /***
      * @equalsIgnoreCase :
      */
@@ -15,7 +14,7 @@ export abstract class StringA extends String implements comparable<string>{
     /***
      * @regExp
      */
-    public regExp( regExp : RegExp = /.+/, callback : Func<string,string> ) : string{return StringA.regExp(regExp,this.toString(),callback)}
+    public regExp( regExp : RegExp = /.+/, callback : Func<string,string> ) : string{return Strings.regExp(regExp,this.toString(),callback)}
     /***
      * @contains
      */
@@ -23,7 +22,7 @@ export abstract class StringA extends String implements comparable<string>{
     /***
      * @format
      */
-    public format(  ... args : any[] ) :string{return format.apply(null,Array.from(args).concat([this.valueOf()]));}
+    public format(...args : any[]) :string{return format(this.valueOf(),...args);}
     /***
      * @isEmpty
      */
@@ -63,7 +62,7 @@ export abstract class StringA extends String implements comparable<string>{
     /***
      * @compareTo : compare to string each other.
      */
-    public compareTo(another:string):number {return StringA.compareString.compare(this.valueOf(),another);}
+    public compareTo(another:string):number {return Strings.compareString.compare(this.valueOf(),another);}
     /***
      * @repeatStringA
      */
@@ -75,7 +74,7 @@ export abstract class StringA extends String implements comparable<string>{
             let tmp,toReplace;
             while(( tmp = regexp.exec(value) )){
                 toReplace = callback !==undefined ? callback.call(tmp,value, tmp) : "";
-                value = value.replace(tmp[0], toReplace);
+                value = value.replace(tmp[0], toReplace||"");
             }
         }catch (e) {
             return value;

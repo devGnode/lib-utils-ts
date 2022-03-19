@@ -1,5 +1,5 @@
 import {predicate, predicateFn} from "./Interface";
-import {Define} from "./Define";
+import {Optional} from "./Optional";
 /****
  * @package lib-utils-ts.src
  * @class Predication
@@ -14,7 +14,7 @@ export class Predication<T> implements predicate<T>{
      */
     public and?( other :  predicate<T> ) : predicate<T>{
         Object.requireNotNull(other,"Predication [ other ] argument is null !");
-        let predication: predicateFn<T> = (value)=> this.test(value)&& Define.of<predicateFn<T>>(other.test).orNull(()=>false).call(other,value);
+        let predication: predicateFn<T> = (value)=> this.test(value)&& Optional.ofNullable<predicateFn<T>>(other.test).orElse(()=>false).call(other,value);
 
         return new class extends Predication<T> implements predicate<T>{
             /**@override**/
@@ -27,7 +27,7 @@ export class Predication<T> implements predicate<T>{
      */
     public or?( other : predicate<T> ) : predicate<T>{
         Object.requireNotNull(other,"Predication [ other ] argument is null !");
-        let predication :  predicateFn<T> = (value:T) => this.test(value)||Define.of<predicateFn<T>>(other.test).orNull(()=>false).call(other,value);
+        let predication :  predicateFn<T> = (value:T) => this.test(value)||Optional.ofNullable<predicateFn<T>>(other.test).orElse(()=>false).call(other,value);
 
         return new class extends Predication<T> implements predicate<T>{
             /**@override**/

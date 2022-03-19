@@ -64,7 +64,7 @@ export abstract class Spliterators{
 
         estimateSize(): number {return this.fence - this.index;}
 
-    }
+    };
 
     public static IntArraySpliterator = class IntArraySpliterator extends Spliterator.OfInt{
         readonly array: number[];

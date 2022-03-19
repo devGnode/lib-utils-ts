@@ -32,7 +32,7 @@ class Student{
     public setAge:setNumberFunc;
 
     public toString( ):string{
-        return "Customer{ " + "Name= " + this.name + ", Age= " + this.age + ' }';
+        return "Student{ " + "Name= " + this.name + ", Age= " + this.age + ' }';
     }
 
 
@@ -82,6 +82,13 @@ class Student{
         al.stream().each(value=>console.log(value.toString()));
 
     }
+
+    equals(o:Object):boolean{
+      //  console.log("TEST EQUELS ",this, o);
+     //       console.log("TEST EQUELS ", (<Student>o).getName().equals(this.getName()), (<Student>o).getAge().equals(this.getAge()) )
+        return (<Student>o).getName().equals(this.getName()) &&
+            (<Student>o).getAge().equals(this.getAge());
+    }
 }
 
 
@@ -96,11 +103,11 @@ Student.main([]);
  Student { name: 'Ajay', age: 29 }
  Student { name: 'Sneha', age: 22 }
  After Sort
- Student { name: 'Ajay', age: 22 } 0
- Student { name: 'Ajay', age: 27 } 1
- Student { name: 'Ajay', age: 29 } 2
- Student { name: 'Sneha', age: 22 } 3
- Student { name: 'Sneha', age: 23 } 4
- Student { name: 'Simran', age: 37 } 5
+ Customer{Name=Ajay, Age=22}
+ Customer{Name=Ajay, Age=27}
+ Customer{Name=Ajay, Age=29}
+ Customer{Name=Simran, Age=37}
+ Customer{Name=Sneha, Age=22}
+ Customer{Name=Sneha, Age=23}
 
  */

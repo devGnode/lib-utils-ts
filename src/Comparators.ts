@@ -25,7 +25,6 @@ export abstract class Comparators<T> {
 
         constructor(comparator:comparator<T>) { this.comparator = comparator;}
 
-
         public compare(o1: T, o2: T): number {
             return Object.isNull(this.comparator) ? 0 : -this.comparator.compare(o1,o2);
         }

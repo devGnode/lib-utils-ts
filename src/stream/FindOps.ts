@@ -40,7 +40,7 @@ export class FindOps {
 
         inputShape(): StreamShape {return this.shapeOps;}
 
-    }
+    };
 
 
     private static readonly FindSink = class FindSink<T,O> implements terminalSink<T,O>{
@@ -67,7 +67,7 @@ export class FindOps {
         cancellationRequested(): boolean {return this.hasValue;}
 
         end(): void {}
-    }
+    };
 
     private static readonly FindSinkImpl = class FindSinkImpl{
 
@@ -76,7 +76,7 @@ export class FindOps {
             /**@override**/
             public get():Optional<T> {return this.hasValue ? Optional.of(this.value) : null;}
 
-           public static readonly OP_FIND_FIRST =  class OF_FIND_ANY<T> implements supplier<terminalOps<T, Optional<T>>>{
+           public static readonly OP_FIND_FIRST = class OF_FIND_ANY<T> implements supplier<terminalOps<T, Optional<T>>>{
                      get = ()=> new FindOps.FindOp<T,Optional<T>>(
                              true,
                              StreamShape.REFERENCE,
@@ -85,9 +85,9 @@ export class FindOps {
                              new class implements supplier<terminalSink<T, Optional<T>>>{
                                   get : supplierFn<terminalSink<T, Optional<T>>> = () =>  new FindOps.FindSinkImpl.OfRef();
                              })
-           }
+           };
 
-           public static readonly OP_FIND_ANY = class OF_FIND_ANY<T> implements supplier<terminalOps<T, Optional<T>>>{
+           public static readonly OP_FIND_ANY = class OF_FIND_FIRST<T> implements supplier<terminalOps<T, Optional<T>>>{
                      get = ()=> new FindOps.FindOp<T,Optional<T>>(
                              false,
                              StreamShape.REFERENCE,
@@ -97,7 +97,7 @@ export class FindOps {
                                   get : supplierFn<terminalSink<T, Optional<T>>> = () =>  new FindOps.FindSinkImpl.OfRef();
                              })
            }
-        }
+        };
 
         public static readonly OfInt = class OfInt extends FindOps.FindSink<number, OptionalInt> implements ofInt{
 
@@ -127,7 +127,7 @@ export class FindOps {
                 }
             );
         }
-    }
+    };
 
     public static makeInt( findFirst:boolean ):terminalOps<number, OptionalInt>{
         return findFirst ? FindOps.FindSinkImpl.OfInt.OP_FIND_FIRST : FindOps.FindSinkImpl.OfInt.OP_FIND_ANY;

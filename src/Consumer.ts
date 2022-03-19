@@ -12,8 +12,13 @@ export class Consumer<T> implements IConsumer<T>{
     /****
      * @param consumer
      */
-    public static of<T>( consumer: consumerFn<T> ):Consumer<T>{
+    public static of<T>( consumer: Consumer<T>|consumerFn<T> ):Consumer<T>{
+        if(consumer instanceof  Consumer ) return consumer;
+
+        /***@ts-ignore**/
         return new class extends Consumer<T>{
+
+            /***@ts-ignore**/
             accept = Object.requireNotNull(consumer);
         };
     }
@@ -31,8 +36,12 @@ export class IntConsumer implements IConsumer<number>{
     /****
      * @param consumer
      */
-    public static of( consumer: consumerFn<number> ):IntConsumer{
+    public static of( consumer: consumerFn<number>|IntConsumer ):IntConsumer{
+        if( consumer instanceof IntConsumer ) return consumer;
+        /***@ts-ignore**/
         return new class extends IntConsumer{
+
+            /***@ts-ignore**/
             accept = Object.requireNotNull(consumer);
         };
     }

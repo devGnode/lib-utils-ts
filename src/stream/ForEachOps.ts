@@ -1,3 +1,4 @@
+console.log("FOREACHOPS - d")
 import {terminalOps, TerminalOps, terminalSink} from "./TerminalOps";
 import {Spliterator} from "../Spliterator";
 import {StreamShape} from "./StreamShape";
@@ -18,7 +19,7 @@ export class ForEachOps {
 
         accept: consumerFn<T>;
 
-        get: supplierFn<void> = ()=> null;
+        get: supplierFn<void> = ()=> void 0;
 
         begin(value: number): void {throw new UnsupportedOperationException("Method is not implemented !");}
 
@@ -36,7 +37,7 @@ export class ForEachOps {
            return helper.wrapAndCopyInto(this,spliterator).get();
         }
 
-    }
+    };
 
     public static OfRef = class OfRef<T> extends ForEachOps.ForEachOp<T>{
 
@@ -59,7 +60,7 @@ export class ForEachOps {
 
         end(): void {}
 
-    }
+    };
 
     public static OfInt = class OfInt extends ForEachOps.OfRef<number> implements ofInt{
 
@@ -69,7 +70,7 @@ export class ForEachOps {
 
         public inputShape(): StreamShape {return StreamShape.INT_VALUE;}
 
-    }
+    };
 
 
     public static makeRef<T>(consumer:IConsumer<T>):TerminalOps<T, void>{

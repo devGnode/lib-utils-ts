@@ -1,15 +1,24 @@
 /** *
  * Here need to load really the natives
- * classes,  by this way i avoid error
- * with another classes like Enum.
+ * classes,  by this way, you avoid any
+ * error with another classes like Enum.
  * some classes need of extended method
  * of an object that not be yet loaded.
  *
  * Warning Keep this loading order.
  * */
-import {Class} from "./Class";
-import {ObjectA} from "./type/ObjectA";
+/***
+ * First init package
+ */
+import {Package} from "./Package/Package";
+Object.package  = Package;
+Object.defineProperty(Object,"package",{enumerable:false,configurable:false,writable:false})
+/***
+ *
+ */
+import {Objects} from "./type/Objects";
 import {FunctionA} from "./type/FunctionA";
+import {Class} from "./Class";
 /****
  * Native Object extension area
  *
@@ -23,44 +32,46 @@ import {FunctionA} from "./type/FunctionA";
 /***
  Object extension
  */
-Object.nonNull                      = ObjectA.nonNull;
-Object.isNull                       = ObjectA.isNull;
-Object.requireNotNull               = ObjectA.requireNotNull;
-Object.toString                     = ObjectA.toString;
-Object.equals                       = ObjectA.equals;
-Object.compare                      = ObjectA.compare;
-Object.deepEquals                   = ObjectA.deepEquals;
-Object.typeof                       = ObjectA.typeof;
-Object.prototype.equals             = ObjectA.prototype.equals;
+Object.nonNull                      = Objects.nonNull;
+Object.isNull                       = Objects.isNull;
+Object.requireNotNull               = Objects.requireNotNull;
+
+Object.toString                     = Objects.toString;
+Object.equals                       = Objects.equals;
+Object.compare                      = Objects.compare;
+Object.deepEquals                   = Objects.deepEquals;
+Object.typeof                       = Objects.typeof;
+//
+Object.prototype.equals             = Objects.prototype.equals;
 Object.prototype.getClass           = function<T>():Class<T> { return new Class<T>(this); };
-Object.prototype.toString           = function():string {return ObjectA.toString(this);};
-Object.prototype.hash               = ObjectA.hash;
-Object.defineProperty(Object.prototype,"hash",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"__serial__",{enumerable: false, writable: true, configurable: true, value:null});
+Object.prototype.toString           = function():string {return Objects.toString(this);};
+Object.prototype.hash               = Objects.hash;
 Object.defineProperty(Object,"nonNull",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"isNull",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"requireNotNull",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"deepEquals",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"typeof",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object,"toString",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"getClass",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"equals",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"deepEquals",{enumerable: false, writable: true, configurable: true});
-Object.defineProperty(Object.prototype,"typeof",{enumerable: false, writable: true, configurable: true});
 Object.defineProperty(Object.prototype,"toString",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"hash",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Object.prototype,"__serial__",{enumerable: false, writable: true, configurable: true, value:null});
 /***
- FunctionA extension
+ * @Function Area
  */
 Function.prototype.class            = FunctionA.prototype.class;
-Object.defineProperty(Function.prototype,"class",{enumerable: false, writable: true, configurable: true});
+Object.defineProperty(Function.prototype,"class",{enumerable: false, writable: false, configurable: false});
 /** *
  * Other extended classes
  *
  * Warning Keep this loading order.
  * */
-import {NumberA} from "./type/NumberA";
+import {Integer} from "./type/Integer";
 import {DateA} from "./type/DateA";
 import {BooleanA} from "./type/BooleanA";
 import {ArrayA} from "./type/ArrayA";
-import {StringA} from "./type/StringA";
+import {Strings} from "./type/Strings";
 /****
  * equals method extended for all native Object
  */
@@ -68,25 +79,26 @@ Boolean.prototype.equals = Number.prototype.equals = String.prototype.equals = f
 /***
  * String extension
  */
-String.prototype.equalsIgnoreCase   = StringA.prototype.equalsIgnoreCase;
-String.prototype.regExp             = StringA.prototype.regExp;
+String.prototype.equalsIgnoreCase   = Strings.prototype.equalsIgnoreCase;
+String.prototype.regExp             = Strings.prototype.regExp;
 // @ts-ignore
-String.repeatString                 = StringA.repeatStringA;
-String.prototype.contains           = StringA.prototype.contains;
-String.prototype.format             = StringA.prototype.format;
-String.prototype.isEmpty            = StringA.prototype.isEmpty;
-String.prototype.explodeAsList      = StringA.prototype.explodeAsList;
-String.prototype.exec               = StringA.prototype.exec;
-String.prototype.orDefault          = StringA.prototype.orDefault;
-String.prototype.stripSlashes       = StringA.prototype.stripSlashes;
-String.prototype.compareTo          = StringA.prototype.compareTo;
+String.repeatString                 = Strings.repeatStringA;
+String.prototype.contains           = Strings.prototype.contains;
+String.prototype.format             = Strings.prototype.format;
+String.prototype.isEmpty            = Strings.prototype.isEmpty;
+String.prototype.explodeAsList      = Strings.prototype.explodeAsList;
+String.prototype.exec               = Strings.prototype.exec;
+String.prototype.orDefault          = Strings.prototype.orDefault;
+String.prototype.stripSlashes       = Strings.prototype.stripSlashes;
+String.prototype.compareTo          = Strings.prototype.compareTo;
 /***
  * Number extension
  */
-Number.of                           = NumberA.of
-Number.compare                      = NumberA.prototype.compare;
-Number.prototype.compareTo          = NumberA.prototype.compareTo;
-Number.prototype.isPrime            = NumberA.prototype.isPrime;
+Number.of                           = Integer.of;
+Number.compare                      = Integer.prototype.compare;
+Number.prototype.compareTo          = Integer.prototype.compareTo;
+Number.prototype.isPrime            = Integer.prototype.isPrime;
+Number.sum                          = Integer.sum;
 /***
  Date Extension
  */

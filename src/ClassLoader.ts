@@ -1,41 +1,71 @@
 import {Constructor} from "./Constructor";
-import {classLoader, functionAConstructor} from "./Interface";
 import {RuntimeException} from "./Exception";
+import {Objects} from "./type/Objects";
+import {Method} from "./Reflect/Method";
+import {Field} from "./Reflect/Field";
+import {propertiesDescriptor} from "./decorator/DecoratorInterfaces";
+import {Member} from "./Reflect/Interfaces";
+import {classLoader} from "./Interface";
 /***
  * @ClassLoader
- * @Interface   : classLoader<T> extends constructor<T>
+ * <pre>
+ *     For use this class, you need to
+ *     instance this object with a simple
+ *     function in parameter.
+ * </pre>
  */
-export class ClassLoader<T> extends Constructor<T> implements classLoader<T>, Function{
+export class ClassLoader<T> implements classLoader<T>{
+    /**
+     */
+    private readonly value:Function;
+    /***
+     * @param funcA
+     */
+    constructor( funcA: Function&{ constructor:Function }) {this.value = funcA;}
     /***
      *
+     * @param member
+     * @private
      */
-    constructor( funcA: functionAConstructor) {
-        super(null);
-        this.value = funcA;
-        funcA.prototype = Object.create(funcA.prototype||Object());
+    private getTarget(member:Member):Object{
+        return member.getModifiers().equals(Method.INSTANCED) ? this.value.prototype : this.value
     }
     /***
-     * @param proto
+     * @param method
      */
-    public setPrototype(proto: Function|Object): ClassLoader<T> {
-        this.value.prototype = proto.getClass().getType().equals("function") ?
-            // @ts-ignore
-            Object.create(Object.isNull(proto.prototype)?{}:proto.prototype) :
-            Object.create(proto);
+    public setMethod(method:Method): ClassLoader<T> {
+        let target:Object;
+
+        target = this.getTarget(Objects.requireNotNull(method));
+        if(target[method.getName()]!==undefined)
+            throw new RuntimeException(`Method : ${method.getName()} already declared in @${this.value.name}`);
+        // When you set a function you can't re-declare it
+        target[method.getName()] = function (...args:Object[]){
+            return method.invoke(this,...args);
+        };
+        Object.defineProperty(target, method.getName(), {writable:false,configurable:false});
         return this;
     }
-    /***
-     * @param name
-     * @param proto
-     */
-    public setMethod(name :string, proto: Function): ClassLoader<T> {
-        Object.requireNotNull(proto);
-        if(this.prototype[name]!==undefined) throw new RuntimeException(`method : ${name} already exists in @${this.getName()}`)
-        this.prototype[name] = proto;
+
+    public setField(field:Field):ClassLoader<T>{
+        let desc:propertiesDescriptor<any>, target:Object;
+
+        target = this.getTarget(Objects.requireNotNull(field));
+        if( ( desc = Object.getOwnPropertyDescriptor(target,field.getName()) ) ){
+            // if( !desc.writable );
+            if( !desc.configurable ){}
+            if( !desc.writable && target[field.getName()]!== undefined ){} // already defined
+        }
+        target[field.getName()] = field.getValue();
+        // object descriptor
+
         return this;
     }
+
+    //public setDescriptor(target:string,)
     /***
      * @param argArray
      */
-    public instance(...argArray: Object[]): T {return super.newInstance(...argArray);}
+    public instance(...argArray: Object[]): T {return new Constructor<T>(this.value).newInstance(...argArray);}
 }
+Object.package(this);

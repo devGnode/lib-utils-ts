@@ -94,7 +94,7 @@ export class ArrayList<T> extends AbstractArrayList<T> implements List<T>{
      * @param value
      */
     public set(index: number, value: T): void {
-        if(!this.contains(value)) this.add(value);
+        if(index > this.value.length /*!this.contains(value)*/) this.add(value);
         else{
             this.value[index] = value;
         }

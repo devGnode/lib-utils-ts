@@ -67,7 +67,9 @@ export abstract class Collectors{
      */
     public static CollectorImpl = CollectorsImpl;
     /***
-     * @toArray : Array Collector
+     * @toArray :
+     * @returns Collector<T,T[], T[]>
+     * @types T
      */
     public static toArray<T>( ):collector<T, T[], T[]> {
         /***

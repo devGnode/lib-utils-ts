@@ -96,4 +96,15 @@ export module flombok{
             if (( descriptor.enumerable ) != enumerable) descriptor.enumerable = enumerable;
         };
     }
+
+    export function FINAL(  ) {
+        return (target: any, propertyKey: string) => {
+            let descriptor: PropertyDescriptor;
+            if (( descriptor = Object.getOwnPropertyDescriptor(target, propertyKey) || {})) {
+                descriptor.writable   = false;
+                Object.defineProperty(target, propertyKey, descriptor);
+                return void 0;
+            }
+        };
+    }
 }

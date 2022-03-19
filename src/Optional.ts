@@ -1,7 +1,7 @@
-import {Func, optional, predication, consumer, IConsumer, supplier, NullType} from "./Interface";
-import {Predication} from "./Predication";
+import {Func, optional, predication, consumer,supplier} from "./Interface";
 import {flombok} from "./flombok";
 import {Consumer} from "./Consumer";
+import {Predication} from "./Predication";
 /****
  * @class Optional<T>
  * @interface optional<T>
@@ -110,3 +110,4 @@ export class Optional<T> implements optional<T>{
         return this.isPresent() ? `Optional[${this.value}]` : "Optional.empty";
     }
 }
+Object.package(this);

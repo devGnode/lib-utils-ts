@@ -1,6 +1,7 @@
 import {iterator, listIteratorInterface, consumer, collection} from "./Interface";
 import {NoSuchElementException} from "./Exception";
 import {Consumer} from "./Consumer";
+console.log("ITERATOR - d")
 import {Arrays} from "./type/Arrays";
 /***
  * @Iterator

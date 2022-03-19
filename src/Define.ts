@@ -9,6 +9,7 @@ import {Optional} from "./Optional";
  * older class v1.0.0, before Optional implementation,
  * stay here for upward compatibility of my dev.
  */
+console.log(Optional)
 export class Define<T> extends Optional<T> implements define<T>{
     /***
      *

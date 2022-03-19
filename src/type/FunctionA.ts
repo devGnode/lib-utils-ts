@@ -1,4 +1,6 @@
+console.log("DOWN globalUtils-25")
 import {Constructor} from "../Constructor";
+console.log("DOWN globalUtils-25")
 import {flombok} from "../flombok";
 /***
  * @FunctionA : Proxy class, allow to extend the prototype of the native Object.

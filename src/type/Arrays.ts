@@ -1,8 +1,11 @@
 import { RuntimeException} from "../Exception";
 import {Spliterators} from "../Spliterators";
-import {consumer, predicate, primitiveArray, spliterator} from "../Interface";
+import {consumer, predicate, primitiveArray, spliterator, Stream} from "../Interface";
 import {Consumer} from "../Consumer";
 import {Predication} from "../Predication";
+console.log("ARRAYS - d")
+//import {StreamSupport} from "../stream/StreamSupport";
+import {Spliterator} from "../Spliterator";
 /***
  * @Arrays
  * @Abstract
@@ -142,10 +145,16 @@ export abstract class Arrays{
     public static intSpliterator(value:number[]|Number[], from:number = 0, to:number = null ):spliterator<number>{
         return new Spliterators.IntArraySpliterator(<number[]>value,from,to);
     }
+    /***
+     *
+     */
+   /* public static stream<T>(array:T[],  from:number = 0, to:number = null ):Stream<T>{
+        return StreamSupport.stream(Arrays.spliterator(array,from,to));
+    }*/
     /**
      * @Spliterator
      */
-    public static spliterator<T>(value:T[], from:number = 0, to:number = null ):spliterator<T>{
+    public static spliterator<T>(value:T[], from:number = 0, to:number = null ):Spliterator<T>{
         return new Spliterators.ArraySpliterator(value,from,to);
     }
     /*****
