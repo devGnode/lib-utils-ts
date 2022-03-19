@@ -3,7 +3,7 @@ import {File} from "./File";
 import {FileNotFoundException} from "./FileNotFoundException";
 import * as fs from "fs";
 import {IOException, NullPointerException} from "../Exception";
-import {BYTE} from "../primitive/Globals";
+import {BYTE} from "../primitives/Globals";
 import {FileDescriptor} from "./FileDescriptor";
 /***
  *

@@ -1,8 +1,6 @@
 import {AttributeDecoratorPipe, AttributeProperties, DecoratorSink, propertiesDescriptor} from "./DecoratorInterfaces";
 import {RuntimeException} from "../Exception";
 import {format} from "util";
-import {Objects} from "../type/Objects";
-import {write} from "fs";
 
 export interface InterfaceMock {
     action();
@@ -58,7 +56,7 @@ export abstract class DecoratorImpl {
             }
             propertyDecorator.setDecorator(format(propertyDecorator.getDecorator(),name));
 
-            if(!Objects.isNull(msg)) throw new RuntimeException(format(msg,propertyDecorator.getDecorator(), propertyDecorator.getPropertyKey()));
+            if(/*!Objects.isNull(*/msg!==null&&msg!==undefined/*)*/) throw new RuntimeException(format(msg,propertyDecorator.getDecorator(), propertyDecorator.getPropertyKey()));
             Object.defineProperty(target,propertyDecorator.getPropertyKey(),propertyDecorator.get());
         }
     }
@@ -70,12 +68,12 @@ export abstract class DecoratorImpl {
         return new class implements AttributeDecoratorPipe<T> {
 
             get(consumer: Function):Function{
-                Objects.requireNotNull(consumer);
+               // Objects.requireNotNull(consumer);
                 return (target:any, propertyKey:string)=>{
                     let dec:string = propertyDecorator.getSink().getDecorator();
                     // apply Hooks
                     DecoratorImpl.attributeDecorator(
-                        Objects.requireNotNull(consumer(propertyDecorator,target,propertyKey))
+                        /*Objects.requireNotNull(*/consumer(propertyDecorator,target,propertyKey)/*)*/
                         .setDecorator((dec?dec+".":"")+"%s."+propertyKey.toUpperCase())
                         .getSink()
 

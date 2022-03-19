@@ -1,13 +1,12 @@
+import {PrimitiveNumber} from "./PrimitiveNumber";
+import {WORD} from "./Globals";
+import {Operator} from "./Operator";
+import {Int16} from "./Int16";
 /****
  * @Word Unsigned number, limit 0 < x >= 655535
  * @IOException
  * @NumericOverflowException
  */
-import {PrimitiveNumber} from "./PrimitiveNumber";
-import {WORD} from "./Globals";
-import {Operator} from "./Operator";
-import {Int16} from "./Int16";
-
 export class Word extends PrimitiveNumber.Unsigned16 implements WORD{
     /****
      *

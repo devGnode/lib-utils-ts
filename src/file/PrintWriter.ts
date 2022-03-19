@@ -1,7 +1,7 @@
 import { Writer } from "./Writer";
 import {OutputStream} from "./OutputStream";
 import {format} from "util";
-import {BYTE} from "../primitive/Globals";
+import {BYTE} from "../primitives/Globals";
 import {Objects} from "../type/Objects";
 import * as os from "os";
 /***

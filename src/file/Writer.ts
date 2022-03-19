@@ -1,4 +1,4 @@
-import {BYTE} from "../primitive/Globals";
+import {BYTE} from "../primitives/Globals";
 /***
  * @Writer
  *

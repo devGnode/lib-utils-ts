@@ -1,7 +1,7 @@
 import {Runnable} from "../Interface";
 import {Exception, IndexOfBoundException, NullPointerException} from "../Exception";
 import {CloseProcess} from "./CloseProcess";
-import {Byte} from "../primitive/Byte";
+import {Byte} from "../primitives/Byte";
 import {HookThread} from "./HookThread";
 
 export abstract class Shutdown {

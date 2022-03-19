@@ -1,5 +1,5 @@
 import {IndexOfBoundException, NullPointerException} from "../Exception";
-import {BYTE} from "../primitive/Globals";
+import {BYTE} from "../primitives/Globals";
 import {Objects} from "../type/Objects";
 /**
  * @OutputStream
