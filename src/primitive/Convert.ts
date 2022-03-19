@@ -376,3 +376,4 @@ export abstract class Convert{
         });
     }
 }
+Object.package(this);

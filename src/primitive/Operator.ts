@@ -82,4 +82,4 @@ export class Operator<T extends primitiveNumber>{
      */
     public result():T{return this.value;}
 }
-
+Object.package(this);

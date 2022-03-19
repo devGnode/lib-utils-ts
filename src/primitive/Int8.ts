@@ -36,3 +36,4 @@ export class Int8 extends PrimitiveNumber.Signed8 implements int8{
         return Int8.mk(Int8.mk(0).random(min, max).valueOf());
     }
 }
+Object.package(this);
