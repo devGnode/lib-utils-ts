@@ -1,6 +1,6 @@
 import * as os from "os";
 import {IOException} from "../Exception";
-import {Byte} from "../primitive/Byte";
+import {Byte} from "../primitives/Byte";
 import {ProcessBuilder} from "./ProcessBuilder";
 import {Process} from "./Process";
 import {HookThread} from "./HookThread";

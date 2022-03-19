@@ -1,5 +1,5 @@
 import {ExitSign} from "./ExitSign";
-import {Byte} from "../primitive/Byte";
+import {Byte} from "../primitives/Byte";
 import {Objects} from "../type/Objects";
 /***
  * @version 4.0-R-libUtilsTs

@@ -1,7 +1,7 @@
 import {OutputStream} from "./OutputStream";
 import {FilterOutputStream} from "./FilterOutputStream";
 import * as os from "os";
-import {BYTE} from "../primitive/Globals";
+import {BYTE} from "../primitives/Globals";
 
 export class PrintStream  extends FilterOutputStream{
 

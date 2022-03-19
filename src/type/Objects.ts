@@ -1,8 +1,5 @@
-/***@toFix*/
-//import { HashMap} from "../List";
-import {Define} from "../Define";
 import {NullPointerException} from "../Exception";
-import {comparator, Func, PrimitiveTypes, Serial} from "../Interface";
+import {comparator, PrimitiveTypes, Serial} from "../Interface";
 import {flombok} from "../flombok";
 import {Arrays} from "./Arrays";
 import {Optional} from "../Optional";
@@ -57,8 +54,11 @@ export abstract class Objects extends Object implements comparator<Object>{
     /***
      * @requireNotNull<T> :
      */
-    @flombok.ENUMERABLEFUNC(false)
-    public static requireNotNull<T>( other: T, message?: string ) :T { return Define.of<T>(other).orElseThrow(new NullPointerException(message||'')); }
+   // @flombok.ENUMERABLEFUNC(false)
+    public static requireNotNull<T>( other: T, message?: string ) :T {
+        if(!Objects.isNull(other))return other;
+        throw new NullPointerException(message||'');
+    }
     /***
      * @isNull
      */

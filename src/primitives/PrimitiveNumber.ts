@@ -8,7 +8,7 @@ import {Random} from "../Random";
 import {primitiveNumber} from "./Globals";
 import {Convert} from "./Convert";
 import {Objects} from "../type/Objects";
-export enum Types{
+enum Types{
     /***
      * 1 Bytes
      */
@@ -51,7 +51,7 @@ export enum Types{
     double  = 0x38
 }
 // Bits Limit
-export enum LIMIT {
+enum LIMIT {
     /*LIMITBITS*/
     DB = 0xFF,
     WD = 0xFFFF,
