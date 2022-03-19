@@ -6,6 +6,9 @@ import {Constructor} from "../Constructor";
 import {Annotation} from "../annotation/Annotation";
 import {Optional} from "../Optional";
 import {Member} from "./Interfaces";
+import {ObjectDescriptor} from "./ObjectDescriptor";
+import {Field} from "./Field";
+import {Parameter} from "./Parameter";
 /***
  * @Method
  */
@@ -22,13 +25,15 @@ export class Method implements Member{
     private readonly target:Function;
     private readonly name:string;
     private readonly clazz:Class<any>;
+    private readonly construct:Constructor<any>;
     private readonly level:number;
 
-    constructor(target:Function, name:string = null, level:number, clazz:Class<any> = null) {
-        this.target = Objects.requireNotNull(target);
-        this.name   = name||target.name||null;
-        this.clazz  = clazz;
-        this.level  = level;
+    constructor(target:Function, name:string = null, level:number, clazz:Class<any> = null, construct:Constructor<any> = null) {
+        this.target     = Objects.requireNotNull(target);
+        this.name       = name||target.name||null;
+        this.clazz      = clazz;
+        this.construct  = construct;
+        this.level      = level;
     }
     /***
      * @getName
@@ -45,7 +50,16 @@ export class Method implements Member{
      * @getDeclaringClass
      * @return Class<any> : Target Class
      */
-    public getDeclaringClass():Class<any>{return this.clazz;}
+    public getDeclaringClass():Class<any>{return Optional.ofNullable(this.clazz).orElse(this.construct.getDeclaringClass());}
+
+    /***
+     * <pre>
+     *     return constructor class of the current field
+     * </pre>
+     * @getDeclaringConstructor
+     * @return {Constructor}
+     */
+    public getDeclaringConstructor():Constructor<any>{ return this.construct; }
     /***
      * <pre>
      *     Return field accessor, Static
@@ -91,6 +105,19 @@ export class Method implements Member{
 
         return null;
     }
+    /***/
+    public setAnnotation(annotation:Annotation):void{
+        if(Objects.isNull( this.target["@Annotations"] )) {
+            new Field("@Annotations",[annotation], 1, null,this.target.class())
+                .getFieldDescriptor()
+                .value([annotation])
+                .enumerable(false)
+                .final()
+                .set();
+        }else{
+            this.target["@Annotations"].push(annotation);
+        }
+    }
     /***
      *  @getParameterAnnotations
      *  @return Annotation[][] : return array of Annotation Parameter
@@ -108,6 +135,7 @@ export class Method implements Member{
         return annotations;
     }
     /****
+     * @Mock
     * @usurper method
     **/
     public getThrowType( ):Type[]{
@@ -127,12 +155,25 @@ export class Method implements Member{
      * @deprecated
      */
     getParameterType():void{}
+    /**/
+    public getParameter():Parameter[]{
+        let tmp:RegExpExecArray, i:number = 0;
+
+        if( (tmp = /^\t*\s*\w+\s*\(\s*([^)]+)\s*\)/.exec(this.target.toString())) ){
+            return tmp[1]
+                .split(",")
+                .map(v=>new Parameter(this, v.trimStart().trimEnd(), i++));
+        }
+        return [];
+    }
     /***
      * notSupported
      * @getReturnType
      * @deprecated
      */
     getReturnType():void{}
+    /***/
+    public getMethodDescriptor():ObjectDescriptor<Method,Function>{return ObjectDescriptor.ofMethod(this);}
     /***
      * <pre>
      *  call method, mode strict arguments
@@ -154,8 +195,8 @@ export class Method implements Member{
      * @overrides
      */
     public toString():string{
-        return `${this.level.equals(Method.INSTANCED)?"":"static "}`+
-            `${this.clazz.getName()}.${this.getName()}()`;
+        return `${this.level.equals(Method.INSTANCED)? this.getDeclaringClass().getName() :"static "+this.construct.getName()}`+
+            `.${this.getName()}( ... )`;
     }
 }
 // package

@@ -1,49 +1,106 @@
 import {propertiesDescriptor} from "../decorator/DecoratorInterfaces";
-import {Decorators as A} from "../decorator/Decorators";
-import {Objects} from "../type/Objects";
+import {Member} from "./Interfaces";
+import {Method} from "./Method";
+import {Field} from "./Field";
+import {IOException} from "../Exception";
 
-export abstract class ObjectDescriptor{
+export class ObjectDescriptor<F extends Member,T>{
 
-    private constructor() {}
+    private static readonly STATIC:number       = 1;
 
     public static readonly PropertiesDescriptor = class PropertiesDescriptor<T> implements propertiesDescriptor<T> {
 
-        enumerable?: boolean    = false;
-        writable?: boolean      = false;
+        enumerable?: boolean    = true;
+        writable?: boolean      = true;
         configurable?: boolean  = true;
         value?: T;
 
         get?():T
         set?(value:T):void
-
-        constructor() {}
     };
 
+    private prop:propertiesDescriptor<T> = null;
+    private readonly target:Member;
 
-}
-
-class PropertyBuilder<T>{
-
-    private readonly properties:propertiesDescriptor<T>;
-
-    constructor( properties:propertiesDescriptor<T> ) {
-        this.properties = properties || new ObjectDescriptor.PropertiesDescriptor<T>();
+    private constructor(target:Member) {
+        this.target = target;
     }
 
-    enumerable(state:boolean):void{ this.properties.enumerable = state; }
+    private static EMPTY_DESC:propertiesDescriptor<any> = new ObjectDescriptor.PropertiesDescriptor();
 
-    writable(state:boolean):void{ this.properties.writable = state; }
+    private getProp():propertiesDescriptor<T>{
+        if(this.prop!=null) return this.prop;
+        return ( this.prop = Object.getOwnPropertyDescriptor(this.getInstance(), this.target.getName()) || new ObjectDescriptor.PropertiesDescriptor());
+    }
 
-    configurable(state:boolean):void{ this.properties.configurable =  state; }
+    private getInstance():Object{
+       return (this.target.getModifiers() === ObjectDescriptor.STATIC ?
+           this.target.getDeclaringConstructor() :
+           this.target.getDeclaringClass()).getInstance();
+    }
 
-    readonly(){ this.writable(false); this.configurable(false); }
+    public isEnumerable():boolean{
+        if(this.prop==null)return ObjectDescriptor.EMPTY_DESC.enumerable;
+        return this.prop.enumerable;
+    }
 
-    final(){this.readonly();}
+    public enumerable(state:boolean):ObjectDescriptor<F,T>{
+        if(!this.isConfigurable()) throw new IOException("");
+        this.getProp().enumerable = state;
+        return this;
+    }
 
-    value(value:T){ this.properties.value = value; }
+    public isWritable():boolean{
+        if(this.prop==null)return ObjectDescriptor.EMPTY_DESC.writable;
+        return this.prop.writable;
+    }
 
-    getDescriptor():propertiesDescriptor<T>{ return this.properties; }
+    public writable(state:boolean):ObjectDescriptor<F,T>{
+        if(!this.isConfigurable()) throw new IOException();
+        this.getProp().writable = state;
+        return this;
+    }
 
+    public isConfigurable():boolean{
+        if(this.prop==null)return ObjectDescriptor.EMPTY_DESC.configurable;
+        return this.prop.configurable;
+    }
+
+    public configurable(state:boolean):ObjectDescriptor<F,T>{
+        this.getProp().configurable =  state;
+        return this;
+    }
+
+    public readonly():ObjectDescriptor<F,T>{return this.writable(false).configurable(false); }
+
+    public final():ObjectDescriptor<F,T>{ return this.readonly();}
+
+    public value(value:T):ObjectDescriptor<F,T>{
+        if(this.getProp()==null)return this;
+        if(!this.isConfigurable()&&!this.isWritable()&&this.prop.value!=undefined) throw new IOException(`${ObjectDescriptor.class().getName()} has failed, target '${this.target.toString()}' is already defined on ${this.target.getDeclaringConstructor().toString()}`);
+        this.getProp().value = value;
+        return this;
+    }
+
+    public set():F{
+        if(this.prop!=null) Object.defineProperty(
+            this.getInstance(),
+            this.target.getName(),
+            this.getProp()
+        );
+        return <F>this.target;
+    }
+
+    public toString():string {
+        return `ObjectDescriptor[ `+
+            `enumerable = ${this.isEnumerable()}, ` +
+            `configurable = ${this.isConfigurable()}, ` +
+            `writable = ${this.isWritable()} ] for ` +
+            this.target.toString();
+    }
+
+    public static ofMethod<T>(method:Method):ObjectDescriptor<Method, T>{return new ObjectDescriptor(method);}
+
+    public static ofAttribute<T>(field:Field):ObjectDescriptor<Field, T>{return new ObjectDescriptor(field);}
 }
-
-let ter:propertiesDescriptor<void> = new ObjectDescriptor.PropertiesDescriptor();
+Object.package(this);
