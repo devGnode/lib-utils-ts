@@ -3,9 +3,9 @@ import {Spliterators} from "../Spliterators";
 import {consumer, predicate, primitiveArray, spliterator, Stream} from "../Interface";
 import {Consumer} from "../Consumer";
 import {Predication} from "../Predication";
-console.log("ARRAYS - d")
-//import {StreamSupport} from "../stream/StreamSupport";
+import {StreamSupport} from "../stream/StreamSupport";
 import {Spliterator} from "../Spliterator";
+import {Objects} from "./Objects";
 /***
  * @Arrays
  * @Abstract
@@ -22,8 +22,8 @@ export abstract class Arrays{
     public static copyOfRange<T>(source:T[], from:number, to:number ):T[]{
         let out:T[] = [], offset:number=0;
 
-        Object.requireNotNull(from);
-        if(Object.isNull(to)) to = source.length;
+        Objects.requireNotNull(from);
+        if(Objects.isNull(to)) to = source.length;
         if( to-from < 0 && from < 0 && to > source.length && from >= source.length ) return out;
         while (from<to)out[ offset++ ] = source[from++];
 
@@ -37,8 +37,8 @@ export abstract class Arrays{
     public static merge<T>( dst:T[], source:T[] ):T[]{
         let offset:number,len:number,i:number=0;
 
-        Object.requireNotNull(dst);
-        if(Object.isNull(source)) return dst;
+        Objects.requireNotNull(dst);
+        if(Objects.isNull(source)) return dst;
         try{
             offset=dst.length;
             len= source.length;
@@ -52,10 +52,11 @@ export abstract class Arrays{
      * @fill
      * @Throw NullPointerException
      */
-    public static fill<T>(source:T[], len:number = 0, value:T ):T[]{
-        Object.requireNotNull(source);
+    public static fill<T>(source:T[], len:number = null, value:T ):T[]{
+        Objects.requireNotNull(source);
+        if(len===null||len===undefined) len= source.length;
         let i:number=0;
-        while(i<len) source[i++] = Object.isNull(value) ? null : value;
+        while(i<len) source[i++] = Objects.isNull(value) ? null : value;
         return source;
     }
     /**
@@ -63,7 +64,7 @@ export abstract class Arrays{
      * @Throw NullPointerException
      */
     public static clear<T>(source:T[]):T[]{
-        Object.requireNotNull(source);
+        Objects.requireNotNull(source);
         let i:number=0, len:number = source.length;
         for(; i < len; i++) source[i]=null;
         return source;
@@ -73,8 +74,8 @@ export abstract class Arrays{
      * @Throw NullPointerException
      */
     public static remove<T>(source:T[], index:number = null ):T[]{
-        if(index>=source.length||index<0||Object.isNull(index)) return source;
-        Object.requireNotNull(source);
+        if(index>=source.length||index<0||Objects.isNull(index)) return source;
+        Objects.requireNotNull(source);
         let i:number=0, j:number=0, len:number= source.length, dst:T[]= [];
         while(i<len) {
             if (i !== index) dst[j++] = source[i];
@@ -87,7 +88,7 @@ export abstract class Arrays{
      * @Throw NullPointerException
      */
     public static removeIf<T>(source:T[], predicate:predicate<T> ):T[]{
-        Object.requireNotNull(source);
+        Objects.requireNotNull(source);
         let i:number=0, j:number=0, len:number= source.length, dst:T[]= [];
         while(i<len) {
             if (!predicate.test(source[i])) dst[j++] = source[i];
@@ -100,7 +101,7 @@ export abstract class Arrays{
      * @Throw NullPointerException
      */
     public static reverse<T>(source:T[]  ):T[]{
-        Object.requireNotNull(source);
+        Objects.requireNotNull(source);
         let i:number=0, middle:number= Math.floor(source.length/2);
         while(i < middle) {
             this.swap(source, i, source.length-1 - i );
@@ -114,7 +115,7 @@ export abstract class Arrays{
      */
     public static swap<T>(source:T[], i:number = 0, j:number = 0  ):T[]{
         if( i >= 0 && i <= source.length-1 && j >= 0 && j <= source.length-1 ) {
-            Object.requireNotNull(source);
+            Objects.requireNotNull(source);
             let tmp: T = source[i];
             source[i] = source[j];
             source[j] = tmp;
@@ -127,7 +128,7 @@ export abstract class Arrays{
     public static deepEquals( a1:Object[], a2:Object[] ):boolean {
         let i: number = 0;
         if (!a1.length.equals(a2.length)) return false;
-       do{ if(!Object.deepEquals(a1[i] , a2[i])) return false; } while (i++ < a1.length);
+       do{ if(!Objects.deepEquals(a1[i] , a2[i])) return false; } while (i++ < a1.length);
     return true;
     }
     /**
@@ -148,9 +149,9 @@ export abstract class Arrays{
     /***
      *
      */
-   /* public static stream<T>(array:T[],  from:number = 0, to:number = null ):Stream<T>{
+    public static stream<T>(array:T[],  from:number = 0, to:number = null ):Stream<T>{
         return StreamSupport.stream(Arrays.spliterator(array,from,to));
-    }*/
+    }
     /**
      * @Spliterator
      */
@@ -169,7 +170,7 @@ export abstract class Arrays{
 
         constructor(source:T[], from:number, to:number, direction:number = 0 ) {
 
-            Object.requireNotNull(this.value = source);
+            Objects.requireNotNull(this.value = source);
             this.from  = from||0;
             this.to    = to || source.length;
             to = this.from;
@@ -204,3 +205,4 @@ export abstract class Arrays{
 
     }
 }
+Object.package(this);

@@ -63,15 +63,15 @@ export abstract class Objects extends Object implements comparator<Object>{
      * @isNull
      */
     @flombok.ENUMERABLEFUNC(false)
-    public static isNull( value : Object ):boolean { return Define.of(value).isNull(); }
+    public static isNull( value : Object ):boolean { return value===null||value===undefined; }
     /***
      * @toString :
      */
     @flombok.ENUMERABLEFUNC(false)
     public static toString( o :Object ):string {
         if(Objects.isNull(o)) return "NULL";
-        return (!Objects.typeof(o).equals("function") ?Optional.ofNullable(o.getClass().getPackage()).orElse("instanceOf"): "handler")+
-            "."+o.getClass().getName() + "@"+ o.hash().toString(16);
+        if(!Objects.typeof(o).equals("function"))
+        return o.getClass().getFullName() + "@"+ o.hash().toString(16);
     }
     /***
      * @hash :
@@ -142,7 +142,7 @@ export abstract class Objects extends Object implements comparator<Object>{
 
             if (p.equals("object") && q.equals("object")) {
                 if (!Objects.deepEquals(o1[tmp], o2[tmp])) return false;
-            } else if (!Object.typeof(o1[tmp]).equals("function") && !Object.typeof(o1[tmp]).equals("object")) {
+            } else if (!Objects.typeof(o1[tmp]).equals("function") && !Objects.typeof(o1[tmp]).equals("object")) {
                 if (o1[tmp] !== o2[tmp]) return false;
             } else if(p.equals("function") && q.equals("function")) void 0;
             else {
