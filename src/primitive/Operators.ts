@@ -94,3 +94,4 @@ export abstract class Operators<T  extends Number> implements operators<T,Number
     }
 
 }
+Object.package(this);

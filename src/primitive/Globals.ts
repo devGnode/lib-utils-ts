@@ -1,19 +1,7 @@
 import "lib-utils-ts/src/globalUtils"
 import {Byte} from "./Byte";
 //import {Pointer} from "./Pointer";
-/*import {
-    ByteArray,
-    int8Array,
-    WordArray,
-    int16Array,
-    DwordArray,
-    int32Array,
-    FloatArray,
-    ArrayL,
-    QwordArray,
-    int64Array,
-    DoubleArray
-} from "./ArrayL";*/
+
 import {Operator} from "./Operator";
 import {IConsumer} from "../Interface";
 /***
@@ -395,10 +383,9 @@ declare global {
  */
 export type BitsType    = (BYTE|int8|uint8|WORD|int16|DWORD|int32|uint32|QWORD|int64|float|double) & primitiveNumber
 export type BitsTypeStr = (char|pointer<BitsType|BitsTypeStr>|cString) & primitiveString
-//export type BitsTypeArr = (ByteArray|int8Array|WordArray|int16Array|DwordArray|int32Array|QwordArray|int64Array|FloatArray|DoubleArray) & ArrayL<BitsType>
 
 export type s_bits      = { [ index:string]:number }
-export type pvoidStruct = { [ index: string]:primitiveNumber|BitsType|BitsTypeStr|s_bits|/*BitsTypeArr|*/Function };
+export type pvoidStruct = { [ index: string]:primitiveNumber|BitsType|BitsTypeStr|s_bits|Function };
 
 export type LITTLE_ENDIAN   = 0x00;
 export type BIG_ENDIAN      = 0x01;
