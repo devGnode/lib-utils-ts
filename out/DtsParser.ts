@@ -4,7 +4,7 @@ import {iterator} from "../Interface";
 
 
 //../AbstractArrayList
-//./FunctionA
+//./Functions
 class ProtoTypeClass{
 
     private name:string;
