@@ -6,6 +6,12 @@ import {Field} from "./Reflect/Field";
 import {propertiesDescriptor} from "./decorator/DecoratorInterfaces";
 import {Member} from "./Reflect/Interfaces";
 import {classLoader} from "./Interface";
+import {Paths} from "./file/Paths";
+import { InputStreamReader } from "./file/InputStreamReader";
+import {FileReader} from "./file/FileReader";
+import {Package} from "./lang/Package";
+import {Optional} from "./Optional";
+import {Launcher} from "./lang/misc/Launcher";
 /***
  * @ClassLoader
  * <pre>
@@ -15,13 +21,15 @@ import {classLoader} from "./Interface";
  * </pre>
  */
 export class ClassLoader<T> implements classLoader<T>{
+
+   // private static scl:ClassLoader<any>;
     /**
      */
     private readonly value:Function;
     /***
      * @param funcA
      */
-    constructor( funcA: Function&{ constructor:Function }) {this.value = funcA;}
+        constructor( funcA: Function&{ constructor:Function }) {this.value = funcA;}
     /***
      *
      * @param member
@@ -61,11 +69,37 @@ export class ClassLoader<T> implements classLoader<T>{
 
         return this;
     }
+    /***/
+    public getPackage():Package{return new Package( Optional.ofNullable(this.value["@Package"]).orElse(null) );}
+    /***
+     * @getResourcesAsStream
+     * @param name
+     * @returns InputStreamReader
+     */
+    public getResourcesAsStream( name: string):  InputStreamReader{
+        if(!Paths.get(name).isAbsolute())name = Paths.projectResources()[0].resolve(Paths.get(name)).toString();
+        return new FileReader(name);
+    }
 
     //public setDescriptor(target:string,)
     /***
      * @param argArray
      */
     public instance(...argArray: Object[]): T {return new Constructor<T>(this.value).newInstance(...argArray);}
+
+   /* public static getSystemClassLoader():ClassLoader<any>{
+        this.initSystemClassLoader();
+        if(ClassLoader.scl==null) return null;
+        return this.scl;
+    }
+
+    private static initSystemClassLoader():void{
+        let launcher:Launcher = Launcher.getLauncher();
+        if(!this.scl){
+            if(this.scl) throw new Error();
+            this.scl = launcher.getCLassLoader();
+        }
+    }*/
+
 }
 Object.package(this);

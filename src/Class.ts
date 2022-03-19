@@ -1,21 +1,20 @@
-import {List, MapType, ObjectStructure} from "./Interface";
-//import {FileReader, InputStreamReader} from "./file/IOStream";
+import {MapType,ObjectStructure} from "./Interface";
 import {Constructor} from "./Constructor";
-import {ClassNotFoundException, NullPointerException} from "./Exception";
+import {ClassNotFoundException, NullPointerException, RuntimeException} from "./Exception";
 import {Define} from "./Define";
 import {Path} from "./file/Path";
 import {Objects} from "./type/Objects";
 import {Enum} from "./Enum";
 import {Method} from "./Reflect/Method";
 import {Field} from "./Reflect/Field";
-import {Optional} from "./Optional";
 import {flombok} from "./flombok";
 import {Annotation} from "./annotation/Annotation";
 import {ClassLoader} from "./ClassLoader";
 import {ObjectsReflector} from "./Reflect/ObjectsReflector";
-import {InputStreamReader} from "./file/IOStream";
-console.log("CLass - d ")
-
+import {Paths} from "./file/Paths";
+import {InputStreamReader} from "./file/InputStreamReader";
+import {FileReader} from "./file/FileReader";
+import {Package} from "./lang/Package";
 /***
  * @Class :  Hook class Object accessor: (new MyAnyClass()).getClass()
  *
@@ -32,18 +31,26 @@ export class Class<T extends Object> implements ObjectStructure<T>{
      */
     constructor(value: T ) {
         this.value = value;
-        this.objectReflector = new ObjectsReflector(value.constructor.prototype, value.constructor, this);
+        this.objectReflector = new ObjectsReflector(
+            value.constructor.prototype, // instanced Structure
+            value.constructor,           // static structure
+            this,                       // Class
+            this.getConstructor()       // Constructor
+        );
     }
-    /***
-     */
-    get name():string{ return this.value.constructor.name;}
     /***
      * @getName : return name of Class
      * so here there is one difference with real Java. getName give back package
      * name & getSimpleName give back name of class, i dont't have want to change that,
      * and make an hot fix
      */
-    public getName():string{ return this.value.constructor.name.orDefault("Anonymous"); }
+    public getName():string{return this.value.constructor.name.orDefault("Anonymous");}
+    /***/
+    public getFullName():string{return this.getConstructor().getFullName();}
+    /***
+     *
+     */
+    public isNested():boolean{return this.getConstructor().isNested();}
     /***
      *
      */
@@ -79,7 +86,11 @@ export class Class<T extends Object> implements ObjectStructure<T>{
      *     Return if this class is a primitive type class
      * </pre>
      */
-    public isPrimitive():boolean{ return this.value instanceof Number || this.value instanceof String || this.value instanceof Boolean;}
+    public isPrimitive():boolean{
+        return this.value instanceof Number  ||
+            this.value instanceof String ||
+            this.value instanceof Boolean;
+    }
     /***
      * @getPackage
      * <pre>
@@ -92,14 +103,14 @@ export class Class<T extends Object> implements ObjectStructure<T>{
      *      src.package(this);
      * </pre>
      */
-    public getPackage():string{return this.getConstructor().getPackage();}
+    public getPackage():Package{return Package.getPackage(this);}
     /***
      * @param type
      * @params type
      * @returns Field[]
      */
     public getFields(type:number=(Field.INSTANCED|Field.STATIC)):Field[]{
-        return new ObjectsReflector(this.value,this.value.constructor, this).getFields(type);
+        return new ObjectsReflector(this.value,this.value.constructor, this, this.getConstructor()).getFields(type);
     }
     /***
      * @getField
@@ -108,7 +119,7 @@ export class Class<T extends Object> implements ObjectStructure<T>{
      * @returns Field
      */
     public getField(name:string, type:number= Field.INSTANCED):Field{
-        return new ObjectsReflector(this.value,this.value.constructor, this).getField(name,type);
+        return new ObjectsReflector(this.value,this.value.constructor, this, this.getConstructor()).getField(name,type);
     }
     /***
      * @getMethod
@@ -116,16 +127,12 @@ export class Class<T extends Object> implements ObjectStructure<T>{
      * @params type Type of accessor
      * @returns Method
      */
-    public getMethod(name:string, type:number = Method.INSTANCED):Method{
-        return this.objectReflector.getMethod(name,type);
-    }
+    public getMethod(name:string, type:number = Method.INSTANCED):Method{return this.objectReflector.getMethod(name,type);}
     /***
      * @getMethods
      * @returns Method[]
      */
-    public getMethods( ):Method[]{
-        return this.objectReflector.getMethods();
-    }
+    public getMethods( ):Method[]{return this.objectReflector.getMethods();}
     /***
      * <pre>
      *     Return an Array of Enumeration of Enum class
@@ -144,7 +151,7 @@ export class Class<T extends Object> implements ObjectStructure<T>{
     /***
      * @getType
      */
-    public getType( ):string {return Object.typeof(this.value).toLowerCase();}
+    public getType( ):string {return Objects.typeof(this.value).toLowerCase();}
     /***
      * @getInstance : returns the instance of T
      */
@@ -166,9 +173,9 @@ export class Class<T extends Object> implements ObjectStructure<T>{
      * @NullPointerException if value target is null
      */
     public newInstance( ...args : Object[] ):T{
-        let tmp: any = Object.create(Object.requireNotNull(this.value));
+        let tmp: any = Object.create(Objects.requireNotNull(this.value));
         tmp.constructor = this.value.constructor;
-        if(Object.isNull(tmp.constructor)) throw new ClassNotFoundException('Class constructor not found !')
+        if(Objects.isNull(tmp.constructor)) throw new ClassNotFoundException('Class constructor not found !')
        return <T>(new tmp.constructor( ... args));
     }
     /***
@@ -179,23 +186,41 @@ export class Class<T extends Object> implements ObjectStructure<T>{
     /***
      * @param name
      */
-    public getResourcesAsStream( name: string): InputStreamReader{return null; /*new FileReader(name)*/;}
+    public getResourcesAsStream( name: string ): InputStreamReader{
+
+        if(!Paths.get(name).isAbsolute())name = Paths.projectResources()[0].resolve(Paths.get(name)).toString();
+        return new FileReader(name);
+    }
     /***
-     * @getConstructor
-     * @return Constructor<T>
      * <pre>
      *     Get constructor class
      * </pre>
+     *
+     * @getConstructor
+     * @return Constructor<T>
      */
     public getConstructor( ):Constructor<T>{return new Constructor<T>(this.value.constructor);}
     /***
-     * @getClassLoader
-     * @return ClassLoader<T>
      * <pre>
      *     Get constructor class
      * </pre>
+     *
+     * @getClassLoader
+     * @return ClassLoader<T>
      */
     public getClassLoader():ClassLoader<T>{ return new ClassLoader<T>(this.value.constructor); }
+    /***
+     * @toString
+     * @return {String}
+     */
+    public toString():string{
+        let out:string = "";
+        if(!this.isPrimitive()){
+            if(this.isAnnotation()) out+="@";
+            out += (this.isEnum() ? "enum" : "class")+" ";
+        }
+        return out+this.getFullName();
+    }
     /***
      *
      */
@@ -209,56 +234,69 @@ export class Class<T extends Object> implements ObjectStructure<T>{
      * @param typeScript : is typescript file otherwise js
      * @param isPackage : is an package that come from to node_modules directory
      * <pre>
-     *  Linux :
+     *  Package format :
+     *  for Linux
      *      L.absolute.foo.bar
      *      relative.foo.bar
-     *  WINDOWS:
+     *
+     *  for WINDOWS
      *      C.absolute.foo.bar
      *      relative.foo.bar
-     *  Path :
-     *      - toForName : C:\\absolute\\foo\\bar -> C.absolute.foo.bar
-     *                    /absolute/foo/bar -> L.absolute.foo.bar
      *
-     *  Specifique Object :
-     *      path/outputObject
+     *  for classpath
+     *
+     *  classpath:foo.bar.package.Clazz => $PROJECT_SRC.node_modules.foo.bar.package.Clazz
+     *  make sure 'PROJECT_SRC' environment variable was been defined.
+     *
      * </pre>
      * Throwable :
      *  @NullPointerException : if pattern is null or object wished was not found
      *  @ClassNotFoundException : require return an exception not found module
      */
-    public static forName<T extends Object>( pattern: string|Path, typeScript : boolean = true, isPackage = false ): Constructor<T>{
-        let p:string, getter:string, classPath:string,
-            element:List<string>,
-            dir:string=`${process.cwd()}/`,tmp :List<string>;
+    public static forName<T extends Object>( pattern: string|Path, typeScript : boolean = true ): Constructor<T>{
+        let getter:string,target:Path, handler:Object;
 
-        Object.requireNotNull(pattern,"package name is null !");
-        if(pattern instanceof Path)classPath = pattern.toForNamePath();
+        Objects.requireNotNull(pattern,"package name is null !");
+        if(pattern instanceof Path ) target = pattern;
         else{
-            classPath=pattern;
-        }
+            if(/([a-zA-Z\-\_]+\.*)+\:[a-zA-Z0-1-_]+$/.exec(pattern)) {
+                getter = /\:([a-zA-Z0-1-_]+)$/.exec(pattern)[1];
+                pattern =pattern.replace(new RegExp(":"+getter+"$"),"");
+            }
+            if(/^classpath:/.test(pattern)) {
+                pattern = Objects
+                    .requireNotNull(Paths.projectModules())
+                    .toForNamePath()
+                    .concat(".",pattern.replace(/^classpath:/,""));
+            }
 
-        console.log(  "Element ",String(classPath))
-        element = String(classPath).explodeAsList(/\./);
-        p=classPath;
+            target = Path.ofPackageName(pattern, typeScript?"ts":"js");
+        }
+        // try to resolve class
+        if(!target.isAbsolute()){
+            let tmp:Path;
 
-        console.log("Element ",element);
-        if(classPath.startsWith("/")||/^[A-Z]{1}/.test(classPath)) dir=""; // absolute path
-        if( (tmp = element.get(element.size()-1).explodeAsList(/\//)).size().equals(1) ) getter = tmp.get(0);
-        else{
-            // package.src.Class/node
-            getter = tmp.get(1);
-            element.set(element.size()-1,element.get(element.size()-1).replace(new RegExp(`\/${getter}`),""));
+            if(Paths.projectSrc().resolve(target).toFile().isFile()){
+                tmp = Paths.projectSrc().resolve(target);
+            }
+            if (!tmp&&Paths.projectModules().resolve(target).toFile().isFile()){
+                tmp = Paths.projectModules().resolve(target);
+            }
+            if(!tmp)tmp = target.resolve();
+
+            target = tmp;
         }
-        classPath = element.toArray().join('/');
-        if(/^[A-Z]{1}/.test(classPath)) classPath = classPath.replace(/^([A-Z]{1})/,"$1:")
-        console.log(classPath,"****** ",isPackage?classPath:`${dir}${classPath}.${typeScript?'ts':'js'}`);
-        try{
-            let callback = require(isPackage?classPath:`${dir}${classPath}.${typeScript?'ts':'js'}`);
-            console.log( "callllllback ", callback);
-            return new Constructor<T>(Define.of<any>(callback[getter]).orElseThrow(new NullPointerException(`Element not found ${getter} is Null from [${p}] !`)));
-        }catch (e) {
-            throw new ClassNotFoundException(`No exportable '${getter}' class from package ${p}`);
+        // import
+        try{handler = require(target.toString());}catch (e) {
+            let ex:Error = new ClassNotFoundException(`No exportable class '${getter||target.getShortFileName()}' from package ${target.getParent().toForNamePath()}`);
+            throw new RuntimeException("caused by "+e.stack+"\n"+ex.stack);
         }
+        return new Constructor<T>(
+            Define.of<any>(handler[getter||target.getShortFileName()])
+            .orElseThrow(new NullPointerException(
+                `No exportable '${getter||target.getShortFileName()}' class found in ${target.getParent().toForNamePath()} package.`
+            ))
+        );
     }
 }
 Object.package(this);

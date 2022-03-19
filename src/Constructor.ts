@@ -1,6 +1,5 @@
 import {flombok} from "./flombok";
 import {ObjectStructure} from "./Interface";
-//import {FileReader, InputStreamReader} from "./file/IOStream";
 import {Class} from "./Class";
 import {ClassNotFoundException} from "./Exception";
 import {Objects} from "./type/Objects";
@@ -11,7 +10,11 @@ import {Method} from "./Reflect/Method";
 import { Field } from "./Reflect/Field";
 import {Annotation} from "./annotation/Annotation";
 import {ObjectsReflector} from "./Reflect/ObjectsReflector";
-
+import {Path} from "./file/Path";
+import {Paths} from "./file/Paths";
+import {InputStreamReader} from "./file/InputStreamReader";
+import {FileReader} from "./file/FileReader";
+import {Package} from "./lang/Package";
 /***
  * @Constructor : in Js an Object it's just a function with an object prototype
  * @Interface   : constructor<T>
@@ -28,7 +31,7 @@ export class Constructor<T extends Object> implements ObjectStructure<T> {
      */
     constructor(value: Function) {
         this.value = value;
-        this.objectReflector = new ObjectsReflector(value.prototype, value,null);
+        this.objectReflector = new ObjectsReflector(value.prototype, value, null, this);
     }
     /***
      * This method return if target is an Annotation type
@@ -73,12 +76,17 @@ export class Constructor<T extends Object> implements ObjectStructure<T> {
                 // Function.prototype.isPrototypeOf(this.value.prototype) ||
                 Array.prototype.isPrototypeOf(this.value.prototype);
     }
+
+    /***
+     * @isNestedClass
+     */
+    public isNested():boolean{ return Define.of(this.value["@Nested"]).orNull(false); }
     /***
      * This method returns name of package class
      * @getPackage
      * @returns string name of package
      */
-    public getPackage(): string { return Define.of(this.value["@Package"]).orNull(null);}
+    public getPackage(): Package { return Package.getPackage(this); }
     /***
      * <pre>
      *     Return an Array of Enumeration of Enum class
@@ -96,14 +104,14 @@ export class Constructor<T extends Object> implements ObjectStructure<T> {
     }
     /***
      * @getName
-     * @returns string
-     */
-    get name():string{return this.value.constructor.name;}
-    /***
-     * @getName
      * @return screen
      */
     public getName():string{  return this.value.name||this.value.prototype.constructor.name||"Anonymous"; }
+    /***/
+    public getFullName():string{
+        let tmp:string;
+        return ((tmp=this.getPackage().getName())!=null ? tmp : "" )+(this.isNested()?"$":tmp!=null?".":"")+this.getName();
+    }
     /***
      * @getType
      * @returns string
@@ -113,12 +121,14 @@ export class Constructor<T extends Object> implements ObjectStructure<T> {
      * @getDeclaringClass
      * @returns Class<T>
      */
-    public getDeclaringClass(): Class<T>{ return new Class<T>(this.value.class<T>().newInstance()); }
+    public getDeclaringClass(): Class<T>{ return new Class<T>(this.value.prototype); }
     /***
      * @getClassLoader
      * @returns ClassLoader<T>
      */
     public getClassLoader():ClassLoader<T>{ return new ClassLoader<T>(this.value); }
+    /***/
+    public getInstance():Function{ return this.value; }
     /***
      * @newInstance return new Instance
      * @throw ClassNotFoundException
@@ -162,7 +172,27 @@ export class Constructor<T extends Object> implements ObjectStructure<T> {
      * @param name
      * @returns InputStreamReader
      */
-    public getResourcesAsStream( name: string): any/* InputStreamReader*/{return null /*new FileReader(name)*/;}
+    public getResourcesAsStream( name: string):InputStreamReader{
+
+        if(!Paths.get(name).isAbsolute()){
+            let paths:Path[] = Paths
+                .projectResources()
+                .filter(value=>value.resolve(Paths.get(name)).toFile().isFile());
+
+            if( paths.length === 0 ) name = null;
+            name = Paths.projectResources()[0].resolve(Paths.get(name)).toString();
+        }
+        return new FileReader(name);
+    }
+    /***/
+    public toString():string {
+        let out:string = "";
+        if(!this.isPrimitive()){
+            if(this.isAnnotation()) out+="@";
+            out += (this.isEnum() ? "enum" : "class")+" ";
+        }
+        return out+this.getFullName();
+    }
     /***
      * @deprecated
      */

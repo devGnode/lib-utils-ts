@@ -121,4 +121,4 @@ export class ListIterator<E> extends Iterator<E> implements listIteratorInterfac
         this.list[this.iteration-1] = e;
     }
 }
-//Object.package(this);
+Object.package(this);
