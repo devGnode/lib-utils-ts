@@ -5,7 +5,6 @@
  *  + @GETTER
  *  + @SETTER
  *
- * @version : 0.0.1
  */
 import {IOException, NoSuchElementException} from "./Exception";
 
