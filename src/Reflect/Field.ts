@@ -1,8 +1,10 @@
 import {Class} from "../Class";
 import {Optional} from "../Optional";
-import {Annotation} from "../annotation/Annotation";
 import {Objects} from "../type/Objects";
 import {Member} from "./Interfaces";
+import {Constructor} from "../Constructor";
+import {ObjectDescriptor} from "./ObjectDescriptor";
+import {Annotation} from "../annotation/Annotation";
 /***
  * @class Field
  * @implements Member
@@ -31,19 +33,24 @@ export class Field implements Member{
      * @types number
      */
     private readonly level:number;
-
+    /***
+     *
+     */
+    private readonly construct:Constructor<any>;
     /***
      * @constructor constructor handler
      * @param target Name of field
      * @param value Field value
      * @param level Field level
      * @param clazz Class of target field
+     * @param construct
      */
-    constructor(target:string, value:Object, level:number, clazz:Class<any> = null ) {
-        this.value  = value;
-        this.target = target;
-        this.clazz  = clazz;
-        this.level  = level;
+    constructor(target:string, value:Object, level:number, clazz:Class<any> = null, construct:Constructor<any> = null ) {
+        this.value      = value;
+        this.target     = target;
+        this.clazz      = clazz;
+        this.construct  = construct;
+        this.level      = level;
     }
     /***
      * <pre>
@@ -69,7 +76,15 @@ export class Field implements Member{
      * @getDeclaringClass
      * @return Class<any> : Target Class
      */
-    public  getDeclaringClass(): Class<any> {return this.clazz;}
+    public getDeclaringClass(): Class<any> {return Optional.ofNullable(this.clazz).orElse(this.construct.getDeclaringClass());}
+    /***
+     * <pre>
+     *     return constructor class of the current field
+     * </pre>
+     * @getDeclaringConstructor
+     * @return {Constructor}
+     */
+    public getDeclaringConstructor():Constructor<any>{ return this.construct; }
     /***
      * <pre>
      *     This method return all annotations
@@ -79,10 +94,26 @@ export class Field implements Member{
      * @return Annotation[] : All annotation primitive array
      */
     public getDeclaredAnnotations():Annotation[]{
-        if(Objects.isNull(this.clazz.getInstance())) return [];
+        if(Objects.isNull(this.getDeclaringClass().getInstance())) return [];
         return Optional
-            .ofNullable(this.clazz.getInstance().constructor["@Annotations"])
+            .ofNullable(this.getDeclaringClass().getInstance().constructor["@Annotations"])
             .orElse([]);
+    }
+    /***/
+    public setAnnotation(annotation:Annotation):void{
+        if(Objects.isNull( this.clazz.getInstance().constructor["@Annotations"] )) {
+            new Field("@Annotations",[annotation], 1, null,this.clazz.getInstance().constructor.class())
+                .getFieldDescriptor()
+                .value([annotation])
+                .enumerable(false)
+                .final()
+                .set();
+        }else{
+            this.clazz
+                .getInstance()
+                .constructor["@Annotations"]
+                .push(annotation);
+        }
     }
     /***
      * <pre>
@@ -103,6 +134,10 @@ export class Field implements Member{
      */
     public getValue():Object{ return this.value; }
     /***
+     *
+     */
+    public getFieldDescriptor():ObjectDescriptor<Field,Object>{return ObjectDescriptor.ofAttribute(this);}
+    /***
      * @setValue
      * @params object : value of the field
      * @return void : void
@@ -114,16 +149,23 @@ export class Field implements Member{
      * @Throws NullPointerException
      * @returns boolean : boolean
      */
-    public isEnumConstant():boolean{ return Objects.requireNotNull(this.clazz,"Class is null").isEnum(); }
+    public isEnumConstant():boolean{ return Objects.requireNotNull(this.getDeclaringClass(),"DeclaringClass is null").isEnum(); }
     /***
      * @toString
      * @return string : string
      * @override
      */
     public toString():string{
-        return `${this.level.equals(Field.INSTANCED)?"":"static "}`+
-        `${this.clazz.getName()}.${this.target} : ${this.getType().getName()} = ${this.value};`;
+        let p:string = "Object", // default
+            typePackage:string;
+
+        if(this.getType()!=null){
+            p = ((typePackage=this.getType().getPackage().getName())? typePackage+".":"")+this.getType().getName();
+            p = p.replace( (this.level.equals(Field.INSTANCED)?this.getDeclaringClass():this.construct).getPackage().getName()+".", "");
+        }
+        // //${this.value!=null? "= "+this.value:""}
+        return `${this.level.equals(Field.INSTANCED)? this.getDeclaringClass().getName() :"static "+this.construct.getName()}`+
+        `.${this.target}: ${p}`;
     }
 }
-// package
 Object.package(this);
