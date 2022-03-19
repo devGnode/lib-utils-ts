@@ -35,3 +35,4 @@ export class Qword extends PrimitiveNumber.Unsigned64 implements QWORD{
         return Qword.mk(Qword.mk(0).random(min, max).valueOf());
     }
 }
+Object.package(this);

@@ -22,3 +22,4 @@ export class Int64 extends PrimitiveNumber.Signed64 implements int64{
         return Int64.mk(Int64.mk(0).random(min, max).valueOf());
     }
 }
+Object.package(this);

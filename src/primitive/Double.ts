@@ -38,3 +38,4 @@ export class Double extends PrimitiveNumber.Unsigned64 implements double{
         return Double.mk(Double.mk(0).random(min, max).valueOf());
     }
 }
+Object.package(this);
