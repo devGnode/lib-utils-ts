@@ -57,6 +57,7 @@ export class OptionalInt {
      * @override
      */
     public toString( ):string{
-        return this.present ? `Optional[${this.value}]` : "Optional.empty";
+        return this.present ? `OptionalInt[${this.value}]` : "Optional.empty";
     }
 }
+Object.package(this);

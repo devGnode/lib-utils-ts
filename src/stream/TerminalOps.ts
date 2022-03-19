@@ -33,3 +33,4 @@ export abstract class TerminalOps<E_IN,R> implements terminalOps<E_IN,R>{
     /**/
     public abstract evaluateSequential<P_IN>(helper:PipelineHelper<E_IN>, spliterator:Spliterator<P_IN>): R;
 }
+Object.package(this);

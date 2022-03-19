@@ -140,4 +140,4 @@ export class FindOps {
             new FindOps.FindSinkImpl.OfRef.OP_FIND_ANY<T>() ).get();
     }
 }
-
+Object.package(this);

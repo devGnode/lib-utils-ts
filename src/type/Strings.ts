@@ -1,16 +1,18 @@
 import {format} from "util";
 import {comparable, comparator, Func, List} from "../Interface";
 import {ArrayList} from "../ArrayList";
+import {Objects} from "./Objects";
 /***
- * @Strings : Proxy class, allow to extend the prototype of the native String or string
- * Object. Dont forget to implement your method in global interface ObjectConstructor,
+ * @Strings : Proxy class, allow to extend the prototype
+ * of the native String or string Object. Dont forget to
+ * implement your method in global interface ObjectConstructor,
  * Location of this interface is in Interfaces.ts
  */
 export abstract class Strings extends String implements comparable<string>{
     /***
      * @equalsIgnoreCase :
      */
-    public equalsIgnoreCase( value : string ) : boolean {return Object.isNull(value) ? false : this.toString().toLowerCase()===value.toLowerCase();}
+    public equalsIgnoreCase( value : string ) : boolean {return Objects.isNull(value) ? false : this.toString().toLowerCase()===value.toLowerCase();}
     /***
      * @regExp
      */
@@ -49,7 +51,7 @@ export abstract class Strings extends String implements comparable<string>{
      */
     private static compareString: comparator<string> = new class implements comparator<string>{
         public compare(o1: string, o2: string): number {
-            if(Object.isNull(o1)&&Object.isNull(o2)) return 0;
+            if(Objects.isNull(o1)&&Objects.isNull(o2)) return 0;
             // copy to java class
             for (let i = 0, len = Math.min(o1.length, o2.length); i < len; i++) {
                 let a:number = o1.charCodeAt(i);
@@ -66,7 +68,7 @@ export abstract class Strings extends String implements comparable<string>{
     /***
      * @repeatStringA
      */
-    public static repeatStringA( char : string, loop : number = 0 ) : String{ return loop <= 0 || Object.isNull(loop) ? "" :new Array<any>(loop).fill(char.charAt(0)).join("");}
+    public static repeatStringA( char : string, loop : number = 0 ) : String{ return loop <= 0 || Objects.isNull(loop) ? "" :new Array<any>(loop).fill(char.charAt(0)).join("");}
     /**
      * **/
     private static regExp( regexp : RegExp = /.+/, value : string, callback : Func<string,string>  ):string{
@@ -82,3 +84,4 @@ export abstract class Strings extends String implements comparable<string>{
         return value;
     }
 }
+Object.package(this);

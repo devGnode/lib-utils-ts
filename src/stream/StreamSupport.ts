@@ -1,8 +1,8 @@
-console.log("STREAMSUPPORT - d ")
 import {IntPipelineImpl} from "./IntPipeline";
 import {intStream, spliterator, Stream, supplier} from "../Interface";
 import {Spliterator} from "../Spliterator";
 import {ReferencePipelineImpl} from "./ReferencePipeline";
+import {Objects} from "../type/Objects";
 /***
  * @StreamSupport
  */
@@ -20,7 +20,8 @@ export abstract class StreamSupport {
      * @toImplement sourceFlag
      */
     public static intStream(spliterator:Spliterator<number>|supplier<spliterator<number>> ):intStream{
-       return new IntPipelineImpl.Head<number>(Object.requireNotNull(spliterator),0);
+       return new IntPipelineImpl.Head<number>(Objects.requireNotNull(spliterator),0);
     }
 
 }
+Object.package(this);

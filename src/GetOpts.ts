@@ -1,5 +1,5 @@
 import {MapType} from "./Interface";
-import {BiConsumer, Consumer} from "./Consumer";
+import {BiConsumer} from "./Consumer";
 import {Objects} from "./type/Objects";
 
 interface argumentCli extends BiConsumer<string, string>{
@@ -111,7 +111,7 @@ export class GetOpts{
      */
     public static parse(str:string, argsConf:argumentCli):string{
         let desc:argumentCliDescriptor = argsConf.getDescriptor();
-        return str.regExp(argsConf.getReg(), (dummy,argument)=> argsConf.accept(argument[desc.key],argument[desc.str_nq] || parseInt(argument[desc.number]) || argument[desc.str_dq] || argument[desc.str_sq]));
+        return String(str).regExp(argsConf.getReg(), (dummy,argument)=> argsConf.accept(argument[desc.key],argument[desc.str_nq] || parseInt(argument[desc.number]) || argument[desc.str_dq] || argument[desc.str_sq]));
     }
     /***
      * @get :
@@ -147,3 +147,4 @@ export class GetOpts{
         return out;
     }
 }
+Object.package(this);

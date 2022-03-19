@@ -1,4 +1,5 @@
 import {IConsumer} from "../Interface";
+import {Objects} from "../type/Objects";
 /**
 * @IConsumer: => accept
 */
@@ -22,7 +23,7 @@ abstract class ChainedReference<T, E_OUT> implements sink<T>{
     protected  downstream:sink<E_OUT>
 
      constructor(downstream:sink<E_OUT>) {
-        this.downstream = Object.requireNotNull(downstream);
+        this.downstream = Objects.requireNotNull(downstream);
     }
     /***
      */
@@ -58,3 +59,4 @@ export abstract class Sink {
     public static readonly ChainedInt       = ChainedInt;
 
 }
+Object.package(this);

@@ -2,6 +2,7 @@ import {consumer, spliterator} from "./Interface";
 import {Consumer, IntConsumer} from "./Consumer";
 import {NullPointerException} from "./Exception";
 import {Spliterator} from "./Spliterator";
+import {Objects} from "./type/Objects";
 
 export abstract class Spliterators{
 
@@ -37,7 +38,7 @@ export abstract class Spliterators{
             let a:T[], i:number , hi:number,
                 consumer:Consumer<T>;
 
-            if (Object.isNull(action)) throw new NullPointerException();
+            if (Objects.isNull(action)) throw new NullPointerException();
             consumer = <Consumer<T>>this.cast(action);
             if ((a = <T[]>this.array).length >= (hi = this.fence) && (i = this.index) >= 0 && i < (this.index = hi)) {
                 do { consumer.accept(<T>a[i]); } while (++i < hi);
@@ -47,7 +48,7 @@ export abstract class Spliterators{
         tryAdvance(action: consumer<T> ): boolean {
             let consumer:Consumer<T>;
 
-            if (Object.isNull(action)) throw new NullPointerException();
+            if (Objects.isNull(action)) throw new NullPointerException();
             consumer = <Consumer<T>>this.cast(action);
 
             if (this.index >= 0 && this.index < this.fence) {
@@ -84,7 +85,7 @@ export abstract class Spliterators{
              consumer:IntConsumer;
 
             consumer = <IntConsumer>this.cast(action);
-            if (Object.isNull(action)) throw new NullPointerException();
+            if (Objects.isNull(action)) throw new NullPointerException();
             if ((a = this.array).length >= (hi = this.fence) && (i = this.index) >= 0 && i < (this.index = hi)) {
                 do { consumer.accept(a[i]); } while (++i < hi);
             }
@@ -93,7 +94,7 @@ export abstract class Spliterators{
         tryAdvance(action: consumer<number>): boolean {
             let consumer:IntConsumer;
 
-            if (Object.isNull(action)) throw new NullPointerException();
+            if (Objects.isNull(action)) throw new NullPointerException();
             consumer = <IntConsumer>this.cast(action);
             if (this.index >= 0 && this.index < this.fence) {
                 consumer.accept(this.array[this.index++]);
@@ -110,3 +111,4 @@ export abstract class Spliterators{
         estimateSize(): number {return this.fence - this.index;}
     }
 }
+Object.package(this);

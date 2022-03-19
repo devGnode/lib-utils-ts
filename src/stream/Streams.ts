@@ -9,6 +9,7 @@ import {
 import { Spliterators} from "../Spliterators";
 import {Exception} from "../Exception";
 import {StreamSupport} from "./StreamSupport";
+import {Objects} from "../type/Objects";
 
 /**MOCK*/
 export interface StreamImpl<T> extends IConsumer<T>, spliterator<T>{
@@ -23,7 +24,7 @@ export abstract class Streams{
         counter:number = 1;
 
         accept(o: T): void {
-            if(Object.isNull(this.buffer)) this.buffer = [o];
+            if(Objects.isNull(this.buffer)) this.buffer = [o];
             else{
                 this.buffer[this.counter++]=o;
             }
@@ -32,7 +33,7 @@ export abstract class Streams{
         forEachRemaining(action: consumer<T>): void {
             let i:number = 0;
             if(this.buffer.length<=0) return;
-            do{ (<IConsumer<T>>action).accept( this.buffer[i++] ); }while (!Object.isNull(this.buffer[i]));
+            do{ (<IConsumer<T>>action).accept( this.buffer[i++] ); }while (!Objects.isNull(this.buffer[i]));
         }
 
         tryAdvance(action: consumer<T>): boolean {

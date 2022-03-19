@@ -3,6 +3,8 @@ import {UnsupportedOperationException} from "./Exception";
 import {Consumer} from "./Consumer";
 import {StreamSupport} from "./stream/StreamSupport";
 import {Spliterator} from "./Spliterator";
+import {Arrays} from "./type/Arrays";
+import {Objects} from "./type/Objects";
 /***
  * @abstract
  * @AbstractCollection
@@ -45,7 +47,7 @@ export abstract class AbstractCollection<T> implements collection<T> {
     public contains(o: Object): boolean {
         let itr: iterator<T> = this.iterator();
         if (o === null) {
-            while (itr.hasNext()) if (Object.isNull(itr.next())) return true;
+            while (itr.hasNext()) if (Objects.isNull(itr.next())) return true;
         } else {
             while (itr.hasNext()) if (o.equals(itr.next())) return true;
         }
@@ -72,7 +74,7 @@ export abstract class AbstractCollection<T> implements collection<T> {
      */
     public remove(value: Object): boolean {
         let itr: iterator<T> = this.iterator();
-        if (Object.isNull(value)) {
+        if (Objects.isNull(value)) {
             while (itr.hasNext()) {
                 if (itr.next() === null) {
                     itr.remove();
@@ -132,7 +134,7 @@ export abstract class AbstractCollection<T> implements collection<T> {
      * @forEach
      */
     public forEach(consumer: consumer<T>): void {
-        Object.requireNotNull(consumer);
+        Objects.requireNotNull(consumer);
         if(typeof consumer == "function")consumer=Consumer.of(consumer);
         let itr: iterator<T> = this.iterator();
         while(itr.hasNext())consumer.accept(itr.next());
@@ -147,7 +149,8 @@ export abstract class AbstractCollection<T> implements collection<T> {
         let itr: iterator<T> = this.iterator(),
             out: T[] = [], i: number = 0;
         while (itr.hasNext()) out[i++] = itr.next();
-        return out;
+        //return out;
+        return Arrays.copyOfRange(this.value,0,this.size());
     }
     /***
      * @toJson
@@ -175,3 +178,4 @@ export abstract class AbstractCollection<T> implements collection<T> {
         return "[ "+(carry?"\n":"")+ out.replace(/,\s*$/,"")+(carry?"\n":" ")+"]";
     }
 }
+Object.package(this);

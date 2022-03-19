@@ -3,6 +3,7 @@ import {Random} from "./Random";
 import {ListIterator} from "./Iterator";
 import {Comparator} from "./Comparator";
 import {NullPointerException} from "./Exception";
+import {Objects} from "./type/Objects";
 /***
  * @Collections
  * @Abstract
@@ -12,7 +13,7 @@ export abstract class Collections {
      *
      */
     public static addAll<T>(list:collection<T>, obj:T[]):void{
-        if(obj.length===0||Object.isNull(list)||Object.isNull(obj)) return;
+        if(obj.length===0||Objects.isNull(list)||Objects.isNull(obj)) return;
         for(let i=0; i < obj.length; i++ )list.add(obj[i]);
     }
     /***
@@ -54,7 +55,7 @@ export abstract class Collections {
      *
      */
     public static swap<T>( list: List<T>,i : int, j: int ): void{
-        Object.requireNotNull(list,"list instance is null");
+        Objects.requireNotNull(list,"list instance is null");
        // console.log("SWAP - ", i , j)
         let tmp: T = list.get(i);
         list.set(i,list.get(j));
@@ -64,7 +65,7 @@ export abstract class Collections {
      *
      */
     public static shuffle<T>( list: List<T>, rand: Random = new Random() ): void{
-        Object.requireNotNull(rand,"Random instance is null");
+        Objects.requireNotNull(rand,"Random instance is null");
         let itr: ListIterator<T> = list.listIterator();
         while (itr.hasNext()){
             itr.next();
@@ -92,8 +93,8 @@ export abstract class Collections {
     protected static ReverseOrder:comparator<comparable<Object>> = new class ReverseOrder implements comparator<comparable<Object>>{
 
         public compare(o1: comparable<Object>, o2: comparable<Object>): number {
-            if(Object.isNull(o1)&&Object.isNull(o2)||Object.isNull(o1)||Object.isNull(o2)) return 0;
-            if(Object.isNull(o2.compareTo)) throw new NullPointerException(`${o2.getClass().getName()} class doesn't not implement comparable interface`);
+            if(Objects.isNull(o1)&&Objects.isNull(o2)||Objects.isNull(o1)||Objects.isNull(o2)) return 0;
+            if(Objects.isNull(o2.compareTo)) throw new NullPointerException(`${o2.getClass().getName()} class doesn't not implement comparable interface`);
             return o2.compareTo(o1);
         }
 
@@ -107,3 +108,4 @@ export abstract class Collections {
     }
 
 }
+Object.package(this);

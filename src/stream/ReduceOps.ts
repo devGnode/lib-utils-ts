@@ -5,6 +5,7 @@ import {ObjIntConsumer, supplier} from "../Interface";
 import {UnsupportedOperationException} from "../Exception";
 import {Spliterator} from "../Spliterator";
 import {OptionalInt} from "../OptionalInt";
+import {Objects} from "../type/Objects";
 
 interface AccumulatingSink<T, R, K extends AccumulatingSink<T, R, K>> extends terminalSink<T, R> {
    combine(other:K):void;
@@ -46,7 +47,7 @@ export class ReduceOps {
     };
 
     public static makeIntOperator(op:Function):TerminalOps<number, OptionalInt>{
-        Object.requireNotNull(op);
+        Objects.requireNotNull(op);
         class ReduceSink implements AccumulatingSink<number, OptionalInt, ReduceSink>{
             private empty:boolean;
             private state:number;
@@ -87,7 +88,7 @@ export class ReduceOps {
     }
 
     public static makeIntOperatorN(start:number, op:Function):TerminalOps<number, number>{
-        Object.requireNotNull(op);
+        Objects.requireNotNull(op);
         class ReduceSink implements AccumulatingSink<number, number, ReduceSink>{
 
             private state:number;
@@ -151,3 +152,4 @@ export class ReduceOps {
         }
     }
 }
+Object.package(this);

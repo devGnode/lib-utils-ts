@@ -39,3 +39,4 @@ export abstract class PipelineHelper<P_OUT>{
     * */
     abstract evaluateHelper<P_IN>(spliterator:Spliterator<P_IN>, flatten:boolean):Node<P_OUT>;
 }
+Object.package(this);

@@ -2,9 +2,7 @@
  * Array
  */
 import {Predication} from "./Predication";
-import {Optional} from "./Optional";
 import {Iterator, ListIterator} from "./Iterator";
-import {InputStreamReader, OutputStreamWriter} from "./file/IOStream";
 import {Define} from "./Define";
 import {Response} from "./net/Http";
 import {Class} from "./Class";
@@ -15,6 +13,11 @@ import {OptionalInt} from "./OptionalInt";
 import {Integer} from "./type/Integer";
 import {Method} from "./Reflect/Method";
 import {Field} from "./Reflect/Field";
+import {Path} from "./file/Path";
+import {InputStreamReader} from "./file/InputStreamReader";
+import {OutputStream} from "./file/OutputStream";
+import {Package} from "./lang/Package";
+import {InputStream} from "./file/InputStream";
 /**
  * typeOf
  */
@@ -122,10 +125,7 @@ declare global {
      * Test implementation
      */
     interface ObjectConstructor {
-        isNull( value : Object ):boolean
-        requireNotNull<T>( other: T, message?: string ) :T
         equals(o1:Object, o2:Object):boolean
-        nonNull( obj: Object ): boolean
         package(o:Object):void
         toString( o: Object ): string
     }
@@ -134,10 +134,7 @@ declare global {
         getClass<T>(): Class<T>
         equals(o1:Object):boolean
         compare( o1: Object, o2: Object ) : number
-        deepEquals( o1: Object, o2:Object ):boolean
-        typeof(o:Object):PrimitiveTypes
         hash():number
-
     }
 
     interface Function {
@@ -192,6 +189,13 @@ export interface classLoader<T>{
      */
     instance(...argArray: Object[]): T
 }
+export interface ClassLoader {
+    getParent():IClassLoader
+    getResourceAsStream(name:string):InputStream
+    loadClass(name:String):Class<any>
+}
+export interface IClassLoader extends ClassLoader{
+}
 /***
  *
  */
@@ -200,6 +204,7 @@ export interface ObjectStructure<T> {
      * @getName : return name of Class
      */
     getName():string
+    getFullName():string
     /**/
     isAnonymousClass():boolean
     /***/
@@ -211,7 +216,7 @@ export interface ObjectStructure<T> {
     /**/
     isPrimitive():boolean
     /**/
-    getPackage():string
+    getPackage():Package
     /***/
     getFields(type:number):Field[]
     /**/
@@ -674,35 +679,30 @@ export interface define<T>{
      */
     valueOf( ): T
 }
-
-export interface path {
-    getPath():string
-    getFileName( ):string
+/***/
+export interface Runnable {
+    run():void
 }
 /***
  * Properties
  */
-export interface IPropertiesFile<K extends string|number,V>{
+export interface propertiesF{
     /***
      *
      * @param key
      * @param value
      */
-    setProperty( key : K, value : V ) : void
+    setProperty( key : Object, value : Object ) : void
     /***
      *
      * @param key
      * @param defaultValue
      */
-    getProperty( key: K, defaultValue?: V ) : V
+    getProperty( key: string, defaultValue?: Object ) : Object
 }
 /***
- *
  */
-export interface IPropertiesFileA extends IPropertiesFile<string, Object>{}
-/***
- */
-export interface properties<V> extends  IPropertiesFile<string, V>{
+export interface properties extends  propertiesF{
     /***
      */
     hasKey( key : string ):boolean
@@ -714,14 +714,11 @@ export interface properties<V> extends  IPropertiesFile<string, V>{
     stringPropertiesName( ) : Set<string>
     /***
      */
-    store( output: OutputStreamWriter ) : void
-    /***
-     *
-     */
-    update( ) :void
+    store( output: OutputStream ) : void
+
 }
 /****
- *
+ * @toDelete
  */
 export interface reader {
     /***
@@ -765,7 +762,7 @@ export interface fileStream {
     /***
      *
      */
-    getFileName( ):string
+    getFileName( ):Path
 }
 /***
  * Interface net/

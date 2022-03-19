@@ -1,5 +1,7 @@
 import {comparable, comparator} from "../Interface";
 import {Optional} from "../Optional";
+import {NumberFormatException} from "./NumberFormatException";
+import {Objects} from "./Objects";
 /***
  * @Integer : Proxy class, allow to extend the prototype of the native Number Object.
  * Dont forget to implement your method in global interface ObjectConstructor,
@@ -21,7 +23,7 @@ export class Integer extends Number implements comparator<number>,comparable<num
      */
     private static compareNumber:comparator<number> = new class implements comparator<number>{
         public compare(o1: number, o2: number): number {
-            if(Object.isNull(o1)&&Object.isNull(o2)||Object.isNull(o1)||Object.isNull(o2)) return 0;
+            if(Objects.isNull(o1)&&Objects.isNull(o2)||Objects.isNull(o1)||Objects.isNull(o2)) return 0;
             return ( o1 > o2 ) ? 1 : o1 == o2 ? 0 :  -1;
         }
     };
@@ -29,7 +31,7 @@ export class Integer extends Number implements comparator<number>,comparable<num
      *
      */
     public static sum(a:number, b:number):number{
-        return Object.requireNotNull(a)+Object.requireNotNull(b);
+        return Objects.requireNotNull(a)+Objects.requireNotNull(b);
     }
     /***
      *
@@ -52,5 +54,10 @@ export class Integer extends Number implements comparator<number>,comparable<num
     /***
      *
      */
-    public static of( value : Object ):number{return parseInt(<string>value);}
+    public static of( value : Object ):number{
+        try {return parseInt(<string>value);}catch (e) {
+            throw new NumberFormatException();
+        }
+    }
 }
+Object.package(this);

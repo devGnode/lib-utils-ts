@@ -62,3 +62,4 @@ export abstract class AbstractSet<V> extends AbstractCollection<V> implements Se
     public size(): number {return this.offset;}
 
 }
+Object.package(this);

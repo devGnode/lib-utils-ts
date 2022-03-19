@@ -1,6 +1,7 @@
 import {comparable, comparator, comparatorFn, comparatorFnA} from "./Interface";
 import {Comparators} from "./Comparators";
 import {Collections} from "./Collections";
+import {Objects} from "./type/Objects";
 
 export class Comparator<T> implements comparator<T>{
     /***
@@ -26,7 +27,7 @@ export class Comparator<T> implements comparator<T>{
      * @param comparator
      */
     public thenComparing?( comparator: comparator<T> ): comparator<T>{
-        Object.requireNotNull(comparator);
+        Objects.requireNotNull(comparator);
         let out: Comparator<T> = new Comparator<T>();
         out.compare = (o1: T, o2: T): number =>{
             let res:number = this.compare(o1,o2);
@@ -42,7 +43,7 @@ export class Comparator<T> implements comparator<T>{
     public thenComparingFn?<T, U extends comparable<U>>( comparatorFn: comparatorFn<T,U>, comparator :comparator<U> = null ): comparator<T>{
         return Comparator.comparing(comparatorFn);
        // return null;
-        /*return <comparator<T>>this.thenComparing<T>(Comparator.comparing<T,U>(comparatorFn)); Object.isNull(comparator) ?
+        /*return <comparator<T>>this.thenComparing<T>(Comparator.comparing<T,U>(comparatorFn)); Objects.isNull(comparator) ?
             this.thenComparing(Comparator.comparing(comparatorFn)) :
             this.thenComparing(Comparator.comparingA<T,U>(comparatorFn,comparator))*/
 
@@ -71,7 +72,7 @@ export class Comparator<T> implements comparator<T>{
      * @param comparatorFn
      */
     public static comparing<T,U extends comparable<U>>( comparatorFn: comparatorFn<T,U> ): comparator<T>{
-        Object.requireNotNull(comparatorFn,"comparatorFn is Null !")
+        Objects.requireNotNull(comparatorFn,"comparatorFn is Null !")
         return new class extends Comparator<T> implements comparator<T>{
             constructor( ) {super();}
             /***
@@ -81,7 +82,7 @@ export class Comparator<T> implements comparator<T>{
                 let p:U, q:U,res:number;
                 if(Object.compare(o1,o2).equals(0)) return 0;
                 res = Object.compare(p=comparatorFn.call(o1, o1, o2),q=comparatorFn.call(o2, o2, o1));
-                if(res!=0&&Object.isNull(p)) res = 0;
+                if(res!=0&&Objects.isNull(p)) res = 0;
                 return res === 0 ? res : p.compareTo(q);
             }
             /***
@@ -92,7 +93,7 @@ export class Comparator<T> implements comparator<T>{
              * @override
 
             public thenComparing(comparator: comparator<T>): comparator<T> {
-                Object.requireNotNull(comparator);
+                Objects.requireNotNull(comparator);
                 let out: Comparator<T> = new Comparator<T>();
                 out.compare = (o1: T, o2: T): number =>{
                     let res:number = this.compare(o1,o2);
@@ -108,15 +109,14 @@ export class Comparator<T> implements comparator<T>{
      * @param comparator
      */
     public static comparingA<T,U>( comparatorFn: comparatorFnA<T,U>, comparator: comparator<T> ): Comparator<T>{
-        Object.requireNotNull(comparatorFn,"comparatorFn is Null !");
-        Object.requireNotNull(comparator,"comparator is Null !");
+        Objects.requireNotNull(comparatorFn,"comparatorFn is Null !");
+        Objects.requireNotNull(comparator,"comparator is Null !");
         return new class extends Comparator<T> implements Comparator<T>{
             constructor( ) {super();}
             /***
              * @override
              */
             public compare = (o1: T, o2: T): number =>{
-                let res:number;
                 if(Object.compare(o1,o2).equals(0)) return comparator.compare(o1,o2);
                 return comparator.compare(comparatorFn.call(o2, o2), comparatorFn.call(o1, o1));
             }
@@ -124,3 +124,4 @@ export class Comparator<T> implements comparator<T>{
     }
 
 }
+Object.package(this);

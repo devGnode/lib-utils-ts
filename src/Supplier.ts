@@ -14,7 +14,7 @@ export abstract class Supplier<T> implements supplier<T>{
         if(supplierA instanceof Supplier )return supplierA;
         return new class extends Supplier<T> {
             get:supplierFn<T> = ():T=> typeof  supplierA === "function" ? <T>supplierA() : null;
-        }
+        };
     }
 }
 Object.package(this);
