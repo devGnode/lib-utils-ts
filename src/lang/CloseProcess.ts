@@ -46,6 +46,8 @@ export class CloseProcess{
         return new class extends CloseProcess{
             /***/
             public getSign(): ExitSign {return sign;}
+
+            public getExitCode():number{return sign.getExitCode();}
         }
     }
     /***

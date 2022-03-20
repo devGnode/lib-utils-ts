@@ -4,56 +4,63 @@ import {Enum} from "../Enum";
  * @version 1.0-R-JSTrip
  */export class ExitSign extends Enum{
     /***/
-    @Enum.args(true) static EXIT:ExitSign;
-    @Enum.args(true) static SIGHUP:ExitSign;
-    @Enum.args(true) static SIGINT:ExitSign;
-    @Enum.args(false) static SIGQUIT:ExitSign;
-    @Enum.args(false) static SIGILL:ExitSign;
-    @Enum.args(false) static SIGTRAP:ExitSign;
-    @Enum.args(false) static SIGABRT:ExitSign;
-    @Enum.args(false) static SIGIOT:ExitSign;
-    @Enum.args(false) static SIGBUS:ExitSign;
-    @Enum.args(false) static SIGEMT:ExitSign;
-    @Enum.args(false) static SIGFPE:ExitSign;
-    @Enum.args(true) static SIGKILL:ExitSign;
-    @Enum.args(false) static SIGUSR1:ExitSign;
-    @Enum.args(false) static SIGSEGV:ExitSign;
-    @Enum.args(false) static SIGUSR2:ExitSign;
-    @Enum.args(false) static SIGPIPE:ExitSign;
-    @Enum.args(false) static SIGALRM:ExitSign;
-    @Enum.args(true) static SIGTERM:ExitSign;
-    @Enum.args(false) static SIGSTKFLT:ExitSign;
-    @Enum.args(false) static SIGCHLD:ExitSign;
-    @Enum.args(false) static SIGCLD:ExitSign;
-    @Enum.args(false) static SIGCONT:ExitSign;
-    @Enum.args(true) static SIGSTOP:ExitSign;
-    @Enum.args(false) static SIGTSTP:ExitSign;
-    @Enum.args(false) static SIGTTIN:ExitSign;
-    @Enum.args(false) static SIGTTOU:ExitSign;
-    @Enum.args(false) static SIGURG:ExitSign;
-    @Enum.args(false) static SIGXCPU:ExitSign;
-    @Enum.args(false) static SIGFSZ:ExitSign
-    @Enum.args(false) static SIGVTALRM:ExitSign
-    @Enum.args(false) static SIGPROF:ExitSign;
-    @Enum.args(false) static SIWINCH:ExitSign;
-    @Enum.args(false) static SIGIO:ExitSign;
-    @Enum.args(false) static SIGPOLL:ExitSign;
-    @Enum.args(false) static SIGPWR:ExitSign;
-    @Enum.args(false) static SIGINFO:ExitSign;
-    @Enum.args(false) static SIGLOST:ExitSign;
+    @Enum.args(true, 0) static EXIT:ExitSign;
+    @Enum.args(true, 1) static SIGHUP:ExitSign;
+    @Enum.args(true, 2) static SIGINT:ExitSign;
+    @Enum.args(false, 3) static SIGQUIT:ExitSign;
+    @Enum.args(false, 4) static SIGILL:ExitSign;
+    @Enum.args(false, 5) static SIGTRAP:ExitSign;
+    @Enum.args(false, 6) static SIGABRT:ExitSign;
+    @Enum.args(false, 6) static SIGIOT:ExitSign;
+    @Enum.args(false, 7) static SIGBUS:ExitSign;
+    @Enum.args(false, null) static SIGEMT:ExitSign;
+    @Enum.args(false,8) static SIGFPE:ExitSign;
+    @Enum.args(true, 9) static SIGKILL:ExitSign;
+    @Enum.args(false, 10) static SIGUSR1:ExitSign;
+    @Enum.args(false, 11) static SIGSEGV:ExitSign;
+    @Enum.args(false, 12) static SIGUSR2:ExitSign;
+    @Enum.args(false, 13) static SIGPIPE:ExitSign;
+    @Enum.args(false, 14) static SIGALRM:ExitSign;
+    @Enum.args(true, 15) static SIGTERM:ExitSign;
+    @Enum.args(false, 16) static SIGSTKFLT:ExitSign;
+    @Enum.args(false, 17) static SIGCHLD:ExitSign;
+    @Enum.args(false, null) static SIGCLD:ExitSign;
+    @Enum.args(false,  18) static SIGCONT:ExitSign;
+    @Enum.args(true, 19) static SIGSTOP:ExitSign;
+    @Enum.args(false, 20) static SIGTSTP:ExitSign;
+    @Enum.args(false, 21) static SIGTTIN:ExitSign;
+    @Enum.args(false, 22) static SIGTTOU:ExitSign;
+    @Enum.args(false, 23) static SIGURG:ExitSign;
+    @Enum.args(false, 24) static SIGXCPU:ExitSign;
+    @Enum.args(false, 25) static SIGFSZ:ExitSign
+    @Enum.args(false, 26) static SIGVTALRM:ExitSign
+    @Enum.args(false, 27) static SIGPROF:ExitSign;
+    @Enum.args(false, 28) static SIWINCH:ExitSign;
+    @Enum.args(false, 29) static SIGIO:ExitSign;
+    @Enum.args(false,  null) static SIGPOLL:ExitSign;
+    @Enum.args(false, 30) static SIGPWR:ExitSign;
+    @Enum.args(false, null) static SIGINFO:ExitSign;
+    @Enum.args(false, null) static SIGLOST:ExitSign;
     @Enum.args(false) static SIGSYS:ExitSign;
-    @Enum.args(false) static SIGUNUSED:ExitSign;
-    @Enum.args(true) static SIGBREAK:ExitSign;
+    @Enum.args(false, 31) static SIGUNUSED:ExitSign;
+    @Enum.args(true, 31) static SIGBREAK:ExitSign;
     /****
      * This attribute allow to check if
      * a signal, is already in listener
      * see {ApplicationShutdownHooks}.
      */
     private initListen:boolean;
+
+    private readonly exitCode:number;
     /***
      * @param {boolean} state
+     * @param code
      */
-    protected constructor(state:boolean) {super(); this.initListen = state||false; }
+    protected constructor(state:boolean, code:number) {
+        super();
+        this.initListen = state||false;
+        this.exitCode   = code;
+    }
     /***
      * @constructor
      */
@@ -65,6 +72,10 @@ import {Enum} from "../Enum";
      * @return {boolean}
      */
     public isListen():boolean{return this.initListen;}
+    /***
+     *
+     */
+    public getExitCode():number{return this.exitCode; }
     /***
      * Need for have a  good parameter type
      *  for a native NodeJS signs type.

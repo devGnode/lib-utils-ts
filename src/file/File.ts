@@ -213,4 +213,4 @@ export class File {
     public static of(path:string):File{return new File(path);}
 
 }
-Object.package(this);
+//Object.package(this);

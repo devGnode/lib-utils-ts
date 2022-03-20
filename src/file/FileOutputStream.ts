@@ -34,7 +34,9 @@ export class FileOutputStream extends OutputStream{
     }
 
     public write(b:number|BYTE|string): void {
-        fs.writeSync(this.fd.get(),b === "string"? b.toString(): typeof b === "number" ? String.fromCharCode(b) : b.toString());
+            try {fs.writeSync(this.fd.get(), b === "string" ? b.toString() : typeof b === "number" ? String.fromCharCode(b) : b.toString());}catch (e) {
+                throw new IOException(e.stack)
+            }
     }
 
     public writeBytes(buffer: string[], off: number = 0, length: number): void {
