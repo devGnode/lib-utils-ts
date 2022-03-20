@@ -11,7 +11,7 @@ import { InputStreamReader } from "./file/InputStreamReader";
 import {FileReader} from "./file/FileReader";
 import {Package} from "./lang/Package";
 import {Optional} from "./Optional";
-import {Launcher} from "./lang/misc/Launcher";
+//import {Launcher} from "./lang/misc/Launcher";
 /***
  * @ClassLoader
  * <pre>

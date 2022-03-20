@@ -33,7 +33,7 @@ export class Package {
         });
     }
 
-    public static Package0(target:any):void{
+    private static Package0(target:any):void{
         let {ClassNotFoundException, NullPointerException} = require("../Exception"),
             {System} = require("../lang/System"),
             {Path} = require("../file/Path"),

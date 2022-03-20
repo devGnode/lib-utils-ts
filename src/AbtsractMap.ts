@@ -135,4 +135,4 @@ export abstract class AbstractMap<K,V> implements Map<K, V>{
         return out;
     }
 }
-Object.package(this);
+//Object.package(this);
