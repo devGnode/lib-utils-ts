@@ -1,7 +1,7 @@
 import {TerminalOps, terminalOps, terminalSink} from "./TerminalOps";
 import {StreamShape} from "./StreamShape";
 import {PipelineHelper} from "./PipelineHelper";
-import {ObjIntConsumer, supplier} from "../Interface";
+import {biConsumer, collector, ObjIntConsumer, supplier} from "../Interface";
 import {UnsupportedOperationException} from "../Exception";
 import {Spliterator} from "../Spliterator";
 import {OptionalInt} from "../OptionalInt";
@@ -10,7 +10,6 @@ import {Objects} from "../type/Objects";
 interface AccumulatingSink<T, R, K extends AccumulatingSink<T, R, K>> extends terminalSink<T, R> {
    combine(other:K):void;
 }
-
 /*
 * Evaluate
 * **/
@@ -45,6 +44,57 @@ export class ReduceOps {
         inputShape(): StreamShape {return this.shape;}
 
     };
+
+    public static makeRefCollect<T,I>(collector:collector<T, I, any>):TerminalOps<T,I>{
+         let supplier:supplier<I> = Objects.requireNotNull(collector.supplier()),
+         accumulator:biConsumer<I, T> = Objects.requireNotNull(collector.accumulator());
+
+        class ReduceSink extends ReduceOps.Box<I>
+            implements AccumulatingSink<T, I, ReduceSink> {
+
+            begin(value: number):void {this.state = supplier.get();}
+
+            accept(o: T): void {accumulator.accept(this.state, o);}
+
+            combine(other: ReduceSink): void {}
+
+            cancellationRequested(): boolean {return false;}
+
+            end(): void {}
+
+        }
+        return new class extends ReduceOps.ReduceOp<T,I,ReduceSink>{
+
+            constructor() {super(StreamShape.REFERENCE);}
+
+            makeSink(): ReduceSink {return new ReduceSink();}
+        }
+    }
+
+    public static makeRef<T,R>(supplier:supplier<R>, accumulator:biConsumer<R,T>):TerminalOps<T,R>{
+        Objects.requireNotNull(supplier);
+        Objects.requireNotNull(accumulator);
+        class ReduceSink extends ReduceOps.Box<R>
+            implements AccumulatingSink<T, R, ReduceSink> {
+
+            begin(value: number):void {this.state = supplier.get();}
+
+            accept(o: T): void {accumulator.accept(this.state, o);}
+
+            combine(other: ReduceSink): void {}
+
+            cancellationRequested(): boolean {return false;}
+
+            end(): void {}
+
+        }
+        return new class extends ReduceOps.ReduceOp<T,R,ReduceSink>{
+
+            constructor() {super(StreamShape.REFERENCE);}
+
+            makeSink(): ReduceSink {return new ReduceSink();}
+        }
+    }
 
     public static makeIntOperator(op:Function):TerminalOps<number, OptionalInt>{
         Objects.requireNotNull(op);

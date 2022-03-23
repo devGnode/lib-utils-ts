@@ -13,7 +13,7 @@ import {
     spliterator,
     Stream,
     supplier,
-    consumer
+    consumer, biConsumer
 } from "../Interface";
 import {Supplier} from "../Supplier";
 import {ForEachOps} from "./ForEachOps";
@@ -22,6 +22,8 @@ import {FindOps} from "./FindOps";
 import {Predication} from "../Predication";
 import {MatchOps} from "./MatchOps";
 import {Objects} from "../type/Objects";
+import {ReduceOps} from "./ReduceOps";
+import {Collectors} from "../Collectors";
 
 
 export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_IN, P_OUT, Stream<P_OUT>> implements Stream<P_OUT>{
@@ -117,23 +119,48 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
     limit(maxValue: number): Stream<P_OUT> {
         return undefined;
     }
-
+    /***
+     *
+     * @param {predication<P_OUT>} predicate
+     * @return {boolean}
+     */
    public noneMatch(predicate: predication<P_OUT>): boolean {
         return this.evaluate(MatchOps.makeRef(predicate, MatchOps.MatchKind.NONE));
     }
-
-    collector<R, A>(collector: collector<P_OUT, A, R>): R {
-        return undefined;
-    }
-
+    /***
+     *
+     * @param {supplier<R>} supplier
+     * @param {biConsumer<R, O>} biConsumer
+     * @return {R}
+     */
+   public collect<R, O extends P_OUT>(supplier:supplier<R>, biConsumer: biConsumer<R, O>):R{
+        return this.evaluate(ReduceOps.makeRef(supplier,biConsumer));
+   }
+    /***
+     *
+     * @param {collector<O, A, R>} collector
+     * @return {R}
+     */
+   public collector<R, A, O extends P_OUT>(collector: collector<O, A, R>): R {
+       return collector.finisher().call(null,this.evaluate(ReduceOps.makeRefCollect(collector)));
+   }
+    /***
+     *
+     * @param {sink<P_OUT>} sink
+     * @param {spliterator<P_OUT>} spliterator
+     * @return {boolean}
+     */
     public forEachWithCancel(sink: sink<P_OUT>,spliterator: spliterator<P_OUT>): boolean {
         let canceled:boolean;
         do{}while( !( canceled = sink.cancellationRequested() ) && spliterator.tryAdvance(sink) );
         return canceled;
     }
-
-    toArray(): Object[] {
-        return [];
+    /***
+     *
+     * @return {Object[]}
+     */
+    public toArray(): Object[] {
+        return this.collector(Collectors.toArray());
     }
 }
 

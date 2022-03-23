@@ -121,11 +121,11 @@ export abstract class AbstractPipeline<E_IN,E_OUT,S> extends PipelineHelper<E_OU
     public wrapSink<P_IN>(sk:sink<E_OUT>): sink<P_IN> {
 
         for(let ptr: AbstractPipeline<any, E_OUT, any> = this; ptr.depth >  0; ptr = ptr.previousStage ){
-            console.log("======== =====================================")
+            //console.log("======== =====================================")
            // console.log(ptr.depth )
-            console.log("=======================================================================================================================================")
+           // console.log("=======================================================================================================================================")
             sk = ptr.opWrapSink(0, sk);
-            console.log(sk)
+           // console.log(sk)
         }
         // @ts-ignore
         return (<sink<P_IN>>sk);

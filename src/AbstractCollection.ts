@@ -141,7 +141,7 @@ export abstract class AbstractCollection<T> implements collection<T> {
     }
     /**
      * */
-    stream(): Stream<T> {return StreamSupport.stream(<Spliterator<T>>this.spliterator(0));}
+    public stream(): Stream<T> {return StreamSupport.stream(<Spliterator<T>>this.spliterator(0));}
     /***
      *  @toArray
      */
