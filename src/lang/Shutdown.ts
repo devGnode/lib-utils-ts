@@ -11,7 +11,7 @@ export abstract class Shutdown {
     private static FINALIZED:number = 2;
 
     private static state:number = Shutdown.RUN
-r
+
     private static readonly MAX_HOOKS:number = 10;
 
     private static readonly hooks:Runnable[] = [];

@@ -1,10 +1,15 @@
 import {InputStream} from "../file/InputStream";
 import {OutputStream} from "../file/OutputStream";
+import {ExitSign} from "./ExitSign";
 /***
  * @version 4.0-R-libUtilsTs
  * @version 1.0-R-JSTrip
  */
 export abstract class Process {
+    /**
+     *
+     */
+    public abstract halt(sign:ExitSign):void;
     /***/
     public abstract destroy():void;
     /**

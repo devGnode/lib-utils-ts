@@ -59,8 +59,9 @@ export class Package {
             throw new NullPointerException(`Class @${actualPath.toForNamePath()} return null value element`);
         }
 
-        try{console.log("Module loaded",actualPath.getParent().toForNamePath()+"."+element);}catch (e) {
-            System.out.println("Module loaded",actualPath.getParent().toForNamePath()+"."+element);
+        let p:string = actualPath.getParent().toForNamePath().length == 0  ? "" : actualPath.getParent().toForNamePath()+".";
+        try{console.log("Module loaded",p+element);}catch (e) {
+            System.out.println("Module loaded",p+element);
         }
         // Set descriptor
         Package.define(target[element],actualPath.getParent().toForNamePath());

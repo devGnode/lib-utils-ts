@@ -120,7 +120,7 @@ export class ProcessBuilder {
             if(i>=1&&args[i].indexOf("\u0000") > -1) throw new IOException("invalid null character in command");
         }
 
-        dir = this.directory == null ? "" : this.directory.toString();
+        dir = this.directory == null ? null : this.directory.toString();
         command = args[0];
         args.shift();
         try{

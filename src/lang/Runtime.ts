@@ -8,6 +8,7 @@ import {ApplicationShutdownHooks} from "./ApplicationShutdownHooks";
 import {CloseProcess} from "./CloseProcess";
 import {ExitSign} from "./ExitSign";
 import {Shutdown} from "./Shutdown";
+import {File} from "../file/File";
 /***
  * @version 4.0-R-libUtilsTs
  * @version 1.0-R-JSTrip
@@ -69,11 +70,13 @@ export class Runtime {
     public availableProcessors():number{return os.cpus().length;}
     /**
      * @return {Process}
+     * @param dir
      * @param commands
      */
-    public exec( ...commands:string[] ):Process{
+    public exec( dir:File = null, ...commands:string[] ):Process{
         return ProcessBuilder
             .of(...commands)
+            .setDirectory(dir)
             .start();
     }
 }
