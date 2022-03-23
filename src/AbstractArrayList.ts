@@ -74,7 +74,7 @@ export abstract class AbstractArrayList<T> extends AbstractCollection<T> impleme
     /**
      * @Mock
      */
-    stream(): Stream<T> {return super.stream();}
+    public stream(): Stream<T> {return super.stream(); }
 }
 Object.package(this);
 
