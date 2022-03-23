@@ -110,7 +110,7 @@ export class Constructor<T extends Object> implements ObjectStructure<T> {
     /***/
     public getFullName():string{
         let tmp:string;
-        return ((tmp=this.getPackage().getName())!=null ? tmp : "" )+(this.isNested()?"$":tmp!=null?".":"")+this.getName();
+        return ((tmp=this.getPackage().getName())!=null ? tmp : "" )+(this.isNested()?"$":tmp!=null&&tmp.length>0?".":"")+this.getName();
     }
     /***
      * @getType

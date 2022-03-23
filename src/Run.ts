@@ -19,9 +19,8 @@ import {Optional} from "./Optional";
 import {Method} from "./Reflect/Method";
 import {System} from "./lang/System";
 import {BiConsumer} from "./Consumer";
-import {Properties} from "./file/Properties";
-import path = require("path");
-
+// POO cheating
+(<any>System).initializeSystemClass();
 /***
  * @Runner
  * <pre>
@@ -38,32 +37,12 @@ import path = require("path");
 const args:any = GetOpts.get( GetOpts.LONG_ARGS | GetOpts.SHORT_ARGS );
 /**
  */
-import * as os from "os";
-import {Path} from "./file/Path";
-
 let jstripHome:string = "";
 if(!Objects.isNull(args["jstrip-home"])){
     process.env["JSTRIP_HOME"] = jstripHome = args["jstrip-home"];
 }
-System.initProperties(new Properties());
 System.setProperty("user.dir",process.cwd());
-System.setProperty("vm.node.version",process.versions.node);
-System.setProperty("vm.v8.version",process.versions.v8);
-System.setProperty("javaSTrip.io.tmp", os.tmpdir());
 System.setProperty("javaSTrip.home",jstripHome);
-System.setProperty("file.separator",path.sep);
-System.setProperty("path.separator",path.delimiter);
-System.setProperty("cpu.name",os.cpus()[0].model);
-System.setProperty("line.separator",os.EOL);
-System.setProperty("cpu.endian",os.endianness()==="LE"?"little":"big");
-System.setProperty("os.hostname",os.hostname());
-System.setProperty("os.arch",os.arch());
-System.setProperty("os.platform",os.platform());
-System.setProperty("os.name",os.type());
-System.setProperty("os.version",os.release());
-System.setProperty("user.home",os.homedir());
-System.setProperty("user.name",new Path(os.homedir()).getFileName().toString());
-System.setProperty("file.null",os.release());
 System.setProperty("javaSTrip.class.path",jstripHome);
 System.setProperty("javaSTrip.library.path",jstripHome);
 //
@@ -124,7 +103,7 @@ if(Objects.isNull(args["project-root"])&&!process.env.PROJECT_ROOT ){
     process.env.PROJECT_ROOT = process.cwd();
 }
 if(Objects.isNull(args["project-src"])&&!process.env.PROJECT_SRC){
-    if(Objects.isNull(args.quiet))System.out.println(`Run - Environment variable 'PROJECT_ROOT' not defined, default : '${process.cwd()}'`);
+    if(Objects.isNull(args.quiet))System.out.println(`Run - Environment variable 'PROJECT_SRC' not defined, default : '${process.cwd()}'`);
     process.env.PROJECT_SRC = process.cwd();
 }
 if(Objects.isNull(args["project-resources"])&&!process.env.PROJECT_RESOURCES){

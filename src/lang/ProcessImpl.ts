@@ -42,7 +42,7 @@ export class ProcessImpl extends Process{
             this.stderr = new FileInputStream(new FileDescriptor().set(ioHandle[2]));
         }
         /***/
-        command = (dir!=null?dir+"/":"")+command;
+        command = (dir!=null?dir.endsWith("/")||dir.endsWith("\\")? dir: dir+"/":"")+command;
         this.handle = child_process.spawn(command, args, {detached: true, stdio: ['pipe', 'pipe', 'pipe']});
         this.handle.stdout.on("data",(data:Buffer)=>f1.write(data.toString()));
         this.handle.stderr.on("data",(data:string)=>f2.write(data.toString()));

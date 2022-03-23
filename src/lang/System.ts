@@ -8,6 +8,9 @@ import {FileInputStream} from "../file/FileInputStream";
 import {Properties} from "../file/Properties";
 import {Runtime} from "./Runtime";
 import {IllegalArgumentException, NullPointerException} from "../Exception";
+import * as path from "path";
+import * as os from "os";
+import {Path} from "../file/Path";
 
 export abstract class System {
 
@@ -15,15 +18,15 @@ export abstract class System {
     /****
      * @type {PrintStream}
      */
-    public static readonly out:PrintStream =  new PrintStream(new FileOutputStream(FileDescriptor.out));
+    public static readonly out:PrintStream;
     /***
      * @type {PrintStream}
      */
-    public static readonly err:PrintStream = new PrintStream(new FileOutputStream(FileDescriptor.err));
+    public static readonly err:PrintStream;
     /***
      * @type {PrintStream}
      */
-    public static readonly in:InputStream = new FileInputStream(FileDescriptor.in);
+    public static readonly in:InputStream;
     /***/
     private static props:Properties = null;
     /**
@@ -87,8 +90,39 @@ export abstract class System {
      * @param {Byte} signalCode
      */
     public static exit(signalCode:Byte|number){
-        Runtime.getRuntime()
+        Runtime
+            .getRuntime()
             .exit(typeof signalCode ==="number" ?Byte.mk(signalCode):signalCode);
+    }
+    /***
+     * init
+     */
+    private static initializeSystemClass():void {
+
+        if(this.props!=null) return;
+        // Init SystemProperties
+        System.initProperties(new Properties());
+        //
+        System.setProperty("vm.node.version",process.versions.node);
+        System.setProperty("vm.v8.version",process.versions.v8);
+        System.setProperty("javaSTrip.io.tmp", os.tmpdir());
+        System.setProperty("file.separator",path.sep);
+        System.setProperty("path.separator",path.delimiter);
+        System.setProperty("cpu.name",os.cpus()[0].model);
+        System.setProperty("line.separator",os.EOL);
+        System.setProperty("cpu.endian",os.endianness()==="LE"?"little":"big");
+        System.setProperty("os.hostname",os.hostname());
+        System.setProperty("os.arch",os.arch());
+        System.setProperty("os.platform",os.platform());
+        System.setProperty("os.name",os.type());
+        System.setProperty("os.version",os.release());
+        System.setProperty("user.name",new Path(os.homedir()).getFileName().toString());
+        System.setProperty("user.home",os.homedir());
+        System.setProperty("file.null",os.release());
+        //
+        this.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+        this.setErr(new PrintStream(new FileOutputStream(FileDescriptor.err)));
+        this.setIn(new FileInputStream(FileDescriptor.in));
     }
 }
 Object.package(this);
