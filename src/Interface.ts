@@ -18,6 +18,7 @@ import {InputStreamReader} from "./file/InputStreamReader";
 import {OutputStream} from "./file/OutputStream";
 import {Package} from "./lang/Package";
 import {InputStream} from "./file/InputStream";
+import {Optional} from "./Optional";
 /**
  * typeOf
  */
@@ -315,7 +316,9 @@ export interface intStream{
 
     collector<R>(collector:collector<number, R, R>):R
 }
-
+export interface ToTypeFunction<T,R> {
+    applyAs(type:T):R
+}
 /**MOCK*/
 export interface Stream<T> {
 
@@ -331,6 +334,12 @@ export interface Stream<T> {
 
     limit(maxValue:number):Stream<T>
 
+    reduce(accumulator:Function ):Optional<T>
+
+    min(comparator:comparator<T>):Optional<T>
+
+    max(comparator:comparator<T>):Optional<T>
+
     findAny( ):optional<T>
 
     findFirst():optional<T>
@@ -339,11 +348,11 @@ export interface Stream<T> {
 
     map<R>(mapper:Func<T, R>):Stream<R>
 
+    mapToInt(mapper:ToTypeFunction<T, number>):intStream
+
     each(consumer:consumer<T>):void
 
     sort( comparator: comparator<T> ):Stream<T>
-
-    sum():number
 
     toArray():Object[]
 }
@@ -351,6 +360,12 @@ export interface Stream<T> {
 export interface IntBinaryOperator {
     applyAsInt(left:number, right:number):number
 }
+/**BiFunction*/
+export interface BiFunction<T,U,R> {
+    apply(a:T, b:U):R;
+    //andThen<V>( func: Func<R, V>):BiFunction<T, U, V>
+}
+
 /***@IConsume*/
 export interface IConsumer<T>{
     accept:consumerFn<T>

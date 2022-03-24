@@ -6,6 +6,8 @@ import {UnsupportedOperationException} from "../Exception";
 import {Spliterator} from "../Spliterator";
 import {OptionalInt} from "../OptionalInt";
 import {Objects} from "../type/Objects";
+import {Optional} from "../Optional";
+import {BinaryOperator} from "../utils/BinaryOperator";
 
 interface AccumulatingSink<T, R, K extends AccumulatingSink<T, R, K>> extends terminalSink<T, R> {
    combine(other:K):void;
@@ -16,7 +18,10 @@ interface AccumulatingSink<T, R, K extends AccumulatingSink<T, R, K>> extends te
 export class ReduceOps {
 
     private constructor() {}
-
+    /***
+     *
+     * @type {Box<T>>}
+     */
     private static Box = class Box<T>{
         state: T;
 
@@ -25,7 +30,10 @@ export class ReduceOps {
         public get():T{ return this.state; }
 
     };
-
+    /***
+     * @Nested
+     * @type {terminalOps<T, R>}
+     */
     private static ReduceOp = class ReduceOp<T, R, S extends AccumulatingSink<T, R, S>> implements terminalOps<T, R>{
 
         private readonly shape:StreamShape;
@@ -45,6 +53,57 @@ export class ReduceOps {
 
     };
 
+    /***
+     * @RefPipeline
+     * @see Reduce, Min, Max
+     */
+    public static makeRefOperator<T>(operator:BinaryOperator<T>):TerminalOps<T,Optional<T>>{
+        Objects.requireNotNull(operator);
+        class ReduceSink
+            implements AccumulatingSink<T, Optional<T>, ReduceSink> {
+
+            private state:T;
+            private empty:boolean;
+
+            begin(value: number):void {
+                this.state = null;
+                this.empty = true;
+            }
+
+            accept(o: T): void {
+                if(this.empty){
+                   this.empty=!this.empty;
+                   this.state = o;
+                }else{
+                    this.state = operator.apply(this.state, o);
+                }
+            }
+            /***
+             * @override
+             **/
+            public get():Optional<T> {return this.empty ? Optional.empty() : Optional.ofNullable(this.state);}
+
+            // toDo decommission
+            combine(other: ReduceSink): void {}
+
+            cancellationRequested(): boolean {return false;}
+
+            end(): void {}
+
+        }
+        return new class extends ReduceOps.ReduceOp<T,Optional<T>,ReduceSink>{
+
+            constructor() {super(StreamShape.REFERENCE);}
+
+            makeSink(): ReduceSink {return new ReduceSink();}
+        }
+    }
+
+    /***
+     * @RefPipeline
+     * @param {collector<T, I, any>} collector
+     * @return {TerminalOps<T, I>}
+     */
     public static makeRefCollect<T,I>(collector:collector<T, I, any>):TerminalOps<T,I>{
          let supplier:supplier<I> = Objects.requireNotNull(collector.supplier()),
          accumulator:biConsumer<I, T> = Objects.requireNotNull(collector.accumulator());
@@ -174,19 +233,14 @@ export class ReduceOps {
         class ReduceSink extends ReduceOps.Box<R> implements AccumulatingSink<number, R, ReduceSink>{
 
 
-            accept(o: number): void {
-                accumulator.accept(this.state,o);
-            }
+            accept(o: number): void {accumulator.accept(this.state,o);}
 
-            begin(value: number): void {
-                this.state = supplier.get();
-            }
+            begin(value: number): void {this.state = supplier.get();}
 
-            cancellationRequested(): boolean {
-                return false;
-            }
+            cancellationRequested(): boolean {return false;}
 
             combine(other: ReduceSink): void {
+
             }
 
             end(): void {}

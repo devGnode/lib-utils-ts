@@ -149,7 +149,6 @@ export abstract class AbstractPipeline<E_IN,E_OUT,S> extends PipelineHelper<E_OU
         }
 
         // parallel Ctrl ...
-
         if( terminalFlags!=0) this.combinedFlag = terminalFlags;
 
         return tmp;
