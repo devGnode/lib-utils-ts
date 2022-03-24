@@ -12,7 +12,7 @@ export abstract class StreamSupport {
      * @returns {Stream}
      */
     public static stream<T>(spliterator:Spliterator<T>|supplier<spliterator<T>>):Stream<T>{
-        return new ReferencePipelineImpl.Head(spliterator);
+        return new ReferencePipelineImpl.Head(spliterator, 0);
     }
     /***
      * @intStream

@@ -1,7 +1,7 @@
 import {AbstractPipeline} from "./AbstractPipeline";
 import {StreamShape} from "./StreamShape";
 import {Sink, sink} from "./Sink"
-import {UnsupportedOperationException} from "../Exception";
+import {IllegalArgumentException, UnsupportedOperationException} from "../Exception";
 import {Spliterator} from "../Spliterator";
 import {
     collector,
@@ -13,7 +13,7 @@ import {
     spliterator,
     Stream,
     supplier,
-    consumer, biConsumer
+    consumer, biConsumer, intStream, ToTypeFunction
 } from "../Interface";
 import {Supplier} from "../Supplier";
 import {ForEachOps} from "./ForEachOps";
@@ -24,28 +24,38 @@ import {MatchOps} from "./MatchOps";
 import {Objects} from "../type/Objects";
 import {ReduceOps} from "./ReduceOps";
 import {Collectors} from "../Collectors";
-
+import {IntPipelineImpl} from "./IntPipeline";
+import {SliceOps} from "./SliceOps";
+import {Optional} from "../Optional";
+import {BinaryOperator} from "../utils/BinaryOperator";
 
 export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_IN, P_OUT, Stream<P_OUT>> implements Stream<P_OUT>{
 
-    protected constructor(value:Spliterator<any>|Supplier<spliterator<any>>|AbstractPipeline<any, P_IN, any>) {
-        super(value,0);
+    protected constructor(value:Spliterator<any>|Supplier<spliterator<any>>|AbstractPipeline<any, P_IN, any>, sourceFlag:number) {
+        super(value,sourceFlag);
     }
 
-    getOutputShape(): StreamShape {return StreamShape.REFERENCE;}
+    public getOutputShape(): StreamShape {return StreamShape.REFERENCE;}
 
-    abstract opWrapSink(flags: number, sink: sink<P_OUT>): sink<P_IN>;
-
+    public abstract opWrapSink(flags: number, sink: sink<P_OUT>): sink<P_IN>;
+    /***
+     * Most easy case
+     * @param {consumer<P_OUT>} consumer
+     */
     public each(consumer:consumer<P_OUT>): void {
         this.evaluate(new ForEachOps.OfRef(Consumer.of(consumer)))
     }
-
+    /***
+     *
+     * @param {Func<P_OUT, R>} mapper
+     * @return {Stream<R>}
+     */
     public map<R>(mapper: Func<P_OUT, R>): Stream<R> {
         let slf:this = this;
         Objects.requireNotNull(mapper);
         return new class extends StateOps<P_OUT,R>{
 
-            constructor() {super(slf);}
+            constructor() {super(slf,0);}
 
             /**@override**/
             opWrapSink(flags: number, sink: sink<R>): sink<P_OUT> {
@@ -60,34 +70,73 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
                     }
                 };
             }
-        }
+        };
     }
+    /***
+     *
+     * @param {ToTypeFunction<P_OUT, number>} mapper
+     * @return {intStream}
+     */
+    public mapToInt(mapper:ToTypeFunction<P_OUT, number>):intStream{
+        Objects.requireNotNull(mapper);
+        let slf:this = this;
+        return new class extends IntPipelineImpl.StalelessOp<P_OUT>{
 
+            constructor() {super(slf, StreamShape.REFERENCE);}
 
-    public findAny(): optional<P_OUT> {
-        return this.evaluate(FindOps.makeRef(false));
+            public opWrapSink(flags: number, sink: sink<number>): sink<P_OUT> {
+                return new class extends Sink.ChainedReference<P_OUT, number>{
+
+                    constructor() {super(sink);}
+                    /***@override*/
+                    public accept(o: P_OUT) {
+                        this.downstream.accept(mapper.applyAs(o));
+                    }
+                };
+            }
+
+        };
     }
 
     sort(comparator: comparator<P_OUT>): Stream<P_OUT> {
         return undefined;
     }
-
-    sum(): number {
-        return 0;
+    /***
+     *
+     * @return {optional<P_OUT>}
+     */
+    public findAny(): optional<P_OUT> {
+        return this.evaluate(FindOps.makeRef(false));
     }
-
+    /***
+     *
+     * @param {predication<P_OUT>} predicate
+     * @return {boolean}
+     */
     public allMatch(predicate: predication<P_OUT>): boolean {
         return this.evaluate(MatchOps.makeRef(predicate,MatchOps.MatchKind.ALL));
     }
-
+    /***
+     *
+     */
     public anyMatch(predicate: predication<P_OUT>): boolean {
         return this.evaluate(MatchOps.makeRef(predicate,MatchOps.MatchKind.ANY));
     }
-
-    count(): number {
-        return 0;
+    /***
+     *
+     * @return {number}
+     */
+    public count(): number {
+        class Dummy implements ToTypeFunction<P_OUT, number>{
+            public applyAs(type: P_OUT): number {return 1;}
+        }
+        return this.mapToInt(new Dummy()).sum();
     }
-
+    /***
+     *
+     * @param {predication<P_OUT>} predicate
+     * @return {Stream<P_OUT>}
+     */
     public filter(predicate: predication<P_OUT>): Stream<P_OUT> {
         let slf:this = this, p:predicate<P_OUT>;
 
@@ -95,7 +144,7 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
         p = Predication.of(predicate);
         return new class extends StateOps<P_OUT,P_OUT>{
 
-            constructor() {super(slf);}
+            constructor() {super(slf,slf.getStreamAndOpFlags());}
 
             opWrapSink(flags: number, sink: sink<P_OUT>): sink<P_OUT> {
 
@@ -111,21 +160,55 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
             }
         };
     }
-
+    /***
+     *
+     * @return {optional<P_OUT>}
+     */
     public findFirst(): optional<P_OUT> {
         return this.evaluate(FindOps.makeRef(true));
     }
-
-    limit(maxValue: number): Stream<P_OUT> {
-        return undefined;
+    /***
+     *
+     * @param {number} maxValue
+     * @return {Stream<P_OUT>}
+     */
+    public limit(maxValue: number): Stream<P_OUT> {
+        if(maxValue<0) throw new IllegalArgumentException();
+        return SliceOps.makeRef(this, 0, maxValue);
     }
     /***
      *
      * @param {predication<P_OUT>} predicate
      * @return {boolean}
      */
-   public noneMatch(predicate: predication<P_OUT>): boolean {
+    public noneMatch(predicate: predication<P_OUT>): boolean {
         return this.evaluate(MatchOps.makeRef(predicate, MatchOps.MatchKind.NONE));
+    }
+
+    /*public reduceA(identit:P_OUT, accumulator:Function ):P_OUT{
+
+    }*/
+    /***
+     *
+     * @param {Function} accumulator
+     * @return {Optional<P_OUT>}
+     */
+    public reduce(accumulator:BinaryOperator<P_OUT>):Optional<P_OUT>{
+        return this.evaluate(ReduceOps.makeRefOperator(BinaryOperator.from(accumulator)));
+    }
+    /***
+     * @param {comparator<C>} comparator
+     * @return {Optional<C>}
+     */
+    public min(comparator:comparator<P_OUT>):Optional<P_OUT>{
+        return this.reduce(BinaryOperator.minBy(comparator));
+    }
+    /***
+     * @param {comparator<C>} comparator
+     * @return {Optional<C>}
+     */
+    public max(comparator:comparator<P_OUT>):Optional<P_OUT>{
+        return this.reduce(BinaryOperator.maxBy(comparator));
     }
     /***
      *
@@ -133,17 +216,17 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
      * @param {biConsumer<R, O>} biConsumer
      * @return {R}
      */
-   public collect<R, O extends P_OUT>(supplier:supplier<R>, biConsumer: biConsumer<R, O>):R{
+    public collect<R, O extends P_OUT>(supplier:supplier<R>, biConsumer: biConsumer<R, O>):R{
         return this.evaluate(ReduceOps.makeRef(supplier,biConsumer));
-   }
+    }
     /***
      *
      * @param {collector<O, A, R>} collector
      * @return {R}
      */
-   public collector<R, A, O extends P_OUT>(collector: collector<O, A, R>): R {
-       return collector.finisher().call(null,this.evaluate(ReduceOps.makeRefCollect(collector)));
-   }
+    public collector<R, A, O extends P_OUT>(collector: collector<O, A, R>): R {
+        return collector.finisher().call(null,this.evaluate(ReduceOps.makeRefCollect(collector)));
+    }
     /***
      *
      * @param {sink<P_OUT>} sink
@@ -159,48 +242,62 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
      *
      * @return {Object[]}
      */
-    public toArray(): Object[] {
-        return this.collector(Collectors.toArray());
-    }
+    public toArray(): Object[] {return this.collector(Collectors.toArray());}
 }
 
 class Head<E_IN,E_OUT> extends ReferencePipeline<E_IN, E_OUT>{
 
-    constructor(value:Spliterator<E_IN>|supplier<spliterator<E_IN>>) {
-        super(value);
+    constructor(value:Spliterator<E_IN>|supplier<spliterator<E_IN>>, opFlags:number) {
+        super(value,opFlags);
     }
 
     opWrapSink(flags: number, sink: sink<E_OUT>): sink<E_IN> {throw new UnsupportedOperationException();}
 
     opIsStateful(): boolean { throw new UnsupportedOperationException();}
 
-    each(consumer:Consumer<E_OUT>):void {
-        super.each(consumer);
-    }
+    each(consumer:Consumer<E_OUT>):void {super.each(consumer);}
 
 }
 
 class StateOps<E_IN,E_OUT> extends ReferencePipeline<E_IN, E_OUT>{
 
-    constructor(value:AbstractPipeline<any, E_IN, any>) {
-        super(value);
+    constructor(value:AbstractPipeline<any, E_IN, any>, opFlags:number) {
+        super(value, opFlags);
     }
 
     opWrapSink(flags: number, sink: sink<E_OUT>): sink<E_IN> {throw new UnsupportedOperationException();}
 
     opIsStateful(): boolean { throw new UnsupportedOperationException();}
 
-    each(consumer:Consumer<E_OUT>):void {
-        super.each(consumer);
-    }
+    each(consumer:Consumer<E_OUT>):void {super.each(consumer);}
 
 }
 
+class StateOpFulOp<E_IN,E_OUT> extends ReferencePipeline<E_IN, E_OUT>{
+
+    constructor(value:AbstractPipeline<any, E_IN, any>, opFlags:number) {super(value, opFlags);}
+
+    opIsStateful(): boolean { return true; }
+
+    opWrapSink(flags: number, sink: sink<E_OUT>): sink<E_IN> {return null;}
+}
+
+
 export abstract class ReferencePipelineImpl{
-
-    public static readonly Head     = Head;
-
-    public static readonly StateOps = StateOps;
-
+    /***
+     *
+     * @type {Head}
+     */
+    public static readonly Head         = Head;
+    /***
+     *
+     * @type {StateOps}
+     */
+    public static readonly StateOps     = StateOps;
+    /***
+     *
+     * @type {StateOpFulOp}
+     */
+    public static readonly StateFulOp   = StateOpFulOp;
 }
 Object.package(this);

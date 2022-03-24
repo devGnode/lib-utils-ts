@@ -121,7 +121,7 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
             slf:this = this;
 
         return new class extends StatelessOp<number>{
-            constructor() {super(slf,0);}
+            constructor() {super(slf,slf.getStreamAndOpFlags());}
 
             opWrapSink(flags: number, sink: sink<number>): sink<number> {
                 return new class extends Sink.ChainedInt<number>{
@@ -137,8 +137,10 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
             }
         };
     }
-
-    count(): number {return 0;}
+    /**
+     * @return {number}
+     */
+    public count(): number {return this.map(()=>1).sum();}
     /**
      * **/
     public sum(): number {return this.reduceIdentity(0,Number.sum);}
@@ -165,7 +167,7 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
 
          return new class extends StatelessOp<number>{
 
-             constructor() {super(slf,0);}
+             constructor() {super(slf, slf.getStreamAndOpFlags());}
 
              opWrapSink(flags: number, sink: sink<number>): sink<number> {
                  return new class extends Sink.ChainedInt<number>{
@@ -190,7 +192,7 @@ export abstract class IntPipeline<E_IN> extends AbstractPipeline<E_IN, number, i
         Objects.requireNotNull(supplier);
         return new class extends ReferencePipelineImpl.StateOps<number,R>{
 
-            constructor() {super(slf);}
+            constructor() {super(slf,0);}
 
             opWrapSink(flags: number, sink: sink<R>): sink<number> {
                 return new class extends Sink.ChainedInt<R>{
@@ -266,6 +268,7 @@ class StatelessOp<E_IN> extends IntPipeline<E_IN> implements intStream {
 
     opWrapSink(flags: number, sink: sink<number>): sink<E_IN> {return null;}
 
+    each(consumer: IntConsumer) {super.each(consumer);}
 }
 
 class StateFulOp<E_IN> extends IntPipeline<E_IN> implements intStream {
@@ -289,4 +292,8 @@ export abstract class IntPipelineImpl {
      *
      */
     public static StaleFull = StateFulOp;
+    /***
+     *
+     */
+    public static StalelessOp = StatelessOp
 }
