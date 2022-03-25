@@ -238,11 +238,13 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
         do{}while( !( canceled = sink.cancellationRequested() ) && spliterator.tryAdvance(sink) );
         return canceled;
     }
+    /**/
+    public toObjectArray():Object[]{return this.collector(Collectors.toArray())}
     /***
      *
      * @return {Object[]}
      */
-    public toArray(): Object[] {return this.collector(Collectors.toArray());}
+    public toArray(): P_OUT[] {return <P_OUT[]>this.toObjectArray(); }
 }
 
 class Head<E_IN,E_OUT> extends ReferencePipeline<E_IN, E_OUT>{

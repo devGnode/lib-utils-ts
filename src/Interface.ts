@@ -354,7 +354,9 @@ export interface Stream<T> {
 
     sort( comparator: comparator<T> ):Stream<T>
 
-    toArray():Object[]
+    toObjectArray():Object[]
+
+    toArray():T[]
 }
 /**@IntBinaryOperator*/
 export interface IntBinaryOperator {
@@ -694,9 +696,14 @@ export interface define<T>{
      */
     valueOf( ): T
 }
-/***/
+/***@Runnable*/
 export interface Runnable {
     run():void
+}
+/**@LuhnFormattedText*/
+export interface LuhnFormattedText {
+    check():boolean;
+    get():string;
 }
 /***
  * Properties
