@@ -101,7 +101,7 @@ export class Optional<T> implements optional<T>{
     /***
      * @empty
      */
-    public static empty<T>():optional<T>{return Optional.EMPTY;}
+    public static empty<T>():Optional<T>{return Optional.EMPTY;}
     /***
      *  @valueOf
      */

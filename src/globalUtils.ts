@@ -82,6 +82,7 @@ String.prototype.exec               = Strings.prototype.exec;
 String.prototype.orDefault          = Strings.prototype.orDefault;
 String.prototype.stripSlashes       = Strings.prototype.stripSlashes;
 String.prototype.compareTo          = Strings.prototype.compareTo;
+String.prototype.toArray            = Strings.prototype.toArray;
 /***
  * Number extension
  */

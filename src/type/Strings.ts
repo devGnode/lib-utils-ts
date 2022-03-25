@@ -69,6 +69,8 @@ export abstract class Strings extends String implements comparable<string>{
      * @repeatStringA
      */
     public static repeatStringA( char : string, loop : number = 0 ) : String{ return loop <= 0 || Objects.isNull(loop) ? "" :new Array<any>(loop).fill(char.charAt(0)).join("");}
+    /***/
+    public toArray():string[]{return this.valueOf().split("");}
     /**
      * **/
     private static regExp( regexp : RegExp = /.+/, value : string, callback : Func<string,string>  ):string{
