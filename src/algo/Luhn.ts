@@ -27,7 +27,7 @@ export class Luhn {
         private readonly stringValue:string;
 
         constructor(value:string, modulus?:number ) {
-            super(Arrays.stream(value.split("")).map(Integer.of).toArray(),null, Optional.ofNullable(modulus).orElse(10));
+            super(Arrays.stream(value.toArray()).map(Integer.of).toArray(),null, Optional.ofNullable(modulus).orElse(10));
             this.consumed       = true;
             this.stringValue    = value;
         }
@@ -147,7 +147,7 @@ export class Luhn {
      */
     public static of(value:string, modulus:number = null ):Luhn{
         if(!(/^\d+$/.test(value))) throw new IllegalArgumentException(Luhn.THROW_MSG);
-        let lst:List<number> = Arrays.stream(value.split("")).map(Integer.of).collector(Collectors.toList());
+        let lst:List<number> = Arrays.stream(value.toArray()).map(Integer.of).collector(Collectors.toList());
         lst.add(null);
         return new Luhn(lst.toArray(),null, modulus||10);
     }

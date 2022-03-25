@@ -77,6 +77,7 @@ declare global {
         orDefault( value : string ): string
         stripSlashes() :string
         compareTo( another: string ): number
+        toArray():string[]
     }
     interface StringConstructor{
         repeatString(char : string, loop : number ) : string
@@ -122,9 +123,7 @@ declare global {
     interface Array<T>{
         equals(o:Array<T>)
     }
-    /****
-     * Test implementation
-     */
+
     interface ObjectConstructor {
         equals(o1:Object, o2:Object):boolean
         package(o:Object):void
