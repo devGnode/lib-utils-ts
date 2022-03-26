@@ -14,6 +14,7 @@ import {Paths} from "./file/Paths";
 import {InputStreamReader} from "./file/InputStreamReader";
 import {FileReader} from "./file/FileReader";
 import {Package} from "./lang/Package";
+import {Optional} from "./Optional";
 /***
  * @Class :  Hook class Object accessor: (new MyAnyClass()).getClass()
  *
