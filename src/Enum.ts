@@ -7,6 +7,18 @@ import {Comparators} from "./Comparators";
 /***
  * @AbstractClassEnum
  */
+import {Func} from "./Interface";
+export interface AttributeProperties<T> {
+    setEnumerable(state:boolean):AttributeProperties<T>
+    setWrite(state:boolean):AttributeProperties<T>
+    setConfigurable(state:boolean):AttributeProperties<T>
+    setValue(value:T):AttributeProperties<T>
+    readOnly():AttributeProperties<T>
+    final():AttributeProperties<T>
+    propertyName(consumer:Func<string, string>):AttributeProperties<T>
+    setMethod(value:Function):AttributeProperties<T>
+    getSink():any
+}
 export abstract class Enum{
     /***
      *
@@ -75,4 +87,5 @@ export abstract class Enum{
             .get((prop:AttributeProperties<T>,target:any,key:string) => prop.setValue(Enum.getInstance<T>(key,target,Array.from(args))));
     }
 }
+Object.package(this);
 
