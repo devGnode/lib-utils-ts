@@ -105,8 +105,11 @@ export class Method implements Member{
 
         return null;
     }
-    /***/
+    /***
+     * @Throw NullPointeurException
+     */
     public setAnnotation(annotation:Annotation):void{
+        Objects.requireNotNull(annotation);
         if(Objects.isNull( this.target["@Annotations"] )) {
             new Field("@Annotations",[annotation], 1, null,this.target.class())
                 .getFieldDescriptor()

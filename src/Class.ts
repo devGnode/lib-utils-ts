@@ -1,7 +1,6 @@
 import {MapType,ObjectStructure} from "./Interface";
 import {Constructor} from "./Constructor";
 import {ClassNotFoundException, NullPointerException, RuntimeException} from "./Exception";
-import {Define} from "./Define";
 import {Path} from "./file/Path";
 import {Objects} from "./type/Objects";
 import {Enum} from "./Enum";
@@ -15,6 +14,7 @@ import {Paths} from "./file/Paths";
 import {InputStreamReader} from "./file/InputStreamReader";
 import {FileReader} from "./file/FileReader";
 import {Package} from "./lang/Package";
+import {Optional} from "./Optional";
 /***
  * @Class :  Hook class Object accessor: (new MyAnyClass()).getClass()
  *
@@ -292,7 +292,7 @@ export class Class<T extends Object> implements ObjectStructure<T>{
             throw new RuntimeException("caused by "+e.stack+"\n"+ex.stack);
         }
         return new Constructor<T>(
-            Define.of<any>(handler[getter||target.getShortFileName()])
+            Optional.of(handler[getter||target.getShortFileName()])
             .orElseThrow(new NullPointerException(
                 `No exportable '${getter||target.getShortFileName()}' class found in ${target.getParent().toForNamePath()} package.`
             ))

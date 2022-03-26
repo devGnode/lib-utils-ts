@@ -5,6 +5,7 @@ import {Member} from "./Interfaces";
 import {Constructor} from "../Constructor";
 import {ObjectDescriptor} from "./ObjectDescriptor";
 import {Annotation} from "../annotation/Annotation";
+import {Arrays} from "../type/Arrays";
 /***
  * @class Field
  * @implements Member
@@ -95,12 +96,39 @@ export class Field implements Member{
      */
     public getDeclaredAnnotations():Annotation[]{
         if(Objects.isNull(this.getDeclaringClass().getInstance())) return [];
+        let tmp:Annotation[] = Arrays
+            .stream<Annotation>(this.getDeclaringClass().getInstance().constructor["@Annotations"])
+            .filter((a:Annotation)=>a.getFieldName().equals(this.getName()))
+            .toArray()
         return Optional
-            .ofNullable(this.getDeclaringClass().getInstance().constructor["@Annotations"])
+            .ofNullable(tmp)
             .orElse([]);
     }
-    /***/
+    /***
+     * <pre>
+     *     This method return all annotations
+     *     applied on this field.
+     * </pre>
+     * @getDeclaredAnnotations
+     * @return Annotation[] : All annotation primitive array
+     */
+    public getDeclaredAnnotation<T extends Annotation>(clazz:Class<T>|Constructor<T>):T[]{
+        if(Objects.isNull(this.getDeclaringClass().getInstance())) return [];
+        Objects.requireNotNull(clazz);
+        let tmp:T[] = Arrays
+            .stream<T>(this.getDeclaringClass().getInstance().constructor["@Annotations"])
+            .filter((a:Annotation)=>a.getName().equals(clazz.getName())&&a.getFieldName().equals(this.getName()))
+            .toArray()
+        return Optional
+            .ofNullable(tmp)
+            .orElse([]);
+    }
+    /**
+     *
+     * @param {Annotation} annotation
+     */
     public setAnnotation(annotation:Annotation):void{
+        Objects.requireNotNull(annotation).setFieldName(this.getName());
         if(Objects.isNull( this.clazz.getInstance().constructor["@Annotations"] )) {
             new Field("@Annotations",[annotation], 1, null,this.clazz.getInstance().constructor.class())
                 .getFieldDescriptor()

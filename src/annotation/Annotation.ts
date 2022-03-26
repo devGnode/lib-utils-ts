@@ -14,6 +14,13 @@ export abstract class Annotation{
      */
     protected readonly name:string;
     /***
+     * Allow to to known then name of
+     * field, because in this spec
+     * JS-0050 annotation fields & clazz
+     * go to constructor method
+     */
+    private fieldName:string = null;
+    /***
      * @target level access
      */
     protected target:number;
@@ -39,6 +46,14 @@ export abstract class Annotation{
      * </pre>
      */
     public getTarget():number{ return this.target; }
+    /***
+     *
+     */
+    public setFieldName(fieldName:string):void{this.fieldName = fieldName;}
+    /***
+     *
+     */
+    public getFieldName():string{ return this.fieldName; }
 }
 //
 Object.package(this);

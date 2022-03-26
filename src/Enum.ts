@@ -1,9 +1,10 @@
 import {ClassNotFoundException} from "./Exception";
 import {Objects} from "./type/Objects";
 import {Optional} from "./Optional";
-import {DecoratorImpl} from "./decorator/DecoratorImpl";
-import {DecoratorAttributes} from "./decorator/DecoratorAttributes";
 import {Comparators} from "./Comparators";
+import {AnnotationTarget} from "./annotation/Interfaces";
+import {EnumBuilder} from "./annotation/EnumBuilder";
+import {Field} from "./Reflect/Field";
 /***
  * @AbstractClassEnum
  */
@@ -29,17 +30,17 @@ export abstract class Enum{
     /***
      *  @Enum<T> : create a new object
      */
-    private static getInstance<T>(enumName:string, target:Function, args:Object[]):T{
-        let o:Object = target.class<T>().newInstance.apply(target.class<T>(),args);
-        (<Enum>o).enum          =   enumName;
-        (<Enum>o).ordinalValue  =   target.class<T>().getStaticEntries().length;
+    public static set<T extends Enum>(annotation: AnnotationTarget<Field>, args:Object[]):T{
+        let o:Object = annotation.getReflector().getDeclaringConstructor().newInstance(...args);
+        (<Enum>o).enum          =   annotation.getProperty();
+        (<Enum>o).ordinalValue  =   annotation.getReflector().getDeclaringConstructor().getEnumConstants().length;
         return <T>o;
     }
     /***
      * @valueOf
      * @throws ClassNotFoundException
      */
-    public static valueOf<T>(value:string):T{
+    public static valueOf<T extends Enum>(value:string):T{
         let enumF:T[];
 
         if( ( enumF = this.class<T>()
@@ -81,11 +82,7 @@ export abstract class Enum{
      * @decorationHandler
      * @args ... args: Object[]
      */
-    public static args<T extends Object>( ...args:Object[] ):any{
-        return DecoratorImpl
-            .attributeDecoratorPipe<T>(DecoratorAttributes.empty<T>().setEnumerable(true).setDecorator("ENUM").final())
-            .get((prop:AttributeProperties<T>,target:any,key:string) => prop.setValue(Enum.getInstance<T>(key,target,Array.from(args))));
-    }
+    public static args<T extends Enum>( ...args:Object[] ):any{return EnumBuilder.enums(...args);}
 }
 Object.package(this);
 

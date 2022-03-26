@@ -6,6 +6,7 @@ import {CloseProcess} from "./CloseProcess";
 import {ExitSign} from "./ExitSign";
 import {Byte} from "../primitives/Byte";
 import {Shutdown} from "./Shutdown";
+import {Risk} from "../init/Risk";
 /***
  * @version 4.0-R-libUtilsTs
  * @version 1.0-R-JSTrip
@@ -20,7 +21,7 @@ export class ApplicationShutdownHooks {
     private static hooks:List<HookThread> = new ArrayList();
     /***
      */
-    private constructor() { this.init(); }
+    private constructor() {  try{this.init()}catch(e){Risk.failure(()=>this.init());} }
     /***
      * @initialInit
      * @native

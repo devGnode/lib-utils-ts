@@ -343,6 +343,8 @@ export interface Stream<T> {
 
     findFirst():optional<T>
 
+    flatMap<R extends Stream<R>>(mapper: Func<T, R>): Stream<R>
+
     count():number
 
     map<R>(mapper:Func<T, R>):Stream<R>
