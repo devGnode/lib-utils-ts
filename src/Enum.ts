@@ -3,7 +3,6 @@ import {Objects} from "./type/Objects";
 import {Optional} from "./Optional";
 import {DecoratorImpl} from "./decorator/DecoratorImpl";
 import {DecoratorAttributes} from "./decorator/DecoratorAttributes";
-import {AttributeProperties} from "../test/stream/Descriptor";
 import {Comparators} from "./Comparators";
 /***
  * @AbstractClassEnum
