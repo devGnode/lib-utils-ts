@@ -128,8 +128,8 @@ export class Method implements Member{
         this.getDeclaredAnnotations()
             .filter(a=>(a.getTarget()&0x20).equals(Annotation.PARAMETERS_ANNOTATION))
             .forEach(a=>{
-                if(Optional.ofNullable(annotations[a.getIndex()]).isEmpty()) annotations[a.getIndex()] = [];
-                annotations[a.getIndex()].push( a );
+                if(Optional.ofNullable(annotations[0/*a.getIndex()*/]).isEmpty()) annotations[0/*a.getIndex()*/] = [];
+                annotations[0/*a.getIndex()*/].push( a );
             })
 
         return annotations;
