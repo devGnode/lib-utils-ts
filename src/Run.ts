@@ -8,6 +8,7 @@
  * @licence APACCHE-2.0
  */
 import "./globalUtils"
+/***/
 //console.log = console.warn = function () {throw new UnsupportedOperationException("console.log handler is disabled must use System.out object");};
 /***/
 import {GetOpts} from "./GetOpts";
@@ -19,6 +20,7 @@ import {Optional} from "./Optional";
 import {Method} from "./Reflect/Method";
 import {System} from "./lang/System";
 import {BiConsumer} from "./Consumer";
+import {Risk} from "./init/Risk";
 // POO cheating
 (<any>System).initializeSystemClass();
 /***
@@ -110,7 +112,24 @@ if(Objects.isNull(args["project-resources"])&&!process.env.PROJECT_RESOURCES){
     if(Objects.isNull(args.quiet)) System.out.println(`Run - Environment variable 'PROJECT_RESOURCES' not defined, default : '${process.cwd()}'`);
     process.env.PROJECT_RESOURCES = process.cwd();
 }
-
+/***
+ * Defect: QA-JST-0020 - Annotation Enum load
+ * failure. avoid SingletonPattern with  complex
+ * method of initialization. these Object aren't yet
+ * completely loaded :
+ *  - Class
+ *  - Constructor
+ *  - Objects
+ *  - ... and ~30 others
+ * Annotation Feature has need of these object.
+ * cause : StreamShapes Enum & Redirect Enum
+ * These class are loaded before Class class
+ * and when they are loaded  annotation handler
+ * are rammed ( typescript feature behavior ).
+ * Fix : push all in context and call them after.
+ */
+Risk.resumeFailureLoad();
+/**/
 /**
  * @LoadClass
  */
@@ -124,7 +143,7 @@ if(!Objects.isNull(args.mode)&&args.mode.toLowerCase().equals("instance")){
      * Instance new Object
      */
     const clazz:Class<any> = constructor.newInstance($ARGS_INVOKE).getClass();
-    if(Objects.isNull(args.quiet)) System.out.println("Class launched with successful "+ Objects.toString(clazz.getInstance()) );
+    if(Objects.isNull(args.quiet)) System.out.println("Class launched with successful "+ Objects.toString(clazz.getInstance()));
 }else{
     Optional
         .ofNullable(constructor.getMethod("Main", Method.STATIC))

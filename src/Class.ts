@@ -1,7 +1,6 @@
 import {MapType,ObjectStructure} from "./Interface";
 import {Constructor} from "./Constructor";
 import {ClassNotFoundException, NullPointerException, RuntimeException} from "./Exception";
-import {Define} from "./Define";
 import {Path} from "./file/Path";
 import {Objects} from "./type/Objects";
 import {Enum} from "./Enum";
@@ -292,7 +291,7 @@ export class Class<T extends Object> implements ObjectStructure<T>{
             throw new RuntimeException("caused by "+e.stack+"\n"+ex.stack);
         }
         return new Constructor<T>(
-            Define.of<any>(handler[getter||target.getShortFileName()])
+            Optional.of(handler[getter||target.getShortFileName()])
             .orElseThrow(new NullPointerException(
                 `No exportable '${getter||target.getShortFileName()}' class found in ${target.getParent().toForNamePath()} package.`
             ))
