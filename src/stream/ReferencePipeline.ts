@@ -160,6 +160,29 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
             }
         };
     }
+    public flatMap<R extends Stream<R>>(mapper: Func<P_OUT, R>): Stream<R> {
+        let slf:this = this;
+        Objects.requireNotNull(mapper());
+        return new class extends StateOps<P_OUT,R>{
+
+            constructor() {super(slf,slf.getStreamAndOpFlags());}
+
+            public opWrapSink(flags: number, sink: sink<R>): sink<P_OUT> {
+                return new class extends Sink.ChainedReference<P_OUT,R>{
+
+                    constructor() {super(sink);}
+
+                    /**@override**/
+                    accept(o: P_OUT) {
+                        try{
+                            let tmp:Stream<R> = mapper(o);
+                            if(tmp!=null)tmp.each(this.downstream);
+                        }catch (e) {}
+                    }
+                };
+            }
+        };
+    }
     /***
      *
      * @return {optional<P_OUT>}
