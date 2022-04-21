@@ -145,8 +145,11 @@ if(!Objects.isNull(args.mode)&&args.mode.toLowerCase().equals("instance")){
     const clazz:Class<any> = constructor.newInstance($ARGS_INVOKE).getClass();
     if(Objects.isNull(args.quiet)) System.out.println("Class launched with successful "+ Objects.toString(clazz.getInstance()));
 }else{
-    Optional
+    const main:Method  = Optional
         .ofNullable(constructor.getMethod("Main", Method.STATIC))
-        .orElseThrow(new RuntimeException(`Package '${classToLoad}' doesn't contains callable Main method.`))
-        .invoke(constructor,$ARGS_INVOKE);
+        .orElseThrow(new RuntimeException(`Package '${classToLoad}' doesn't contains callable Main method.`));
+    if(args.async)(async ()=>await main.invokeASync(constructor,$ARGS_INVOKE))(/*__*/);
+    else {
+        main.invoke(constructor, $ARGS_INVOKE);
+    }
 }

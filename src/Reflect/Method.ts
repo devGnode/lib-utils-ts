@@ -192,6 +192,17 @@ export class Method implements Member{
         return Objects.requireNotNull(this.target)
             .apply(object,args);
     }
+    /****
+     *
+     * @param {Object} object
+     * @param {Object} args
+     * @return {Promise<Object>}
+     */
+    public async invokeASync(object:Object, ...args:Object[]):Promise<Object>{
+        if(args.length!=this.getParameterCount()) throw new IllegalArgumentException(`${args.length} != ${this.getParameterCount()}`);
+        return await Objects.requireNotNull(this.target)
+            .apply(object,args);
+    }
     /***
      * @toString
      * @return string : object to string value
