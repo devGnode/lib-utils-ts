@@ -1,8 +1,9 @@
 import {ConsumerResult, convert} from "./Globals";
 import {PrimitiveNumber} from "./PrimitiveNumber";
-import {BufferBinary} from "./BufferBinary";
 import {IOException, RuntimeException} from "../Exception";
 import {Objects} from "../type/Objects";
+import {Encoder} from "../file/charset/Encoder";
+import {Types} from "./Types";
 /***
 * @Convert: Public abstract class
  *  @ConvertConsumer
@@ -12,14 +13,6 @@ import {Objects} from "../type/Objects";
  *  @ConvertHexBinaryConsumer
  *  @ConvertIntToStr
 */
-// Bits Limit
-export enum LIMIT {
-    /*LIMITBITS*/
-    DB = 0xFF,
-    WD = 0xFFFF,
-    DW = 0xFFFFFFFF,
-    QW = 0xFFFFFFFFFFFFFFFF
-}
 export enum ENDIAN {
     BIG     = 0x00,
     LITTLE  = 0x01
@@ -192,21 +185,26 @@ export abstract class Convert{
         implements ConsumerResult<number,string>{
 
         protected readonly characteristics:number;
+        protected readonly sizeOf:number;
 
-        constructor(opts:number) {
+        constructor(opts:number, sizeOf: number ) {
             super();
             this.characteristics = opts;
+            this.sizeOf          = sizeOf;
         }
         /***
          * @override
          */
-        accept(a: number) { this.value += BufferBinary.getChar(a);}
+        accept(a: number) {this.value += Encoder.from("ISO-8851-1").encode(a);}
+        /***
+         * @param c
+         * @return {string}
+         */
+        bound(c):string{return c<0 ? "" : String.repeatString("\x00", c);}
         /***
          * @override
          */
-        get(): string {
-            return this.characteristics.equals(ENDIAN.BIG) ? super.get() : this.value;
-        }
+        get(): string {return this.bound(this.sizeOf - this.value.length) + (this.characteristics.equals(ENDIAN.BIG) ? super.get() : this.value);}
     }
 
     /***
@@ -283,8 +281,8 @@ export abstract class Convert{
          * method with the bitwise operators it was been limited
          * in 32 bits values.
          */
-        public int2Str( value:number, opts:ENDIAN = Convert.BIG_ENDIAN ):string{
-            return Convert.convert(Objects.requireNotNull(value), LIMIT.DB + 1, new Convert.ConvertIntToStr(opts) ).get();
+        public int2Str( value:number, sizeof:number = null, opts:ENDIAN = Convert.BIG_ENDIAN ):string{
+            return Convert.convert(Objects.requireNotNull(value), Types.BYTE.getLimit() + 1, new Convert.ConvertIntToStr(opts, sizeof) ).get();
         }
         /****
          * @base
@@ -341,7 +339,7 @@ export abstract class Convert{
          * 0 >= x <= 0x07FFFFFFFFFFFFFF
          */
         public strToNumber(value:string):number{
-            return Convert.reversed(Objects.requireNotNull(value).split(''), LIMIT.DB + 1, new class extends Convert.UnConvertConsumer implements ConsumerResult<string, number>{
+            return Convert.reversed(Objects.requireNotNull(value).split(''), Types.BYTE.getLimit() + 1, new class extends Convert.UnConvertConsumer implements ConsumerResult<string, number>{
                 /***
                  * @override
                  */
@@ -362,7 +360,7 @@ export abstract class Convert{
      * 0 >= x <= 0x07FFFFFFFFFFFFFF
      */
     public static arrayToNumber(value:number[]):number{
-        return Convert.reversed(Objects.requireNotNull(value), LIMIT.DB + 1, new class implements ConsumerResult<number, number>{
+        return Convert.reversed(Objects.requireNotNull(value), Types.BYTE.getLimit() + 1, new class implements ConsumerResult<number, number>{
             /***
              * @override
              */
