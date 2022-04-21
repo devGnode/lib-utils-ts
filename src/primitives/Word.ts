@@ -13,7 +13,7 @@ export class Word extends PrimitiveNumber.Unsigned16 implements WORD{
      */
     constructor(value:Number=null) {
         super(value);
-        this.orThrow();
+        this.assert();
     }
     /****
      *

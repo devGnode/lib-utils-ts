@@ -13,7 +13,7 @@ export class Uint32 extends PrimitiveNumber.Unsigned32 implements DWORD{
 
     constructor(value:Number=null) {
         super(value);
-        this.orThrow();
+        this.assert();
     }
 
     public endian():Uint32{return new Uint32(super.endian().valueOf())}

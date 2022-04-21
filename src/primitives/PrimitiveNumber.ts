@@ -8,56 +8,7 @@ import {Random} from "../Random";
 import {primitiveNumber} from "./Globals";
 import {Convert} from "./Convert";
 import {Objects} from "../type/Objects";
-enum Types{
-    /***
-     * 1 Bytes
-     */
-    VOID    = 0x00,
-    BYTE    = 0x01,
-    uint8   = Types.BYTE,
-    char    = Types.BYTE,
-    boolean = Types.BYTE,
-    /***
-     * 2 Bytes
-     */
-    WORD    = 0x02,
-    uint16  = Types.WORD,
-    u_short = Types.WORD,
-    /***
-     * 4 Bytes
-     */
-    DWORD   = 0x04,
-    uint32  = Types.DWORD,
-    /***
-     * 8 Bytes
-     */
-    QWORD   = 0x08,
-    u_long  = Types.QWORD,
-    /***
-     * 1 Bytes
-     */
-    int8    = 0x11,
-    int16   = 0x12,
-    int32   = 0x14,
-    int64   = 0x18,
-    /***
-     * 4 Bytes
-     */
-    float   = 0x34,
-    /***
-     * 2 Bytes
-     */
-
-    double  = 0x38
-}
-// Bits Limit
-enum LIMIT {
-    /*LIMITBITS*/
-    DB = 0xFF,
-    WD = 0xFFFF,
-    DW = 0xFFFFFFFF,
-    QW = 0xFFFFFFFFFFFFFFFF
-}
+import {Types} from "./Types";
 
 export abstract class PrimitiveNumber{
     /***
@@ -80,7 +31,7 @@ export abstract class PrimitiveNumber{
         /*
         *
         */
-        readonly type: number;
+        readonly type: Types;
         /***
          *
          */
@@ -89,21 +40,26 @@ export abstract class PrimitiveNumber{
         /***
          *
          * @param value
-         * @param maxValue
          * @param typeCode
          */
-        protected constructor(value: Number, maxValue: number, typeCode: number) {
-            super(value)
+        protected constructor(value: Number, typeCode: Types) {
+            super(value);
             this.type = typeCode;
-            this.MIN = PrimitiveNumber.evaluate(maxValue, true, this.signed());
-            this.MAX = PrimitiveNumber.evaluate(maxValue, false, this.signed());
+            this.MIN = PrimitiveNumber.evaluate(typeCode.getLimit(), true, this.signed());
+            this.MAX = PrimitiveNumber.evaluate(typeCode.getLimit(), false, this.signed());
+            this.getClass()
+                .getField("type")
+                .getFieldDescriptor()
+                .enumerable(false)
+                .final()
+                .set();
+
         }
         /***
          * @equals
          * @override
          */
         public equals(o:Object):boolean{return this.valueOf().equals((<primitiveNumber>o).valueOf());}
-
         /***
          *
          */
@@ -115,8 +71,8 @@ export abstract class PrimitiveNumber{
         /***
          * @orThrow
          */
-        public orThrow(message: string = null): primitiveNumber {
-            if(!this.signed()&&!this.isPositive()) throw new IOException(`${this.getClass().getName()} is not a ${!this.signed() ? "s" : "uns"}igned number : [ ${this.valueOf()} ]`);
+        public assert(message: string = null): primitiveNumber {
+            if(!this.signed()&&!this.isPositive()) throw new IOException(`${this.getClass().getName()} is a ${this.type.toString()}, invalid input value [ ${this.valueOf()} ]`);
             if (this.isOverflow()) throw new NumericOverflowException(message || `${this.signed() ? "S" : "Uns"}igned ${this.getClass().getName()} overflow  ${this.sizeOf()} byte(s) out of memory : [ ${this.valueOf()} ]`);
             if(!this.hasFloat()&&PrimitiveNumber.isFloat(this.valueOf())) throw new IOException(`${this.getClass().getName()} is not a float number !`);
             return this;
@@ -124,7 +80,7 @@ export abstract class PrimitiveNumber{
         /***
          * @overflowThrow
          */
-        public overflowThrow(message: string = null): void {this.orThrow(message);}
+        public overflowThrow(message: string = null): void {this.assert(message);}
         /***
          * @isOverflow
          */
@@ -134,7 +90,7 @@ export abstract class PrimitiveNumber{
         /***
          * @signed
          */
-        public signed(): boolean {return Boolean((this.type & 0x10) >> 4);}
+        public signed(): boolean {return this.type.isSigned();}
         /***
          * @isPositiveType
          */
@@ -142,7 +98,7 @@ export abstract class PrimitiveNumber{
         /***
          * @sizeOf
          */
-        public sizeOf(): number {return this.type & 0x0f;}
+        public sizeOf(): number {return this.type.sizeOf();}
         /***
          * @endian
          */
@@ -150,7 +106,7 @@ export abstract class PrimitiveNumber{
         /****
          *
          */
-        public hasFloat(): boolean { return Boolean( (this.type & 0x20 ) >> 5 );  }
+        public hasFloat(): boolean { return this.type.isFloatNumber();  }
         /****
          * @random
          */
@@ -170,10 +126,10 @@ export abstract class PrimitiveNumber{
         public toUnsigned():primitiveNumber{
             if(this.signed()&&!this.isPositive()){
                 switch (this.sizeOf()) {
-                    case Types.BYTE: return new PrimitiveNumber.Unsigned8(this.valueOf()&0xFF);
-                    case Types.WORD: return new PrimitiveNumber.Unsigned16(this.valueOf()&0xFFFF);
-                    case Types.DWORD:return new PrimitiveNumber.Unsigned32(Convert.arrayToNumber(PrimitiveNumber.slice32(this.valueOf())));
-                    case Types.QWORD:
+                    case Types.BYTE.sizeOf(): return new PrimitiveNumber.Unsigned8(this.valueOf()&0xFF);
+                    case Types.WORD.sizeOf(): return new PrimitiveNumber.Unsigned16(this.valueOf()&0xFFFF);
+                    case Types.DWORD.sizeOf():return new PrimitiveNumber.Unsigned32(Convert.arrayToNumber(PrimitiveNumber.slice32(this.valueOf())));
+                    case Types.QWORD.sizeOf():
                     default:
                         throw new RuntimeException("unsupported !")
                 }
@@ -206,7 +162,7 @@ export abstract class PrimitiveNumber{
         public int2Str(): string {
             let value:number = this.valueOf();
             if(this.signed()&&!this.isPositive()) value = this.toUnsigned().valueOf();
-            return Convert.To.int2Str(value);
+            return Convert.To.int2Str(value, this.sizeOf());
         }
         /***
          * @override
@@ -226,7 +182,7 @@ export abstract class PrimitiveNumber{
      */
     public static VOID = class VOID extends PrimitiveNumber.PrimitiveNumberBuilder{
 
-        constructor(value:void = void 0) {super(void 0, Types.VOID, Types.VOID);}
+        constructor(value:void = void 0) {super(void 0, Types.VOID);}
 
         public endian(): VOID {return new VOID( void 0 );}
 
@@ -241,7 +197,9 @@ export abstract class PrimitiveNumber{
      */
     public static Unsigned8 = class Unsigned8 extends PrimitiveNumber.PrimitiveNumberBuilder{
 
-        constructor(value:Number = LIMIT.DB ) {super( Optional.ofNullable(value).orElse(LIMIT.DB), LIMIT.DB, Types.uint8);}
+        constructor(value:Number = Types.BYTE.getLimit() ) {
+            super(Optional.ofNullable(value).orElse(Types.BYTE.getLimit()), Types.uint8);
+        }
 
         public endian(): Unsigned8 {return <Unsigned8>new Unsigned8( this.valueOf() );}
 
@@ -256,7 +214,7 @@ export abstract class PrimitiveNumber{
      */
     public static Signed8 = class Signed8 extends PrimitiveNumber.PrimitiveNumberBuilder{
 
-        constructor(value:Number = -1 ) {super(Optional.ofNullable(value).orElse(-1), LIMIT.DB, Types.int8);}
+        constructor(value:Number = -1 ) {super(Optional.ofNullable(value).orElse(-1),Types.int8);}
 
         public endian(): Signed8 {return new Signed8( this.valueOf() );}
 
@@ -270,7 +228,7 @@ export abstract class PrimitiveNumber{
      */
     public static  Unsigned16 = class Unsigned16 extends PrimitiveNumber.PrimitiveNumberBuilder{
 
-        constructor(value:Number = LIMIT.WD ) {super(Optional.ofNullable(value).orElse(LIMIT.WD), LIMIT.WD,Types.u_short);}
+        constructor(value:Number = Types.WORD.getLimit()) {super(Optional.ofNullable(value).orElse(Types.WORD.getLimit()),Types.u_short);}
 
         public endian(): Unsigned16 {
             let v:number = this.valueOf();
@@ -286,7 +244,7 @@ export abstract class PrimitiveNumber{
      */
     public static Signed16 = class Signed16 extends PrimitiveNumber.PrimitiveNumberBuilder{
 
-        constructor(value:Number = -1 ) {super(Optional.ofNullable(value).orElse(-1), LIMIT.WD, Types.int16);}
+        constructor(value:Number = -1) {super(Optional.ofNullable(value).orElse(-1), Types.int16);}
 
         public endian(): Signed16 {
             let v:number = this.valueOf();
@@ -302,7 +260,9 @@ export abstract class PrimitiveNumber{
      */
     public static Unsigned32 = class Unsigned32 extends PrimitiveNumber.PrimitiveNumberBuilder{
 
-        constructor(value:Number = LIMIT.DW ) {super(Optional.ofNullable(value).orElse(LIMIT.DW), LIMIT.DW,Types.uint32);}
+        constructor(value:Number = Types.DWORD.getLimit()) {
+            super(Optional.ofNullable(value).orElse(Types.DWORD.getLimit()), Types.uint32);
+        }
 
         /****
          *  @endian :
@@ -321,7 +281,7 @@ export abstract class PrimitiveNumber{
      */
     public static Signed32 = class Signed32 extends PrimitiveNumber.PrimitiveNumberBuilder{
 
-        constructor(value:Number = -1 ) {super(Optional.ofNullable(value).orElse(-1), LIMIT.DW, Types.int32);}
+        constructor(value:Number = -1) {super(Optional.ofNullable(value).orElse(-1), Types.int32);}
 
         public endian(): Signed32 {
             let v:number = this.valueOf();
@@ -337,7 +297,7 @@ export abstract class PrimitiveNumber{
      */
     public static Float32 = class Float32 extends PrimitiveNumber.PrimitiveNumberBuilder{
 
-        constructor(value:Number = -1 ) {super(Optional.ofNullable(value).orElse(-1), LIMIT.DW, Types.float);}
+        constructor(value:Number = -1) {super(Optional.ofNullable(value).orElse(-1), Types.float);}
 
         public newer( value:Number ):Float32{return new PrimitiveNumber.Float32(value); }
     }
@@ -348,13 +308,11 @@ export abstract class PrimitiveNumber{
      */
     public static Unsigned64 = class Unsigned64 extends PrimitiveNumber.PrimitiveNumberBuilder{
 
-        readonly hight:number;
-
-        constructor(value:Number = LIMIT.DW ) {
+        constructor(value:Number = Types.QWORD.getLimit() ) {
              // let high:number = BigInt(value) - (BigInt(value) / BigInt("4294967296"));
              // let low: number = BigInt(value) - BigInt(high);
 
-            super(Optional.ofNullable(value).orElse(LIMIT.QW), LIMIT.QW, Types.u_long);
+            super(Optional.ofNullable(value).orElse(Types.QWORD.getLimit()), Types.u_long);
         }
 
         public endian(): Unsigned64 { return null;}
@@ -372,12 +330,11 @@ export abstract class PrimitiveNumber{
      */
     public static Signed64 = class Signed64 extends PrimitiveNumber.PrimitiveNumberBuilder{
 
-        constructor(value:Number = -1 ) {super(Optional.ofNullable(value).orElse(-1), LIMIT.QW, Types.int64);}
+        constructor(value:Number = -1) {super(Optional.ofNullable(value).orElse(-1), Types.int64);}
 
         public newer( value:Number ):Signed64{return new PrimitiveNumber.Signed64(value); }
 
         public endian(): Signed64 {return null}
     }
 }
-// package
 Object.package(this);

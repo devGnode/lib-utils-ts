@@ -10,7 +10,7 @@ export class Float extends PrimitiveNumber.Float32 implements float{
 
     constructor(value:Number=null) {
         super(value);
-        this.orThrow();
+        this.assert();
     }
 
     public endian():Float {return this.toUint32().endian().toFloat();}

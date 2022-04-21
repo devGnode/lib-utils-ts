@@ -7,7 +7,7 @@ export class Double extends PrimitiveNumber.Unsigned64 implements double{
 
     constructor(value: Number = null) {
         super(value);
-        this.orThrow();
+        this.assert();
     }
 
     public endian(): Double {return Double.mk(super.endian().valueOf())}
