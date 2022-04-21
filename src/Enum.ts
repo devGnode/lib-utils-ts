@@ -45,7 +45,7 @@ export abstract class Enum{
 
         if( ( enumF = this.class<T>()
             .getEnumConstants()
-            .filter(v=>v.toString().equals(value))
+            .filter(v=>v.name().equals(value))
             ).length === 0 )
             throw new ClassNotFoundException(`Enum.ValueOf : Unknown Enumeration '${value}', not definition.`);
 
