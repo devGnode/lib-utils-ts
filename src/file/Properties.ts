@@ -1,12 +1,12 @@
 import {iterator, MapEntries, predicateFn, properties, Set} from "../Interface";
 import {Define} from "../Define";
 import {IllegalArgumentException,  NullPointerException} from "../Exception";
-import {Iterator} from "../Iterator";
-import {HashMap} from "../HashMap";
+import {Iterator} from "../utils/Iterator";
+import {HashMap} from "../utils/HashMap";
 import {InputStreamReader} from "./InputStreamReader";
 import {Reader} from "./Reader";
 import {Objects} from "../type/Objects";
-import {Optional} from "../Optional";
+import {Optional} from "../utils/Optional";
 import {PrintStream} from "./PrintStream";
 import {PrintWriter} from "./PrintWriter";
 import {OutputStream} from "./OutputStream";
@@ -40,9 +40,9 @@ class LineReader {
         this.line = [];
 
         while( true ){
-
             // read next byte
             try {tmp = String.fromCharCode(reader.read());}catch (e) {
+                if(this.line.length>0)return this.line.length;
                 return -1;
             }
 
@@ -142,13 +142,11 @@ export abstract class AbstractProperties implements properties{
             chr:string;
 
         while ( (sz = lineReader.getLine()) >= 0 ){
-
             i       = 0;
             hasKey  = false;
             key     = "";
             value   = "";
             while( ( i < sz && (chr = lineReader.line[i]) ) ) {
-
                 grow = true;
                 if(skipWhiteSpace){
                     if((chr==" "||chr=="\t"||chr=="\f"))grow=false;
