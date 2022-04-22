@@ -1,6 +1,7 @@
-import {predicate, predicateFn} from "./Interface";
+import {predicate, predicateFn} from "../Interface";
 import {Optional} from "./Optional";
-import {Objects} from "./type/Objects";
+import {Objects} from "../type/Objects";
+import {Deprecate} from "../annotation/Deprecate";
 /****
  * @package lib-utils-ts.src
  * @class Predication

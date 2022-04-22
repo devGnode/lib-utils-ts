@@ -26,7 +26,7 @@
 import * as http from "http";
 import * as https from "https";
 import {JSONException} from '../Exception';
-import {List, loader, restHttp, streamLambdaTo, wrapHeader} from "../Interface";
+import {List, loader, restHttp, wrapHeader} from "../Interface";
 import {ArrayList} from "../utils/ArrayList";
 import {Proxy} from "./Proxy";
 import {Cookie} from "./Cookie";
@@ -111,7 +111,7 @@ export class Response {
      */
     /***@toFix*/
     public getCookies() : ArrayList<Cookie> {
-        let mapToCookie : streamLambdaTo<string,Cookie>=value=>Cookie.parse(value);
+      //  let mapToCookie : streamLambdaTo<string,Cookie>=value=>Cookie.parse(value);
        /*  return ArrayList.of<string>( this.getHeader("cookie") )
             .stream()
             .mapTo(mapToCookie)

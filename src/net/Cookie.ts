@@ -1,8 +1,5 @@
 import "../globalUtils"
 import {Define} from "../Define";
-import {ArrayList} from "../ArrayList";
-import {List} from "../Interface";
-/***@toFix*/
 
 export type cookieSameSite = "lax"|"strict"|"none"
 export class Cookie{
