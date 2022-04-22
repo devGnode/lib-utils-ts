@@ -6,7 +6,6 @@ import {IOException} from "./IOException";
 import * as fs from "fs";
 import {EOFException} from "./EOFException";
 import {FileDescriptor} from "./FileDescriptor";
-import * as os from "os";
 import {NullPointerException} from "../Exception";
 
 export class FileInputStream extends InputStream{

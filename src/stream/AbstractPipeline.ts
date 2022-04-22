@@ -1,10 +1,10 @@
 import {Node, PipelineHelper} from "./PipelineHelper";
 import {spliterator, supplier} from "../Interface";
-import {Spliterator} from "../Spliterator";
+import {Spliterator} from "../utils/Spliterator";
 import {StreamShape} from "./StreamShape";
 import {sink} from "./Sink";
 import {terminalOps} from "./TerminalOps";
-import {Supplier} from "../Supplier";
+import {Supplier} from "../utils/Supplier";
 import {RuntimeException} from "../Exception";
 import assert = require("assert");
 

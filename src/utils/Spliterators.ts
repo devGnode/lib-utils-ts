@@ -1,6 +1,6 @@
-import {consumer, spliterator} from "./Interface";
-import {Consumer, IntConsumer} from "./Consumer";
-import {NullPointerException} from "./Exception";
+import {consumer, spliterator} from "../Interface";
+import {Consumer, IntConsumer} from "../Consumer";
+import {NullPointerException} from "../Exception";
 import {Spliterator} from "./Spliterator";
 import {Objects} from "./type/Objects";
 

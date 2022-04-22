@@ -1,5 +1,5 @@
 import {terminalOps, TerminalOps, terminalSink} from "./TerminalOps";
-import {Spliterator} from "../Spliterator";
+import {Spliterator} from "../utils/Spliterator";
 import {StreamShape} from "./StreamShape";
 import {IntConsumer} from "../Consumer";
 import {ofInt} from "./Sink";

@@ -1,5 +1,5 @@
 import {comparable, comparator} from "../Interface";
-import {Optional} from "../Optional";
+import {Optional} from "../utils/Optional";
 import {NumberFormatException} from "./NumberFormatException";
 import {Objects} from "./Objects";
 /***

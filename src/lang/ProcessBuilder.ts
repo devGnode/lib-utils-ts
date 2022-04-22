@@ -5,7 +5,7 @@ import {Process} from "./Process";
 import {ProcessImpl} from "./ProcessImpl";
 import {List} from "../Interface";
 import {IllegalArgumentException, NullPointerException, RuntimeException} from "../Exception";
-import {ArrayList} from "../ArrayList";
+import {ArrayList} from "../utils/ArrayList";
 import {Redirect} from "./Redirect";
 import {Objects} from "../type/Objects";
 import {Arrays} from "../type/Arrays";

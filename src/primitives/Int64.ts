@@ -2,12 +2,15 @@ import {PrimitiveNumber} from "./PrimitiveNumber";
 import {int64} from "./Globals";
 import {Operator} from "./Operator";
 import {Qword} from "./Qword";
-
+/***
+ * @to-do : js not supported 64 bits number natively
+ * implement bigInt object in this Object ...
+ */
 export class Int64 extends PrimitiveNumber.Signed64 implements int64{
 
     constructor(value: Number = null) {
         super(value);
-        this.orThrow();
+        this.assert();
     }
 
     public endian():Int64 {return Int64.mk(super.endian().valueOf())}

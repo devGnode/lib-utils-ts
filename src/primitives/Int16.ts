@@ -1,5 +1,5 @@
-import {Operator} from "./Operator";
 import {PrimitiveNumber} from "./PrimitiveNumber";
+import {Operator} from "./Operator";
 import {int16} from "./Globals";
 import {Uint16} from "./Uint16";
 /****
@@ -13,7 +13,7 @@ export class Int16 extends PrimitiveNumber.Signed16 implements int16{
      */
     constructor(value:Number=null) {
         super(value);
-        this.orThrow();
+        this.assert();
     }
     /****
      *

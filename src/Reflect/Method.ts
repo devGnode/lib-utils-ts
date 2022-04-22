@@ -4,7 +4,7 @@ import {Objects} from "../type/Objects";
 import {Type} from "./Type";
 import {Constructor} from "../Constructor";
 import {Annotation} from "../annotation/Annotation";
-import {Optional} from "../Optional";
+import {Optional} from "../utils/Optional";
 import {Member} from "./Interfaces";
 import {ObjectDescriptor} from "./ObjectDescriptor";
 import {Field} from "./Field";
@@ -190,6 +190,17 @@ export class Method implements Member{
     public invoke(object:Object, ...args:Object[]):Object{
         if(args.length!=this.getParameterCount()) throw new IllegalArgumentException(`${args.length} != ${this.getParameterCount()}`);
         return Objects.requireNotNull(this.target)
+            .apply(object,args);
+    }
+    /****
+     *
+     * @param {Object} object
+     * @param {Object} args
+     * @return {Promise<Object>}
+     */
+    public async invokeASync(object:Object, ...args:Object[]):Promise<Object>{
+        if(args.length!=this.getParameterCount()) throw new IllegalArgumentException(`${args.length} != ${this.getParameterCount()}`);
+        return await Objects.requireNotNull(this.target)
             .apply(object,args);
     }
     /***

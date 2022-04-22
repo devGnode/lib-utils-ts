@@ -1,5 +1,5 @@
 import {Method} from "./Method";
-import {Optional} from "../Optional";
+import {Optional} from "../utils/Optional";
 import {Objects} from "../type/Objects";
 import {Class} from "../Class";
 import {Field} from "./Field";

@@ -5,8 +5,15 @@ import {PrimitiveNumber} from "./PrimitiveNumber";
  * ANY type
  * let value:VOID = Int8.mk(5);
  */
-export class VOID extends PrimitiveNumber.VOID implements primitiveNumber{
+export class Void extends PrimitiveNumber.VOID implements primitiveNumber{
+    /**
+     * @param {void} value
+     */
     constructor(value:void = void 0) {super(value);}
-    public static mk(value:number= void 0):VOID{return new VOID(void 0);}
+    /***
+     * @param {number} value
+     * @return {Void}
+     */
+    public static mk(value:number= void 0):Void{return new Void(void 0);}
 }
 Object.package(this);

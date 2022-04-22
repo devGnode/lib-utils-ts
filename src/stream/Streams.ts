@@ -6,7 +6,7 @@ import {
     IStreamBuilder,
     spliterator, Stream
 } from "../Interface";
-import { Spliterators} from "../Spliterators";
+import { Spliterators} from "../utils/Spliterators";
 import {Exception} from "../Exception";
 import {StreamSupport} from "./StreamSupport";
 import {Objects} from "../type/Objects";

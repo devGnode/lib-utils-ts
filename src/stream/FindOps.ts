@@ -2,10 +2,10 @@ import {terminalOps, terminalSink} from "./TerminalOps";
 import {PipelineHelper} from "./PipelineHelper";
 import { predicate, supplier, supplierFn} from "../Interface";
 import {StreamShape} from "./StreamShape";
-import {Spliterator} from "../Spliterator";
-import {Optional} from "../Optional";
+import {Spliterator} from "../utils/Spliterator";
+import {Optional} from "../utils/Optional";
 import {ofInt} from "./Sink";
-import {OptionalInt} from "../OptionalInt";
+import {OptionalInt} from "../utils/OptionalInt";
 
 export class FindOps {
 

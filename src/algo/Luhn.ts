@@ -1,9 +1,9 @@
 import {IllegalArgumentException} from "../Exception";
-import {Random} from "../Random";
+import {Random} from "../utils/Random";
 import {Objects} from "../type/Objects";
 import {Arrays} from "../type/Arrays";
 import {Collectors} from "../Collectors";
-import {Optional} from "../Optional";
+import {Optional} from "../utils/Optional";
 import {Integer} from "../type/Integer";
 import {List, LuhnFormattedText} from "../Interface";
 

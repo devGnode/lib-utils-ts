@@ -1,6 +1,6 @@
 import {comparator, List} from "../Interface";
 import {flombok} from "../flombok";
-import {ArrayList} from "../ArrayList";
+import {ArrayList} from "../utils/ArrayList";
 /***
  * @ArrayA<T> Proxy class, allow to extend the prototype of the native Object.
  * Dont forget to implement your method in global interface ObjectConstructor,

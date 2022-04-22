@@ -12,7 +12,7 @@ export class Byte extends PrimitiveNumber.Unsigned8 implements BYTE{
 
     constructor(value:Number=null) {
         super(value);
-        this.orThrow();
+        this.assert();
     }
     /****
      *

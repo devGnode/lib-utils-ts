@@ -1,11 +1,12 @@
 import {Class} from "../Class";
-import {Optional} from "../Optional";
+import {Optional} from "../utils/Optional";
 import {Objects} from "../type/Objects";
 import {Member} from "./Interfaces";
 import {Constructor} from "../Constructor";
 import {ObjectDescriptor} from "./ObjectDescriptor";
 import {Annotation} from "../annotation/Annotation";
 import {Arrays} from "../type/Arrays";
+import {IllegalArgumentException} from "../Exception";
 /***
  * @class Field
  * @implements Member
@@ -170,7 +171,14 @@ export class Field implements Member{
      * @params object : value of the field
      * @return void : void
      */
-    public setValue(object:Object):void{ this.value = object; }
+    public setValue(object:Object):void{
+        // check type
+        if(this.clazz==null&& this.level == Field.INSTANCED) throw new IllegalArgumentException(`Clazz is null !`);
+        if(this.getValue() != null && this.getType() != null && !this.getType().getName().equals(object.getClass().getName()))
+            throw new IllegalArgumentException(`Bad cast on field ${this.toString()} to type ${object.getClass().toString()}`);
+        // set current value
+        this.value = this.getFieldDescriptor().value(object).set().getValue();
+    }
     /***
      * @isEnumConstant
      *

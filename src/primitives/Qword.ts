@@ -8,7 +8,7 @@ export class Qword extends PrimitiveNumber.Unsigned64 implements QWORD{
 
     constructor(value: Number = null) {
         super(value);
-        this.orThrow();
+        this.assert();
     }
 
     public endian(): Qword {return Qword.mk(super.endian().valueOf())}

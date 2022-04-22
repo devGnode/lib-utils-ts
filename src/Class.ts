@@ -14,7 +14,7 @@ import {Paths} from "./file/Paths";
 import {InputStreamReader} from "./file/InputStreamReader";
 import {FileReader} from "./file/FileReader";
 import {Package} from "./lang/Package";
-import {Optional} from "./Optional";
+import {Optional} from "./utils/Optional";
 /***
  * @Class :  Hook class Object accessor: (new MyAnyClass()).getClass()
  *
@@ -259,10 +259,7 @@ export class Class<T extends Object> implements ObjectStructure<T>{
         Objects.requireNotNull(pattern,"package name is null !");
         if(pattern instanceof Path ) target = pattern;
         else{
-            if(/([a-zA-Z\-\_]+\.*)+\:[a-zA-Z0-1-_]+$/.exec(pattern)) {
-                getter = /\:([a-zA-Z0-1-_]+)$/.exec(pattern)[1];
-                pattern =pattern.replace(new RegExp(":"+getter+"$"),"");
-            }
+
             if(/^classpath:/.test(pattern)) {
                 pattern = Objects
                     .requireNotNull(Paths.projectModules())
@@ -292,7 +289,7 @@ export class Class<T extends Object> implements ObjectStructure<T>{
             throw new RuntimeException("caused by "+e.stack+"\n"+ex.stack);
         }
         return new Constructor<T>(
-            Optional.of(handler[getter||target.getShortFileName()])
+            Optional.ofNullable(handler[getter||target.getShortFileName()])
             .orElseThrow(new NullPointerException(
                 `No exportable '${getter||target.getShortFileName()}' class found in ${target.getParent().toForNamePath()} package.`
             ))

@@ -1,8 +1,8 @@
 /****
  * Array
  */
-import {Predication} from "./Predication";
-import {Iterator, ListIterator} from "./Iterator";
+import {Predication} from "./utils/Predication";
+import {Iterator, ListIterator} from "./utils/Iterator";
 import {Define} from "./Define";
 import {Response} from "./net/Http";
 import {Class} from "./Class";

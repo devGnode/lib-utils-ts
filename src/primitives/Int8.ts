@@ -11,7 +11,7 @@ export class Int8 extends PrimitiveNumber.Signed8 implements int8{
 
     constructor(value:Number=null) {
         super(value);
-        this.orThrow();
+        this.assert();
     }
     /****
      *

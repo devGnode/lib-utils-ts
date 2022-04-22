@@ -12,7 +12,7 @@ export class Int32 extends PrimitiveNumber.Signed32 implements int32{
 
     constructor(value:Number=null) {
         super(value);
-        this.orThrow();
+        this.assert();
     }
 
     public endian():Int32{return new Int32(super.endian().valueOf())}

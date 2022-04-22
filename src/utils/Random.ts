@@ -1,4 +1,4 @@
-import {double, int} from "./Interface";
+import {double, int} from "../Interface";
 
 export class Random {
     constructor() {}

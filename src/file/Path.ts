@@ -1,13 +1,12 @@
 import * as path from "path";
 import {comparable,iterator} from "../Interface";
 import {ParsedPath} from "path";
-import {Optional} from "../Optional";
+import {Optional} from "../utils/Optional";
 import {Objects} from "../type/Objects";
-import {Iterator} from "../Iterator";
+import {Iterator} from "../utils/Iterator";
 import {IllegalArgumentException, NullPointerException} from "../Exception";
 import { Arrays } from "../type/Arrays";
-import {File} from "./File";
-import {System} from "../lang/System";
+import {File} from "./File";;
 /***
  * Wrapper Class
  */
@@ -19,7 +18,6 @@ export class Path implements comparable<Path>{
     private readonly separator:RegExp = /\/|\\|\./;
 
     constructor( pathS : string, ...other:string[]) {
-
         if(pathS===null) throw new NullPointerException();
         /^([a-zA-Z]{1}:|\/)/.test(pathS)
         //if(pathS.length>0) pathS=pathS.replace(/(\\|\/)$/,"");
@@ -47,7 +45,7 @@ export class Path implements comparable<Path>{
      * @returns {Path}
      */
     public getRoot():Path{
-        System.out.println("--*-*-*--*"+this.pathDesc.root);
+        //System.out.println("--*-*-*--*"+this.pathDesc.root);
         return this.pathDesc.root.length>0? new Path(this.pathDesc.root):null;
     }
     /**
@@ -204,6 +202,7 @@ export class Path implements comparable<Path>{
         let normal:Path;
         if( /\.\./.test( (normal = this.normalize()).toString() ) ) return null;
         return  ( this.pathDesc.root=="/" ? "R"+ normal.toString() : normal.toString() )
+            .replace(/^(\.){1}/,"")
             .replace(/\:|(\..+)$/gi,"")
             .replace(/\\|\//gi,".");
     }

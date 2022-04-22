@@ -1,6 +1,6 @@
-import {MapType} from "./Interface";
-import {BiConsumer} from "./Consumer";
-import {Objects} from "./type/Objects";
+import {MapType} from "../Interface";
+import {BiConsumer} from "../Consumer";
+import {Objects} from "../type/Objects";
 
 interface argumentCli extends BiConsumer<string, string>{
     setDescriptor(descriptor:Object):void

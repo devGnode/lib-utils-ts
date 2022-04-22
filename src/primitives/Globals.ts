@@ -1,69 +1,9 @@
-import "lib-utils-ts/src/globalUtils"
 import {Byte} from "./Byte";
-//import {Pointer} from "./Pointer";
-
 import {Operator} from "./Operator";
 import {IConsumer} from "../Interface";
-/***
- * Enum : Bits size
- */
-export enum SZB {
-    /*SIZEBITS*/
-    DB = 0x08,
-    WD = 0x10,
-    DW = 0x20,
-    QW = 0x40
-}
-// Bits Limit
-export enum LIMIT {
-    /*LIMITBITS*/
-    DB = 0xFF,
-    WD = 0xFFFF,
-    DW = 0xFFFFFFFF,
-    QW = 0xFFFFFFFFFFFFFFFF
-}
-//Enum all types supported
-export enum Types{
-    /***
-     * 1 Bytes
-     */
-    VOID    = 0x00,
-    BYTE    = 0x01,
-    uint8   = Types.BYTE,
-    char    = Types.BYTE,
-    boolean = Types.BYTE,
-    /***
-     * 2 Bytes
-     */
-    WORD    = 0x02,
-    uint16  = Types.WORD,
-    u_short = Types.WORD,
-    /***
-     * 4 Bytes
-     */
-    DWORD   = 0x04,
-    uint32  = Types.DWORD,
-    /***
-     * 8 Bytes
-     */
-    QWORD   = 0x08,
-    u_long  = Types.QWORD,
-    /***
-     * 1 Bytes
-     */
-    int8    = 0x11,
-    int16   = 0x12,
-    int32   = 0x14,
-    int64   = 0x18,
-    /***
-     * 4 Bytes
-     */
-    float   = 0x34,
-    /***
-     * 2 Bytes
-     */
-    double  = 0x38
-}
+import {Pointer} from "./Pointer";
+import {BinArray} from "./BinArray";
+import {ENCODING} from "../file/charset/ENCODING";
 
 export type consumerFnResult<T,R> = ( o: T ) => R | void
 export interface ConsumerResult<T,R> extends IConsumer<T>{
@@ -84,10 +24,8 @@ export interface spliteratorResult<T,R>{
     tryAdvance( action: ConsumerResult<T,R> ):boolean
     forEachRemaining(action:  ConsumerResult<T,R>):void
 }
-
-export interface ConvertReserved<T,R> extends spliteratorResult<T,R>{
-
-}
+/**/
+export interface ConvertReserved<T,R> extends spliteratorResult<T,R>{}
 /***
  *
  */
@@ -148,7 +86,7 @@ export interface primitiveNumber extends Number{
     /***
      *
      */
-    orThrow( message:string  ):primitiveNumber
+    assert( message:string  ):primitiveNumber
     /***
      *
      */
@@ -160,7 +98,7 @@ export interface primitiveNumber extends Number{
     /***
      *
      */
-    toHex():string
+    toHex(opts:number):string
     /***
      *
      */
@@ -296,7 +234,6 @@ export interface double extends primitiveNumber{
     operators( ):Operator<double>
     toQword( ):QWORD
 }
-
 /***
  * @operators<T extends Number,U>
  */
@@ -358,6 +295,7 @@ export interface char extends primitiveString{
 export interface cString extends primitiveString{
     hasPointer( ):boolean
     getPointer():any //Pointer<BitsType>
+    getCharset():ENCODING
     valueOf():string
 }
 /***
@@ -368,41 +306,41 @@ export interface pointer<T> extends primitiveString{
     getRange( ):number
     getValue( ):T
 }
-/****
- *
+/***
  */
-declare global {
-    interface Array<T> {
-        sum( ):number
-    }
+export interface primitiveString {
+    sizeOf():number
+    getType():string
 }
-
-
+/***
+ */
+export interface char extends primitiveString{
+    toUint8( ):uint8
+    valueOf(): string
+}
+/***
+ */
+export interface cString extends primitiveString{
+    hasPointer( ):boolean
+    getPointer():Pointer<BitsType>
+    valueOf():string
+}
+/***
+ */
+export interface pointer<T> extends primitiveString{
+    pointerName():string
+    getRange( ):number
+    getValue( ):T
+}
 /****
  * Types
  */
 export type BitsType    = (BYTE|int8|uint8|WORD|int16|DWORD|int32|uint32|QWORD|int64|float|double) & primitiveNumber
 export type BitsTypeStr = (char|pointer<BitsType|BitsTypeStr>|cString) & primitiveString
-
+export type BitsTypeArr = /*(ByteArray|int8Array|WordArray|int16Array|DwordArray|int32Array|QwordArray|int64Array|FloatArray|DoubleArray) & */BinArray<BitsType>
+//
 export type s_bits      = { [ index:string]:number }
-export type pvoidStruct = { [ index: string]:primitiveNumber|BitsType|BitsTypeStr|s_bits|Function };
-
-export type LITTLE_ENDIAN   = 0x00;
-export type BIG_ENDIAN      = 0x01;
-export type ENDIAN          = LITTLE_ENDIAN | BIG_ENDIAN
-/****
- * Extends
- */
-Array.prototype.sum = function( ){
-    let i:number = 0,  sum:number = 0,
-        len:number = this.length;
-    try{
-        for(; i < len; i++ ) sum += typeof parseInt( this[ i ] ) === "number" ? parseInt( this[ i ] )  : 0;
-    }catch(e){}
-    return sum;
-};
-
-
+export type pvoidStruct = { [ index: string]:primitiveNumber|BitsType|BitsTypeStr|s_bits|BitsTypeArr|Function };
 
 
 

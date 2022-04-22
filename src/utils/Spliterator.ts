@@ -1,6 +1,6 @@
-import {consumer, spliterator} from "./Interface";
-import {UnsupportedOperationException} from "./Exception";
-import {Consumer} from "./Consumer";
+import {consumer, spliterator} from "../Interface";
+import {UnsupportedOperationException} from "../Exception";
+import {Consumer} from "../Consumer";
 /***
  * @class Spliterator<T>
  * @abstract

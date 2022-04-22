@@ -1,6 +1,6 @@
 import {ClassNotFoundException} from "./Exception";
 import {Objects} from "./type/Objects";
-import {Optional} from "./Optional";
+import {Optional} from "./utils/Optional";
 import {Comparators} from "./Comparators";
 import {AnnotationTarget} from "./annotation/Interfaces";
 import {EnumBuilder} from "./annotation/EnumBuilder";
@@ -8,18 +8,6 @@ import {Field} from "./Reflect/Field";
 /***
  * @AbstractClassEnum
  */
-import {Func} from "./Interface";
-export interface AttributeProperties<T> {
-    setEnumerable(state:boolean):AttributeProperties<T>
-    setWrite(state:boolean):AttributeProperties<T>
-    setConfigurable(state:boolean):AttributeProperties<T>
-    setValue(value:T):AttributeProperties<T>
-    readOnly():AttributeProperties<T>
-    final():AttributeProperties<T>
-    propertyName(consumer:Func<string, string>):AttributeProperties<T>
-    setMethod(value:Function):AttributeProperties<T>
-    getSink():any
-}
 export abstract class Enum{
     /***
      *
@@ -45,7 +33,7 @@ export abstract class Enum{
 
         if( ( enumF = this.class<T>()
             .getEnumConstants()
-            .filter(v=>v.toString().equals(value))
+            .filter(v=>v.name().equals(value))
             ).length === 0 )
             throw new ClassNotFoundException(`Enum.ValueOf : Unknown Enumeration '${value}', not definition.`);
 

@@ -1,9 +1,9 @@
 import {AbstractCollection} from "./AbstractCollection";
-import {iterator, List, Stream} from "./Interface";
+import {iterator, List, Stream} from "../Interface";
 import {ListIterator} from "./Iterator";
-import {Collections} from "./Collections";
-import {Comparator} from "./Comparator";
-import {Objects} from "./type/Objects";
+import {Collections} from "../Collections";
+import {Comparator} from "../Comparator";
+import {Objects} from "../type/Objects";
 /****
  * @v3.0.0
  * @AbstractArrayList
@@ -77,4 +77,3 @@ export abstract class AbstractArrayList<T> extends AbstractCollection<T> impleme
     public stream(): Stream<T> {return super.stream(); }
 }
 Object.package(this);
-

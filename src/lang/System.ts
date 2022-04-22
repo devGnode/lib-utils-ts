@@ -1,4 +1,4 @@
-import {Optional} from "../Optional";
+import {Optional} from "../utils/Optional";
 import {PrintStream} from "../file/PrintStream";
 import {FileDescriptor} from "../file/FileDescriptor";
 import {Byte} from "../primitives/Byte";

@@ -1,12 +1,12 @@
-import {collection, consumer, iterator, ListKey, Map, MapEntries, MapType, Set, spliterator} from "./Interface";
-import {Consumer} from "./Consumer";
-import {MethodNotFoundException, RuntimeException, UnsupportedOperationException} from "./Exception";
+import {collection, consumer, iterator, ListKey, Map, MapEntries, MapType, Set, spliterator} from "../Interface";
+import {Consumer} from "../Consumer";
+import {MethodNotFoundException, RuntimeException, UnsupportedOperationException} from "../Exception";
 import {Iterator} from "./Iterator";
 import {AbstractMap} from "./AbtsractMap";
 import {AbstractSet} from "./AbstractSet";
 import {Spliterators} from "./Spliterators";
-import {Arrays} from "./type/Arrays";
-import {Objects} from "./type/Objects";
+import {Arrays} from "../type/Arrays";
+import {Objects} from "../type/Objects";
 /***
  *
  */
