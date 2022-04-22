@@ -72,8 +72,8 @@ export abstract class PrimitiveNumber{
          * @orThrow
          */
         public assert(message: string = null): primitiveNumber {
-            if(!this.signed()&&!this.isPositive()) throw new IOException(`${this.getClass().getName()} is a ${this.type.toString()}, invalid input value [ ${this.valueOf()} ]`);
-            if (this.isOverflow()) throw new NumericOverflowException(message || `${this.signed() ? "S" : "Uns"}igned ${this.getClass().getName()} overflow  ${this.sizeOf()} byte(s) out of memory : [ ${this.valueOf()} ]`);
+            if(!this.signed()&&!this.isPositive()) throw new IOException(`Invalid ${this.type.toString()}->${this.getClass().getName()} input value [ ${this.valueOf()} ]`);
+            if (this.isOverflow()) throw new NumericOverflowException(message||`${this.type.toString()}->${this.getClass().getName()} overflow, ${this.sizeOf()} byte(s) out of memory : [ ${this.valueOf()} ]`);
             if(!this.hasFloat()&&PrimitiveNumber.isFloat(this.valueOf())) throw new IOException(`${this.getClass().getName()} is not a float number !`);
             return this;
         }
@@ -177,8 +177,6 @@ export abstract class PrimitiveNumber{
     }
     /***
      *
-     *
-     *
      */
     public static VOID = class VOID extends PrimitiveNumber.PrimitiveNumberBuilder{
 
@@ -192,8 +190,6 @@ export abstract class PrimitiveNumber{
     }
     /***
      *
-     *
-     *
      */
     public static Unsigned8 = class Unsigned8 extends PrimitiveNumber.PrimitiveNumberBuilder{
 
@@ -206,10 +202,7 @@ export abstract class PrimitiveNumber{
         public newer( value:Number ):Unsigned8{return new PrimitiveNumber.Unsigned8(value); }
 
     }
-
     /***
-     *
-     *
      *
      */
     public static Signed8 = class Signed8 extends PrimitiveNumber.PrimitiveNumberBuilder{
@@ -222,8 +215,6 @@ export abstract class PrimitiveNumber{
 
     }
     /***
-     *
-     *
      *
      */
     public static  Unsigned16 = class Unsigned16 extends PrimitiveNumber.PrimitiveNumberBuilder{
@@ -239,8 +230,6 @@ export abstract class PrimitiveNumber{
     }
     /***
      *
-     *
-     *
      */
     public static Signed16 = class Signed16 extends PrimitiveNumber.PrimitiveNumberBuilder{
 
@@ -255,15 +244,12 @@ export abstract class PrimitiveNumber{
     }
     /***
      *
-     *
-     *
      */
     public static Unsigned32 = class Unsigned32 extends PrimitiveNumber.PrimitiveNumberBuilder{
 
         constructor(value:Number = Types.DWORD.getLimit()) {
             super(Optional.ofNullable(value).orElse(Types.DWORD.getLimit()), Types.uint32);
         }
-
         /****
          *  @endian :
          *  with bitwise method for 4294967295 equals -1
@@ -275,8 +261,6 @@ export abstract class PrimitiveNumber{
         public newer( value:Number ):Unsigned32{return new PrimitiveNumber.Unsigned32(value); }
     }
     /***
-     *
-     *
      *
      */
     public static Signed32 = class Signed32 extends PrimitiveNumber.PrimitiveNumberBuilder{
@@ -292,8 +276,6 @@ export abstract class PrimitiveNumber{
     }
     /***
      *
-     *
-     *
      */
     public static Float32 = class Float32 extends PrimitiveNumber.PrimitiveNumberBuilder{
 
@@ -302,8 +284,6 @@ export abstract class PrimitiveNumber{
         public newer( value:Number ):Float32{return new PrimitiveNumber.Float32(value); }
     }
     /***
-     *
-     *
      *
      */
     public static Unsigned64 = class Unsigned64 extends PrimitiveNumber.PrimitiveNumberBuilder{
@@ -324,8 +304,6 @@ export abstract class PrimitiveNumber{
         }
     }
     /***
-     *
-     *
      *
      */
     public static Signed64 = class Signed64 extends PrimitiveNumber.PrimitiveNumberBuilder{
