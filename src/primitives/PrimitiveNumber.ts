@@ -3,8 +3,8 @@
  */
 import {IOException, RuntimeException} from "../Exception";
 import {NumericOverflowException} from "./NumericOverflowException";
-import {Optional} from "../Optional";
-import {Random} from "../Random";
+import {Optional} from "../utils/Optional";
+import {Random} from "../utils/Random";
 import {primitiveNumber} from "./Globals";
 import {Convert} from "./Convert";
 import {Objects} from "../type/Objects";

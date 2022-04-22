@@ -1,6 +1,6 @@
 import {collection, comparable, comparator, IConsumer, int, iterator, List} from "./Interface";
-import {Random} from "./Random";
-import {ListIterator} from "./Iterator";
+import {Random} from "./utils/Random";
+import {ListIterator} from "./utils/Iterator";
 import {Comparator} from "./Comparator";
 import {NullPointerException} from "./Exception";
 import {Objects} from "./type/Objects";

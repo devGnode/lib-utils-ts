@@ -1,4 +1,4 @@
-import {supplier} from "./Interface";
+import {supplier} from "../Interface";
 /***
  * @OptionalInt
  */

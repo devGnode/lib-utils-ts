@@ -1,6 +1,6 @@
 import {format} from "util";
 import {comparable, comparator, Func, List} from "../Interface";
-import {ArrayList} from "../ArrayList";
+import {ArrayList} from "../utils/ArrayList";
 import {Objects} from "./Objects";
 /***
  * @Strings : Proxy class, allow to extend the prototype

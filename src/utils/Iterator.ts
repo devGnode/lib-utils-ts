@@ -1,8 +1,8 @@
-import {iterator, listIteratorInterface, consumer, collection} from "./Interface";
-import {NoSuchElementException} from "./Exception";
-import {Consumer} from "./Consumer";
-import {Arrays} from "./type/Arrays";
-import {Objects} from "./type/Objects";
+import {iterator, listIteratorInterface, consumer, collection} from "../Interface";
+import {NoSuchElementException} from "../Exception";
+import {Consumer} from "../Consumer";
+import {Arrays} from "../type/Arrays";
+import {Objects} from "../type/Objects";
 /***
  * @Iterator
  * @interface iterator<E>

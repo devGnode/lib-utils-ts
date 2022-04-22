@@ -1,10 +1,10 @@
-import {collection, consumer, iterator, MapType, predicate, spliterator, Stream} from "./Interface";
-import {UnsupportedOperationException} from "./Exception";
-import {Consumer} from "./Consumer";
-import {StreamSupport} from "./stream/StreamSupport";
+import {collection, consumer, iterator, MapType, predicate, spliterator, Stream} from "../Interface";
+import {UnsupportedOperationException} from "../Exception";
+import {Consumer} from "../Consumer";
+import {StreamSupport} from "../stream/StreamSupport";
 import {Spliterator} from "./Spliterator";
-import {Arrays} from "./type/Arrays";
-import {Objects} from "./type/Objects";
+import {Arrays} from "../type/Arrays";
+import {Objects} from "../type/Objects";
 /***
  * @abstract
  * @AbstractCollection
@@ -21,7 +21,7 @@ export abstract class AbstractCollection<T> implements collection<T> {
     /***
      *
      */
-    constructor() {}
+    protected constructor() {}
     /***
      *
      */

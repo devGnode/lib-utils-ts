@@ -4,9 +4,9 @@ import {supplier, supplierFn} from "../Interface";
 import {StreamShape} from "./StreamShape";
 import {Enum} from "../Enum";
 import {sink} from "./Sink";
-import {Spliterator} from "../Spliterator";
+import {Spliterator} from "../utils/Spliterator";
 import { UnsupportedOperationException} from "../Exception";
-import {Predication} from "../Predication";
+import {Predication} from "../utils/Predication";
 
 
 interface BooleanTerminalSink<T> extends sink<T>{

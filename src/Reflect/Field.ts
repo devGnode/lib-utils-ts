@@ -1,5 +1,5 @@
 import {Class} from "../Class";
-import {Optional} from "../Optional";
+import {Optional} from "../utils/Optional";
 import {Objects} from "../type/Objects";
 import {Member} from "./Interfaces";
 import {Constructor} from "../Constructor";

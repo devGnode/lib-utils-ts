@@ -1,5 +1,5 @@
 import {define} from "./Interface";
-import {Optional} from "./Optional";
+import {Optional} from "./utils/Optional";
 /***
  * @class Define<T>
  * @extends Optional<T>

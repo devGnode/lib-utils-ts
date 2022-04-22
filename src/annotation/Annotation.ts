@@ -1,4 +1,4 @@
-import {Optional} from "../Optional";
+import {Optional} from "../utils/Optional";
 /**/
 export abstract class Annotation{
 

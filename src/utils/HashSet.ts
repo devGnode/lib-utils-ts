@@ -1,9 +1,9 @@
 import {AbstractSet} from "./AbstractSet";
-import {collection,  Set, spliterator} from './Interface';
+import {collection,  Set, spliterator} from '../Interface';
 import {Spliterators} from "./Spliterators";
-import {Arrays} from "./type/Arrays";
+import {Arrays} from "../type/Arrays";
 import {AbstractCollection} from "./AbstractCollection";
-import {Objects} from "./type/Objects";
+import {Objects} from "../type/Objects";
 /****
  * @HashSet :
  *

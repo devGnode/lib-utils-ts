@@ -27,7 +27,7 @@ import * as http from "http";
 import * as https from "https";
 import {JSONException} from '../Exception';
 import {List, loader, restHttp, streamLambdaTo, wrapHeader} from "../Interface";
-import {ArrayList} from "../ArrayList";
+import {ArrayList} from "../utils/ArrayList";
 import {Proxy} from "./Proxy";
 import {Cookie} from "./Cookie";
 import "../globalUtils"

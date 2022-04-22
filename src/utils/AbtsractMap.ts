@@ -1,6 +1,6 @@
-import {collection, MapEntries, Map, Set, iterator, List} from "./Interface";
+import {collection, MapEntries, Map, Set, iterator, List} from "../Interface";
 import {ArrayList} from "./ArrayList";
-import {Objects} from "./type/Objects";
+import {Objects} from "../type/Objects";
 
 interface Node<K,V> extends MapEntries<K,V> {
     key:K;

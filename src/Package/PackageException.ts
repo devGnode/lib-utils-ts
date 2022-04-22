@@ -1,5 +1,3 @@
-
-
 export class PackageException extends Error{
 
     constructor() {super();}

@@ -1,5 +1,5 @@
 import {StreamShape} from "./StreamShape";
-import {Spliterator} from "../Spliterator";
+import {Spliterator} from "../utils/Spliterator";
 import {sink} from "./Sink";
 import {IConsumer, spliterator} from "../Interface";
 

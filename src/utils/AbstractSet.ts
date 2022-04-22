@@ -1,7 +1,7 @@
 import {AbstractCollection} from "./AbstractCollection";
-import {Set, iterator, collection} from "./Interface";
+import {Set, iterator, collection} from "../Interface";
 import {Iterator} from "./Iterator";
-import {Arrays} from "./type/Arrays";
+import {Arrays} from "../type/Arrays";
 /****
  * @value : protected T array
  */

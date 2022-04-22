@@ -1,5 +1,5 @@
 import {IConsumer, List, Runnable} from "../Interface";
-import {ArrayList} from "../ArrayList";
+import {ArrayList} from "../utils/ArrayList";
 import {Objects} from "../type/Objects";
 import {HookThread} from "./HookThread";
 import {CloseProcess} from "./CloseProcess";
@@ -26,8 +26,7 @@ export class ApplicationShutdownHooks {
      * @initialInit
      * @native
      */
-    public init():void{
-        if(ApplicationShutdownHooks.INSTANCE)return;
+    private init():void{
         // default
         process.on(ExitSign.EXIT.name(), (exit:number)=>Shutdown.exit(CloseProcess.exit(Byte.mk(exit))));
         // most used

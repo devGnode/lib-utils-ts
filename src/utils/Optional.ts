@@ -1,8 +1,8 @@
-import {Func, optional, predication, consumer,supplier} from "./Interface";
-import {flombok} from "./flombok";
-import {Consumer} from "./Consumer";
+import {Func, optional, predication, consumer,supplier} from "../Interface";
+import {flombok} from "../flombok";
+import {Consumer} from "../Consumer";
 import {Predication} from "./Predication";
-import {Objects} from "./type/Objects";
+import {Objects} from "../type/Objects";
 /****
  * @class Optional<T>
  * @interface optional<T>

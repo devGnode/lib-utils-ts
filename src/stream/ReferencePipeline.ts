@@ -2,7 +2,7 @@ import {AbstractPipeline} from "./AbstractPipeline";
 import {StreamShape} from "./StreamShape";
 import {Sink, sink} from "./Sink"
 import {IllegalArgumentException, UnsupportedOperationException} from "../Exception";
-import {Spliterator} from "../Spliterator";
+import {Spliterator} from "../utils/Spliterator";
 import {
     collector,
     comparator,
@@ -15,18 +15,18 @@ import {
     supplier,
     consumer, biConsumer, intStream, ToTypeFunction
 } from "../Interface";
-import {Supplier} from "../Supplier";
+import {Supplier} from "../utils/Supplier";
 import {ForEachOps} from "./ForEachOps";
 import {Consumer} from "../Consumer";
 import {FindOps} from "./FindOps";
-import {Predication} from "../Predication";
+import {Predication} from "../utils/Predication";
 import {MatchOps} from "./MatchOps";
 import {Objects} from "../type/Objects";
 import {ReduceOps} from "./ReduceOps";
 import {Collectors} from "../Collectors";
 import {IntPipelineImpl} from "./IntPipeline";
 import {SliceOps} from "./SliceOps";
-import {Optional} from "../Optional";
+import {Optional} from "../utils/Optional";
 import {BinaryOperator} from "../utils/BinaryOperator";
 
 export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_IN, P_OUT, Stream<P_OUT>> implements Stream<P_OUT>{
@@ -262,12 +262,12 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
         return canceled;
     }
     /**/
-    public toObjectArray():Object[]{return this.collector(Collectors.toArray())}
+    public toObjectArray():Object[]{return this.collector(Collectors.toArray());}
     /***
      *
      * @return {Object[]}
      */
-    public toArray(): P_OUT[] {return <P_OUT[]>this.toObjectArray(); }
+    public toArray(): P_OUT[] {return <P_OUT[]>this.toObjectArray();}
 }
 
 class Head<E_IN,E_OUT> extends ReferencePipeline<E_IN, E_OUT>{

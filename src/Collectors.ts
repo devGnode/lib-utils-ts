@@ -1,7 +1,6 @@
 import {collector, IConsumer, List, predicate} from "./Interface";
 import {biConsumer,supplier,Func} from "./Interface";
-import {ArrayList} from "./ArrayList";
-// @ts-ignore
+import {ArrayList} from "./utils/ArrayList";
 import {StreamImpl, Streams} from "./stream/Streams";
 import {Objects} from "./type/Objects";
 
@@ -179,7 +178,6 @@ export abstract class Collectors{
         }
 
     }
-
     /***
      *
      */

@@ -1,5 +1,5 @@
 import {Enum} from "../Enum";
-import {Random} from "../Random";
+import {Random} from "./Random";
 
 class Type extends Enum{
 

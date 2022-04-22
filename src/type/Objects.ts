@@ -2,7 +2,7 @@ import {NullPointerException} from "../Exception";
 import {comparator, PrimitiveTypes, Serial} from "../Interface";
 import {flombok} from "../flombok";
 import {Arrays} from "./Arrays";
-import {Optional} from "../Optional";
+import {Optional} from "../utils/Optional";
 /***
  * @Objects : Proxy class, allow to extend the prototype of the native Object.
  * Dont forget to implement your method in global interface ObjectConstructor,

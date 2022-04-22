@@ -2,14 +2,16 @@ import {Class} from "./Class";
 import {Define} from "./Define";
 import {NullPointerException} from "./Exception";
 import {MapType} from "./Interface";
-import {ArrayList} from "./ArrayList";
+import {ArrayList} from "./utils/ArrayList";
 
+/***@deprecated**/
 export class Json {
 
     /***
      * @param payload
      * @param Class
      * @param quiet
+     * @deprecated
      */
     public static toObject<T>( payload: MapType<string,any>, Class: Class<T>, quiet: boolean = false  ): T{
        let tmp:string, obj: T = Class.getInstance(), name:string, d: Define<Function>, c: any;

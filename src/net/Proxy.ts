@@ -1,4 +1,4 @@
-import { ArrayList } from "../ArrayList";
+import { ArrayList } from "../utils/ArrayList";
 /***
  * RestHttp(s) v1.0.0
  *

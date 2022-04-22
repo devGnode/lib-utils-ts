@@ -11,12 +11,12 @@ import "./globalUtils"
 /***/
 //console.log = console.warn = function () {throw new UnsupportedOperationException("console.log handler is disabled must use System.out object");};
 /***/
-import {GetOpts} from "./GetOpts";
+import {GetOpts} from "./utils/GetOpts";
 import {Class} from "./Class";
 import {Constructor} from "./Constructor";
 import {Objects} from "./type/Objects";
 import {RuntimeException} from "./Exception";
-import {Optional} from "./Optional";
+import {Optional} from "./utils/Optional";
 import {Method} from "./Reflect/Method";
 import {System} from "./lang/System";
 import {BiConsumer} from "./Consumer";
@@ -133,8 +133,11 @@ Risk.resumeFailureLoad();
 /**
  * @LoadClass
  */
+import {Log} from "./log/Global";
+import {Loggers} from "./log/Loggers";
 const constructor:Constructor<any> = Class.forName(/**/classToLoad/**/);
-if(Objects.isNull(args.quiet))System.out.println("Class loaded with successful "+Objects.toString(constructor));
+const log:Log = Loggers.factory(constructor);
+if(Objects.isNull(args.quiet))log.debug(`Class ${Objects.toString(constructor)} loaded with successful `);
 /***
  * @Launch app
  */
@@ -143,7 +146,7 @@ if(!Objects.isNull(args.mode)&&args.mode.toLowerCase().equals("instance")){
      * Instance new Object
      */
     const clazz:Class<any> = constructor.newInstance($ARGS_INVOKE).getClass();
-    if(Objects.isNull(args.quiet)) System.out.println("Class launched with successful "+ Objects.toString(clazz.getInstance()));
+    if(Objects.isNull(args.quiet)) log.debug(`Class ${Objects.toString(clazz.getInstance())} launched with successful`);
 }else{
     const main:Method  = Optional
         .ofNullable(constructor.getMethod("Main", Method.STATIC))

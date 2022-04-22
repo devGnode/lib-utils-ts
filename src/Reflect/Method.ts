@@ -4,7 +4,7 @@ import {Objects} from "../type/Objects";
 import {Type} from "./Type";
 import {Constructor} from "../Constructor";
 import {Annotation} from "../annotation/Annotation";
-import {Optional} from "../Optional";
+import {Optional} from "../utils/Optional";
 import {Member} from "./Interfaces";
 import {ObjectDescriptor} from "./ObjectDescriptor";
 import {Field} from "./Field";

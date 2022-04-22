@@ -1,6 +1,6 @@
 import {IntPipelineImpl} from "./IntPipeline";
 import {intStream, spliterator, Stream, supplier} from "../Interface";
-import {Spliterator} from "../Spliterator";
+import {Spliterator} from "../utils/Spliterator";
 import {ReferencePipelineImpl} from "./ReferencePipeline";
 import {Objects} from "../type/Objects";
 /***

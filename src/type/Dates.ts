@@ -1,5 +1,5 @@
 import {comparable, comparator, iterator, MapEntries} from "../Interface";
-import {HashMap} from "../HashMap";
+import {HashMap} from "../utils/HashMap";
 import {Objects} from "./Objects";
 
 const local_round = value=>value.length%2===0?"0"+value:value;

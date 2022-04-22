@@ -9,15 +9,15 @@ import {
     collector, ObjIntConsumer, supplierFn, Stream
 } from "../Interface";
 import {Streams} from "./Streams";
-import { Spliterator } from "../Spliterator";
-import {OptionalInt} from "../OptionalInt";
+import { Spliterator } from "../utils/Spliterator";
+import {OptionalInt} from "../utils/OptionalInt";
 import {ForEachOps} from "./ForEachOps";
 import {BiConsumer, IntConsumer} from "../Consumer";
 import {UnsupportedOperationException} from "../Exception";
 import {AbstractPipeline} from "./AbstractPipeline";
 import {Sink, sink} from "./Sink";
 import {StreamShape} from "./StreamShape";
-import {Predication} from "../Predication";
+import {Predication} from "../utils/Predication";
 import {ReduceOps} from "./ReduceOps";
 import {FindOps} from "./FindOps";
 import {ArrayA} from "../type/ArrayA";

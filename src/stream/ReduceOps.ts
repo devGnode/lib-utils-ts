@@ -3,10 +3,10 @@ import {StreamShape} from "./StreamShape";
 import {PipelineHelper} from "./PipelineHelper";
 import {biConsumer, collector, ObjIntConsumer, supplier} from "../Interface";
 import {UnsupportedOperationException} from "../Exception";
-import {Spliterator} from "../Spliterator";
-import {OptionalInt} from "../OptionalInt";
+import {Spliterator} from "../utils/Spliterator";
+import {OptionalInt} from "../utils/OptionalInt";
 import {Objects} from "../type/Objects";
-import {Optional} from "../Optional";
+import {Optional} from "../utils/Optional";
 import {BinaryOperator} from "../utils/BinaryOperator";
 
 interface AccumulatingSink<T, R, K extends AccumulatingSink<T, R, K>> extends terminalSink<T, R> {

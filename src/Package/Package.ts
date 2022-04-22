@@ -7,7 +7,6 @@
  * @constructor
  */
 import {PackageException} from "./PackageException";
-
 /***no import accepted**/
 export class Package {
 

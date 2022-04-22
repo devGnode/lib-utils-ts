@@ -1,6 +1,6 @@
 import { List } from "../Interface";
 import {Reader} from "./Reader";
-import {ArrayList} from "../ArrayList";
+import {ArrayList} from "../utils/ArrayList";
 
 
 export class BufferedReader extends Reader{

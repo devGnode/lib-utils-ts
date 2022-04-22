@@ -1,4 +1,4 @@
-import {supplier, supplierFn} from "./Interface";
+import {supplier, supplierFn} from "../Interface";
 /**
  * @Supplier
  */

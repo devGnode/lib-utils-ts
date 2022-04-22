@@ -1,5 +1,5 @@
 import {Func, supplierFn,supplier} from "../Interface";
-import {Supplier} from "../Supplier";
+import {Supplier} from "../utils/Supplier";
 import {AbstractDecorator} from "./AbstractDecorator";
 import {affectFn, AttributeProperties, DecoratorSink, propertiesDescriptor} from "./DecoratorInterfaces";
 
