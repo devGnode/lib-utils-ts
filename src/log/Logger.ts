@@ -16,11 +16,11 @@ export abstract class Logger implements Log{
     /***
      * object configuration properties
      */
-    protected prop:Map<string, Object> = new HashMap();
+    protected readonly prop:Map<string, Object> = new HashMap();
     /***
      *
      */
-    protected name:string;
+    protected readonly name:string;
     /**
      * Customize pattern
      */
