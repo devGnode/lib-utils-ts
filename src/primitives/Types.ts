@@ -1,5 +1,8 @@
 import {Enum} from "../Enum";
-
+/***
+ *  @writer   maroder
+ * @version 1.0-R-JSTrip
+ */
 export class Types extends Enum{
     /***
      * 1 Bytes

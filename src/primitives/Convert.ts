@@ -5,7 +5,7 @@ import {Objects} from "../type/Objects";
 import {Encoder} from "../file/charset/Encoder";
 import {Types} from "./Types";
 /***
-* @Convert: Public abstract class
+ *  @Convert: Public abstract class
  *  @ConvertConsumer
  *  @ConvertConsumerRoundedHex
  *  @ConvertConsumerRounded

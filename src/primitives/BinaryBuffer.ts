@@ -3,7 +3,10 @@ import {Objects} from "../type/Objects";
 import {Arrays} from "../type/Arrays";
 import {ENCODING} from "../file/charset/ENCODING";
 import {Encoder} from "../file/charset/Encoder";
-
+/***
+ * @writer     maroder
+ * @version    1.0-R-JSTrip
+ */
 export class BinaryBuffer {
     /***/
     // fr.wikipedia.org/wiki/Table_des_caractères_Unicode_(0000-0FFF)
