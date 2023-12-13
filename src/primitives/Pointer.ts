@@ -3,7 +3,7 @@ import {Types} from "./Types";
 /*****
  * Structure Pointer
  */
-export class Pointer<T>  extends String implements  pointer<T> {
+export class Pointer<T>  extends String implements pointer<T> {
 
     private readonly value:T;
     private readonly range:number;
@@ -25,6 +25,8 @@ export class Pointer<T>  extends String implements  pointer<T> {
     public sizeOf(): number {return 0;}
 
     public toString( ): string {return void 0;}
+
+    public toHex(): string { return null; }
 
     public static from<T>( value:T = null, ptr:string, range:Types = Types.BYTE  ):Pointer<T>{
         return new Pointer<T>(value, ptr, range);

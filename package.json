@@ -17,15 +17,8 @@
     "test": "ts-node test.ts",
     "netTest": "ts-node testnet.ts",
     "Enum": "ts-node test/EnumTest.ts",
-    "test:ArrayList": "ts-node ./test/ArrayList.Test.ts",
-    "test:Optional": "ts-node ./test/Optional.Test.ts",
-    "test:HashMap": "ts-node ./test/HashMap.ts",
-    "test:ForEachOp": "ts-node ./test/stream/ForEachOpTest.ts",
-    "test:Comparator0": "ts-node ./test/TestComparator2.ts",
-    "test:Intstream": "ts-node ./test/Instream.ts",
-    "test:Desc": "ts-node ./test/stream/Descriptor.ts",
-    "test:cvb": "ts-node ./test/TTP.ts",
-    "runner": "ts-node src/Run.ts --main=test.Run --arguments='-Dpropertie=true -Dheadless=true'"
+    "test:Comparator0": "ts-node ./test/TestComparator6.ts",
+    "test:Intstream": "ts-node ./test/Instream.ts"
   },
   "engines": {
     "node": ">= 12.14.1"
