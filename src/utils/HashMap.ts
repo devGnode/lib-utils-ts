@@ -252,7 +252,6 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
                 let c: MapEntries<K, V> = <MapEntries<K, V>>value;
                 if (Objects.isNull(c.getKey) || Objects.isNull(c.getValue)) throw new MethodNotFoundException(`Bad implementation of interface MapEntries`);
                 if (super.remove(value)) {
-                    //slf.remove(c.getValue());
                     slf.lastMapEntries = Arrays.copyOfRange(this.value, 0, this.value.length);
                     return true;
                 }
@@ -314,7 +313,7 @@ export class HashMap<K,V> extends AbstractMap<K,V> implements Map<K, V>{
      */
     public keySet(): Set<K> {
         let slf:this = this, tmp: K[] = [];
-        let itr:iterator<MapEntries<K, V>> = new Iterator( this.lastMapEntries );
+        let itr:iterator<MapEntries<K, V>> = new Iterator(this.nodeToArray());
         while(itr.hasNext())tmp.push(itr.next().getKey());
         return new class SetEntry extends AbstractSet<K> implements Set<K>{
 

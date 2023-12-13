@@ -2,7 +2,8 @@ import {consumer, spliterator} from "../Interface";
 import {Consumer, IntConsumer} from "../Consumer";
 import {NullPointerException} from "../Exception";
 import {Spliterator} from "./Spliterator";
-import {Objects} from "./type/Objects";
+import {Objects} from "../type/Objects";
+
 
 export abstract class Spliterators{
 
