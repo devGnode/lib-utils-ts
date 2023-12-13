@@ -37,7 +37,7 @@ export class CryptoAes {
     }
 
     public encode(value:string, encode:string = "string"):string{
-        console.log("VALUE = ", value.length / 2 );
+        //console.log("VALUE = ", value.length / 2 );
         let encrypt:string;
         let s;
         s = createCipheriv("aes-128-ccm", this.password, this.getIvs().toString(),{
@@ -46,7 +46,7 @@ export class CryptoAes {
         encrypt = s.update(value,'binary');
         encrypt +=  s.final();
 
-console.log("ENCRYPT = ", encrypt.length / 2 );
+        //console.log("ENCRYPT = ", encrypt.length / 2 );
         let decipher:DecipherCCM = createDecipheriv("aes-128-ccm", this.password, this.getIvs().toString(),{
             authTagLength: 16
         });
