@@ -7,6 +7,7 @@
  * @constructor
  */
 import {PackageException} from "./PackageException";
+import {Class} from "../Class";
 /***no import accepted**/
 export class Package {
 
@@ -27,7 +28,7 @@ export class Package {
 
     private static define(target:Object, value:Object):void{
         Object.defineProperty( target,"@Package",{
-            configurable:false, enumerable:true,
+            configurable:false, enumerable:false,
             writable:false, value:value
         });
     }
@@ -36,7 +37,6 @@ export class Package {
         let {ClassNotFoundException, NullPointerException} = require("../Exception"),
             {System} = require("../lang/System"),
             {Path} = require("../file/Path"),
-
             element:string, actualPath:any,
             packPath:string= new PackageException().getLines()[2];
 
@@ -46,6 +46,7 @@ export class Package {
 
         // get class export
         element = actualPath.getFileName().toString();
+        if(target[element]==null) throw new ClassNotFoundException(`Class '${element}' not found in '${target}'`);
         // Error
         if(Object.getOwnPropertyDescriptor(target[element], "@Package")!==undefined) return;
         if(element===null||element===undefined){
@@ -59,23 +60,21 @@ export class Package {
         }
 
         let p:string = actualPath.getParent().toForNamePath().length == 0  ? "" : actualPath.getParent().toForNamePath()+".";
-        try{console.log("Module loaded",p+element);}catch (e) {
+        /*try{console.log("Module loaded",p+element);}catch (e) {
             System.out.println("Module loaded",p+element);
-        }
+        }*/
         // Set descriptor
         Package.define(target[element],actualPath.getParent().toForNamePath());
-        // return target
+        if(target[element].__static!=null) target[element].__static();
+
         return target;
     }
-
     /***/
     public static Package(target:any):void {Package.Package0(target);}
-
     /***/
     public static fromAnnotation(target:any):void {
         Package.Package0(target);
     }
-
     /***/
     public static fromClazzName(target:Object, packageSrc:string):void {
         Package.define(target,Package.cleanUp(packageSrc).toForNamePath());

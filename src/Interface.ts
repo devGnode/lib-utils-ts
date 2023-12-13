@@ -9,7 +9,7 @@ import {Class} from "./Class";
 import {Constructor} from "./Constructor";
 import {Comparator} from "./Comparator";
 import {BiConsumer, Consumer, IntConsumer} from "./Consumer";
-import {OptionalInt} from "./OptionalInt";
+import {OptionalInt} from "./utils/OptionalInt";
 import {Integer} from "./type/Integer";
 import {Method} from "./Reflect/Method";
 import {Field} from "./Reflect/Field";
@@ -18,7 +18,9 @@ import {InputStreamReader} from "./file/InputStreamReader";
 import {OutputStream} from "./file/OutputStream";
 import {Package} from "./lang/Package";
 import {InputStream} from "./file/InputStream";
-import {Optional} from "./Optional";
+import {Optional} from "./utils/Optional";
+import {ENCODING} from "./file/charset/ENCODING";
+import {Annotation} from "./annotation/Annotation";
 /**
  * typeOf
  */
@@ -28,9 +30,7 @@ type PrimAscii                      = number|string
 export type int                     = number
 export type double                  = number
 export type ascii                   = Number|String|PrimAscii
-/***
- * List<T>
- */
+
 export type ListKey                         = number | string;
 export type array<T>                        = T[] | Array<T> | null
 export type MapType<K extends ListKey,V>    = { [J in K] : V };
@@ -44,12 +44,10 @@ export type predicateFn<T>           = predicateFnA<T> & Function
 export type predication<T>           = predicateFn<T> | Predication<T> | PredicationConstructor<T>
 export type intPredicate             =  predication<number>
 /**/
-export type streamLambdaTo<T,U>      = ( value : T, key?: ascii ) => U | void
 /**@v3.0.0.*/
 /***@v3.0.0*/
 export type Func<A,R>                = (...args:A[]) => R
 /*@comparatorFunc*/
-export type comparatorFunc<T>                       = ( other1: T, other2: T ) => number
 export type comparatorFn<T,V extends comparable<V>> = ( other1: T, other2: T ) => V
 export type comparatorFnA<T,V> = ( other1: T, other2: T ) => V
 /**/
@@ -78,6 +76,7 @@ declare global {
         stripSlashes() :string
         compareTo( another: string ): number
         toArray():string[]
+        getBytes(charsetTo?:ENCODING, charsetFrom?: ENCODING):string[]
     }
     interface StringConstructor{
         repeatString(char : string, loop : number ) : string
@@ -122,6 +121,7 @@ declare global {
     }
     interface Array<T>{
         equals(o:Array<T>)
+        sum( ): number
     }
 
     interface ObjectConstructor {
@@ -188,6 +188,8 @@ export interface classLoader<T>{
     /***
      */
     instance(...argArray: Object[]): T
+
+    setAnnotation(annotation:Annotation):Annotation[]
 }
 export interface ClassLoader {
     getParent():IClassLoader
@@ -623,7 +625,7 @@ export interface Map<K,V> {
    // stream( ) : StreamAble<K,V>
 }
 /***
- * 
+ *
  */
 export interface MapEntries<K,V> {
     getKey() : K
@@ -631,7 +633,7 @@ export interface MapEntries<K,V> {
     setValue(value:V):V
 }
 /***
- * 
+ *
  */
 export interface Enumeration<E> {
     hasMoreElement( ) :boolean

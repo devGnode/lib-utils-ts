@@ -8,6 +8,7 @@ import {Supplier} from "../utils/Supplier";
 import {RuntimeException} from "../Exception";
 import assert = require("assert");
 
+// @ts-ignore
 export abstract class AbstractPipeline<E_IN,E_OUT,S> extends PipelineHelper<E_OUT>{
 
     private readonly sourceStage:AbstractPipeline<E_IN,E_OUT, S>;
@@ -43,8 +44,11 @@ export abstract class AbstractPipeline<E_IN,E_OUT,S> extends PipelineHelper<E_OU
             // upstream
         }else if(value instanceof  AbstractPipeline ){
             value.linkedOrConsumed  = true;
+            // @ts-ignore
             value.nextStage         = this;
+            // @ts-ignore
             this.previousStage      = value;
+            // @ts-ignore
             this.sourceStage        = value.sourceStage;
             this.nextStage          = null;
             this.depth              = value.depth + 1;

@@ -14,7 +14,7 @@ export class Nested implements Invokable{
 
     public invoke(annotation: AnnotationTarget<Field>): void {
         let pack:string;
-
+        //console.log("dsdsqdddddddddddddddddddddddddddddddddddddd---*-*-");
         Objects.requireNotNull(annotation.getReflector().getValue());
         if(!annotation
             .getReflector()
@@ -24,8 +24,9 @@ export class Nested implements Invokable{
         ) throw new Exception("Value of [ "+annotation.getReflector()+" ] is not class !");
         //
         pack = new PackageException().getLine(annotation.getReflector().getDeclaringConstructor().getName());
-        Package.fromClazzName(annotation.getReflector().getValue(), Objects.requireNotNull(pack));
-        Object.defineProperty(annotation.getReflector().getValue(),"@Nested",{value:true,enumerable:false,configurable:false,writable:false});
+        ///console.log(pack,annotation.getReflector().getDeclaringConstructor().getName());
+        //Package.fromClazzName(annotation.getReflector().getValue(), Objects.requireNotNull(pack));
+        //  Object.defineProperty(annotation.getReflector().getValue(),"@Nested",{value:true,enumerable:false,configurable:false,writable:false});
        // console.log("isNested",(<Function>annotation.getReflector().getValue()).class().getDeclaringClass().toString(),  annotation.getReflector().getType().isNested())
     }
     /***
@@ -35,6 +36,7 @@ export class Nested implements Invokable{
      * @constructor
      */
     public static NestedClass(target:Function, property:string):void{
+        //console.log("NESTED FOR = ",property)
         AnnotationHandlers.attribute<Nested>(Nested.ONE).call(null,target, property);
     }
 }

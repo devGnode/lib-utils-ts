@@ -1,5 +1,6 @@
 import "../globalUtils"
 import {Define} from "../Define";
+/***@toFix*/
 
 export type cookieSameSite = "lax"|"strict"|"none"
 export class Cookie{
