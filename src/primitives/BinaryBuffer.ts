@@ -144,7 +144,7 @@ export class BinaryBuffer extends InputStream {
         }
         throw new RuntimeException(`Unknown encoding ${charsetFrom}`);
     }
-    
+
     public static getCode(chr:string, charsetFrom:ENCODING = ENCODING.BINARY):number{
        let out:number = null;
         if(chr==null) return 0;
