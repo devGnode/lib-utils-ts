@@ -83,9 +83,9 @@ export class Method implements Member{
      * @return Annotation[] : All annotation primitive array
      */
     public getDeclaredAnnotations():Annotation[]{
-        if(!this.target["@Annotations"]) return [];
+        if(!(<any>this.target)["@Annotations"]) return [];
         return Optional
-            .ofNullable(this.target["@Annotations"])
+            .ofNullable((<any>this.target)["@Annotations"])
             .orElse([]);
     }
     /***
@@ -109,8 +109,8 @@ export class Method implements Member{
      * @Throw NullPointeurException
      */
     public setAnnotation(annotation:Annotation):void{
-        Objects.requireNotNull(annotation);
-        if(Objects.isNull( this.target["@Annotations"] )) {
+        Objects.requireNotNull(annotation).setFieldName(this.getName());
+        if(Objects.isNull( (<any>this.target)["@Annotations"] )) {
             new Field("@Annotations",[annotation], 1, null,this.target.class())
                 .getFieldDescriptor()
                 .value([annotation])
@@ -118,7 +118,7 @@ export class Method implements Member{
                 .final()
                 .set();
         }else{
-            this.target["@Annotations"].push(annotation);
+            (<any>this.target)["@Annotations"].push(annotation);
         }
     }
     /***

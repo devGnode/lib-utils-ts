@@ -3,11 +3,11 @@ import {double, int} from "../Interface";
 export class Random {
     constructor() {}
     /**
-     @deprecated
+     @deprecated (end - start + 1) + start
      */
-    public nextDouble( a: number = 100, b : number = 0  ):double{return (Math.random()*b)+a;}
+    public nextDouble( a: number = 100, b : number = 0  ):double{return Math.random() * ( a - b + 1 ) + b;}
 
-    public static nextDouble( a: number = 100, b : number = 0  ):double{return (Math.random()*b)+a;}
+    public static nextDouble( a: number = 100, b : number = 0  ):double{return Math.random() * ( a - b + 1 ) + b ;}
     /**
      @deprecated
      */

@@ -13,9 +13,9 @@ import {FileInputStream} from "../file/FileInputStream";
 import {FileOutputStream} from "../file/FileOutputStream";
 import {RuntimeException} from "../Exception";
 import {Readable} from "stream";
-import {File} from "../file/File";
 import {IOException} from "../file/IOException";
 import {ProcessBuilder} from "./ProcessBuilder";
+import {ProcessOutputStream} from "../file/ProcessOutputStream";
 
 
 export class ProcessImpl extends Process{
@@ -32,9 +32,6 @@ export class ProcessImpl extends Process{
         let f0:FileInputStream = new FileInputStream(new FileDescriptor().set(ioHandle[0])),
             f1:FileOutputStream = new FileOutputStream(new FileDescriptor().set(ioHandle[1])),
             f2:FileOutputStream = new FileOutputStream(new FileDescriptor().set(ioHandle[2]));
-        if(ioHandle[0]==-1){this.stdin = ProcessBuilder.getNullOutputStream();}else{
-            this.stdin = new FileOutputStream(new File("./testing/msn.txt"), true);
-        }
         if(ioHandle[1]==-1){this.stdout = ProcessBuilder.NullInputStream.INSTANCE;}else{
             this.stdout = new FileInputStream(new FileDescriptor().set(ioHandle[1]));
         }
@@ -44,6 +41,9 @@ export class ProcessImpl extends Process{
         /***/
         command = (dir!=null?dir.endsWith("/")||dir.endsWith("\\")? dir: dir+"/":"")+command;
         this.handle = child_process.spawn(command, args, {detached: true, stdio: ['pipe', 'pipe', 'pipe']});
+        if(ioHandle[0]==-1){this.stdin = ProcessBuilder.getNullOutputStream();}else{
+            this.stdin = new ProcessOutputStream(this.handle);
+        }
         this.handle.stdout.on("data",(data:Buffer)=>f1.write(data.toString()));
         this.handle.stderr.on("data",(data:string)=>f2.write(data.toString()));
         this.handle.on("error",(e:Error)=>{ throw new IOException("Cannot run program \""+command+"\"\n"+e.stack)});

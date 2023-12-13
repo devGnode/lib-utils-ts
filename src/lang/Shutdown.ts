@@ -63,3 +63,4 @@ export abstract class Shutdown {
      */
     public static shutdown():void{Shutdown.exit(CloseProcess.exit(Byte.mk(0)));}
 }
+Object.package(this);

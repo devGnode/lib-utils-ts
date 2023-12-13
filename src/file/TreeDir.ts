@@ -19,9 +19,9 @@ export class TreeDir{
         test: predicateFn<File> = (file:File)=>true;
     };
 
-    public constructor(file:File, deep?:number) {
+    public constructor(file:File, deep:number = 1 ) {
         this.file    = file;
-        this.deep    = deep||1;
+        this.deep    = deep==null?1:deep;
         this.iterate = 0;
     }
     /***
@@ -100,17 +100,18 @@ export class TreeDir{
             let deep:number = 0,
                 ext:string;
 
-            if(file.getParent()&&file.getName().startsWith("*")){
+            if(file.getParent()&&file.getParentFile().getName().startsWith("*")){
                 deep=50;
                 ext=file.getName().replace("*","");
                 file=file.getParentFile().getParentFile();
             }else if(file.getName().startsWith("*")){
                 deep=0;
                 ext=file.getName().replace("*","");
+                file=file.getParentFile();
             }
 
             return TreeDir
-                .of(file.getParent(), deep)
+                .of(file.toString(),deep)
                 .setPredicate((file:File)=>Objects.isNull(ext)?true:file.isFile()&&file.getName().endsWith(ext))
                 .getList();
         }

@@ -7,6 +7,9 @@ import {Log} from "./Global";
 import {List, Map, MapEntries} from "../Interface";
 import {Consumer} from "../Consumer";
 import {Colorize} from "./Colorize";
+import {BYTE} from "../primitives/Globals";
+import {OutputStream} from "../file/OutputStream";
+import {Byte} from "../primitives/Byte";
 /***
  * https://github.com/devGnode/logger20js
  * @writer   maroder
@@ -29,6 +32,25 @@ export abstract class Logger implements Log{
      *
      */
     protected colorized:boolean = null;
+    
+    private getOutputStream(consumer:Consumer<string>):OutputStream{
+        return new class LoggerOutputStream extends OutputStream{
+            
+            constructor() {super();}
+            
+            write(b: number | BYTE | string | string[]): void {
+                let out:string;
+                if(b instanceof Byte) out = String(b.valueOf());
+                else if(b instanceof Number) out = String(b);
+                else if(b instanceof Array) out = b.join(" ");
+                else if(typeof b === "string"){
+                    out = b;
+                }
+                consumer.accept(out.replace(/(\n|\r\n)$/,""));
+            }
+            
+        };
+    }
     /**
      * Customize pattern
      */
@@ -42,11 +64,19 @@ export abstract class Logger implements Log{
     public warn( message:string, ...args:Object[] ):void {
         if(this.hasLevel(LogLevel.WARN)) this.stdout(message,LogLevel.WARN, args);
     }
+    
+    public warnOutputStream():OutputStream{
+        return this.getOutputStream(Consumer.of((value:string)=> this.warn(value)));
+    }
     /**
      * @log
      */
     public log( message:string, ...args:Object[] ):void{
         if(this.hasLevel(LogLevel.LOG)) this.stdout(message,LogLevel.LOG, args);
+    }
+
+    public logOutputStream():OutputStream{
+        return this.getOutputStream(Consumer.of((value:string)=> this.log(value)));
     }
     /**
      * @info
@@ -54,11 +84,19 @@ export abstract class Logger implements Log{
     public info( message:string, ...args:Object[] ):void {
         if(this.hasLevel(LogLevel.INFO)) this.stdout(message,LogLevel.INFO, args);
     }
+
+    public infoOutputStream():OutputStream{
+        return this.getOutputStream(Consumer.of((value:string)=> this.info(value)));
+    }
     /**
      * @debug
      */
     public debug( message:string, ...args:Object[] ):void {
         if(this.hasLevel(LogLevel.DEBUG)) this.stdout(message,LogLevel.DEBUG, args);
+    }
+
+    public debugOutputStream():OutputStream{
+        return this.getOutputStream(Consumer.of((value:string)=> this.debug(value)));
     }
     /**
      * @error
@@ -66,11 +104,19 @@ export abstract class Logger implements Log{
     public error( message:string, ...args:Object[] ):void {
         if(this.hasLevel(LogLevel.ERROR)) this.stdout(message,LogLevel.ERROR, args);
     }
+
+    public errorOutputStream():OutputStream{
+        return this.getOutputStream(Consumer.of((value:string)=> this.error(value)));
+    }
     /**
      * @custom
      */
     public custom( message:string, ...args:Object[] ):void{
         if(this.hasLevel(LogLevel.CUSTOM)) this.stdout(message,LogLevel.CUSTOM);
+    }
+
+    public customOutputStream():OutputStream{
+        return this.getOutputStream(Consumer.of((value:string)=> this.custom(value)));
     }
     /**/
     protected hasLevel(level:LogLevel):boolean{throw new UnsupportedOperationException(``);}

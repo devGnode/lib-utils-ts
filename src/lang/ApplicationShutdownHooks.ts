@@ -21,7 +21,7 @@ export class ApplicationShutdownHooks {
     private static hooks:List<HookThread> = new ArrayList();
     /***
      */
-    private constructor() {  try{this.init()}catch(e){Risk.failure(()=>this.init());} }
+    private constructor() {  /*try{this.init();}catch(e){*/Risk.failure(()=>this.init());/*}*/ }
     /***
      * @initialInit
      * @native

@@ -82,6 +82,7 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
         let slf:this = this;
         return new class extends IntPipelineImpl.StalelessOp<P_OUT>{
 
+            // @ts-ignore
             constructor() {super(slf, StreamShape.REFERENCE);}
 
             public opWrapSink(flags: number, sink: sink<number>): sink<P_OUT> {
@@ -120,7 +121,7 @@ export abstract class ReferencePipeline<P_IN,P_OUT> extends AbstractPipeline<P_I
      *
      */
     public anyMatch(predicate: predication<P_OUT>): boolean {
-        return this.evaluate(MatchOps.makeRef(predicate,MatchOps.MatchKind.ANY));
+        return this.evaluate(MatchOps.makeRef(Predication.of(predicate),MatchOps.MatchKind.ANY));
     }
     /***
      *

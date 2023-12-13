@@ -2,7 +2,7 @@ import {comparable, comparator, iterator, MapEntries} from "../Interface";
 import {HashMap} from "../utils/HashMap";
 import {Objects} from "./Objects";
 
-const local_round = value=>value.length%2===0?"0"+value:value;
+const local_round = (value:number):string=>String(value).length%2===0?"0"+String(value):String(value);
 /***
  * @Dates : Proxy class, allow to extend the prototype
  * of the native String or string Object. Dont forget to

@@ -109,8 +109,8 @@ export class Class<T extends Object> implements ObjectStructure<T>{
      * @params type
      * @returns Field[]
      */
-    public getFields(type:number=(Field.INSTANCED|Field.STATIC)):Field[]{
-        return new ObjectsReflector(this.value,this.value.constructor, this, this.getConstructor()).getFields(type);
+    public getFields(type:number=(Field.INSTANCED|Field.STATIC), acceptNull:boolean = false):Field[]{
+        return new ObjectsReflector(this.value,this.value.constructor, this, this.getConstructor()).getFields(type,acceptNull);
     }
     /***
      * @getField
@@ -118,8 +118,8 @@ export class Class<T extends Object> implements ObjectStructure<T>{
      * @params type
      * @returns Field
      */
-    public getField(name:string, type:number= Field.INSTANCED):Field{
-        return new ObjectsReflector(this.value,this.value.constructor, this, this.getConstructor()).getField(name,type);
+    public getField(name:string, type:number= Field.INSTANCED,  acceptNull:boolean = false):Field{
+        return new ObjectsReflector(this.value,this.value.constructor, this, this.getConstructor()).getField(name,type,acceptNull);
     }
     /***
      * @getMethod
@@ -289,7 +289,7 @@ export class Class<T extends Object> implements ObjectStructure<T>{
             throw new RuntimeException("caused by "+e.stack+"\n"+ex.stack);
         }
         return new Constructor<T>(
-            Optional.ofNullable(handler[getter||target.getShortFileName()])
+            Optional.ofNullable((<any>handler)[getter||target.getShortFileName()])
             .orElseThrow(new NullPointerException(
                 `No exportable '${getter||target.getShortFileName()}' class found in ${target.getParent().toForNamePath()} package.`
             ))

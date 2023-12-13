@@ -11,6 +11,6 @@ export class BiFunctionImpl<T,U,R> extends Function implements BiFunction<T,U,R>
          }
      }
 
-    public call(thisArg: any, ...argArray): any {return this.apply(argArray[0],argArray[1]);}
+    public call(thisArg: any, ...argArray:any[]): any {return this.apply(argArray[0],argArray[1]);}
 }
 Object.package(this);

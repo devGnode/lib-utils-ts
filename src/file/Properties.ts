@@ -232,14 +232,13 @@ export abstract class AbstractProperties implements properties{
         let out:string="", next:MapEntries<string, Object>,
             itr: iterator<MapEntries<string, Object>>;
 
-        output.write(`# ${new Date().toISOString()}`);
+        output.write(`# ${new Date().toISOString()}\r\n`);
         itr = this.prop.entrySet().iterator();
         while (itr.hasNext()){
             next = itr.next();
             output.write(`${next.getKey()}=${next.getValue().toString()}${this.lineSeparator}`);
         }
         output.close();
-
     }
 
     public merge<T,Object>( properties:AbstractProperties,  exclude: predicateFn<T> = null ):void{

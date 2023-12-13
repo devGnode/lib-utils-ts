@@ -30,6 +30,8 @@ export class InetAddress {
 
     public toString():string{return this.getHostAddress();}
 
+    public toArray():number[]{ return this.getAddress().map(byte=>byte.valueOf()); }
+    
     public equals(o:Object):boolean{
         if(o==null||!(o instanceof InetAddress)) return false;
         return this.getHostAddress().equals(o.getHostAddress()) && this.getFamily()==o.getFamily();

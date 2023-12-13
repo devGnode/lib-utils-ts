@@ -77,7 +77,7 @@ export class GetOpts{
          */
         collect:any;
 
-        constructor(collect) {
+        constructor(collect:any) {
             super(/\-\-([a-zA-Z-]{1,})?(\=|\s*)(\'([^\']*)\'|\"([^\"]*)\"|([+-]{0,1}\d+)\s*$|((?!\-)[^\'\" ]*)|)/);
             this.collect = collect;
         }
@@ -111,7 +111,7 @@ export class GetOpts{
      */
     public static parse(str:string, argsConf:argumentCli):string{
         let desc:argumentCliDescriptor = argsConf.getDescriptor();
-        return String(str).regExp(argsConf.getReg(), (dummy,argument)=> argsConf.accept(argument[desc.key],argument[desc.str_nq] || parseInt(argument[desc.number]) || argument[desc.str_dq] || argument[desc.str_sq]));
+        return String(str).regExp(argsConf.getReg(), (dummy:any,argument:any):any=> argsConf.accept(argument[desc.key],argument[desc.str_nq] || parseInt(argument[desc.number]) || argument[desc.str_dq] || argument[desc.str_sq]));
     }
     /***
      * @get :

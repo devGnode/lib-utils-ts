@@ -75,7 +75,7 @@ export module flombok{
      * @param defaultValue true|false
      */
     export function ENUMERABLE( enumerable: boolean, defaultValue: any = null ) {
-        return (target: any, propertyKey: string) => {
+        return (target: any, propertyKey: string):any => {
             let descriptor: PropertyDescriptor;
             if (( descriptor = Object.getOwnPropertyDescriptor(target, propertyKey) || {}) != defaultValue) {
                 descriptor.enumerable = enumerable;
@@ -97,7 +97,7 @@ export module flombok{
     }
 
     export function FINAL(  ) {
-        return (target: any, propertyKey: string) => {
+        return (target: any, propertyKey: string):any => {
             let descriptor: PropertyDescriptor;
             if (( descriptor = Object.getOwnPropertyDescriptor(target, propertyKey) || {})) {
                 descriptor.writable   = false;

@@ -18,13 +18,13 @@ interface BooleanTerminalSink<T> extends sink<T>{
 class MatchKind extends Enum{
 
     @Enum.args(true, true)
-    static ANY;
+    static ANY:MatchKind;
 
     @Enum.args(false, false)
-    static ALL;
+    static ALL:MatchKind;
 
     @Enum.args(true, false)
-    static NONE;
+    static NONE:MatchKind;
 
     private readonly stopOnPredicateMatches:boolean;
     private readonly shortCircuitResult:boolean;

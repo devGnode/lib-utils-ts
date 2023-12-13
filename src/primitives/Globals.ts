@@ -281,6 +281,7 @@ export interface operators<T extends Number,U> {
 export interface primitiveString {
     sizeOf():number
     getType():string
+    toHex():string
 }
 /***
  *
@@ -337,7 +338,7 @@ export interface pointer<T> extends primitiveString{
  */
 export type BitsType    = (BYTE|int8|uint8|WORD|int16|DWORD|int32|uint32|QWORD|int64|float|double) & primitiveNumber
 export type BitsTypeStr = (char|pointer<BitsType|BitsTypeStr>|cString) & primitiveString
-export type BitsTypeArr = /*(ByteArray|int8Array|WordArray|int16Array|DwordArray|int32Array|QwordArray|int64Array|FloatArray|DoubleArray) & */BinArray<BitsType>
+export type BitsTypeArr = BinArray<BitsType>
 //
 export type s_bits      = { [ index:string]:number }
 export type pvoidStruct = { [ index: string]:primitiveNumber|BitsType|BitsTypeStr|s_bits|BitsTypeArr|Function };

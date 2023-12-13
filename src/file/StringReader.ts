@@ -24,8 +24,7 @@ export class StringReader extends Reader{
         return false;
     }
 
-    close(): void {
-    }
+    close(): void {}
 
 }
 Object.package(this);
