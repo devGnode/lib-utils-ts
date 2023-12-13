@@ -1,8 +1,7 @@
-import {Func, optional, predication, consumer,supplier} from "../Interface";
-import {flombok} from "../flombok";
-import {Consumer} from "../Consumer";
+import {Func, optional, predication, consumer, supplier} from "../Interface";
 import {Predication} from "./Predication";
 import {Objects} from "../type/Objects";
+import {Consumer} from "../Consumer";
 /****
  * @class Optional<T>
  * @interface optional<T>
@@ -12,7 +11,6 @@ export class Optional<T> implements optional<T>{
      */
     private static readonly EMPTY = new Optional(void 0);
 
-    @flombok.ENUMERABLE(false)
     protected value : T;
 
     constructor( value : T ) {this.value = value;}

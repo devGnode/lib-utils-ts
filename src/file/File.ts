@@ -165,7 +165,8 @@ export class File {
         if(!this.isDirectory()) throw new SecurityException(`'${this.path}' is not a directory !`);
         list = readdirSync(this.path);
         for(let i=0; i<list.length; i++){
-            if(!(tmp = new File(this.toPath().resolve(new Path(list[i])).resolve().toString())).isDirectory() && (Objects.isNull(filer)||(!Objects.isNull(filer)&&filer.test(list[i])))){
+            tmp = new File(this.toPath().resolve(new Path(list[i])).resolve().toString());
+            if((Objects.isNull(filer)||(!Objects.isNull(filer)&&filer.test(list[i])))){
                 out.push(tmp);
             }
         }

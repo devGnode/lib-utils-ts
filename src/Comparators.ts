@@ -2,10 +2,9 @@ import {Define} from "./Define";
 import {comparable, comparator,comparatorFn} from "./Interface";
 import {NullPointerException, RuntimeException} from "./Exception";
 import {Collections} from "./Collections";
-import {Comparator} from "./Comparator";
 import {Objects} from "./type/Objects";
 /****
- *  1 . By chance, I managed to see the source code so I have decided to stay ISO code
+ *
  */
 //type reversed       = { new<T>(compare: comparator<T>): comparator<T> };
 type NullComparator<T> = {  new<T>(nullFirst:boolean, comparator: comparator<T>): comparator<T> };

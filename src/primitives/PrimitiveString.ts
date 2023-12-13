@@ -35,6 +35,10 @@ export abstract class PrimitiveString {
         /***
          */
         public sizeOf(): number {return this.sizeof}
+
+        toHex(): string {
+            return "";
+        }
     }
     /***
      *
@@ -45,6 +49,10 @@ export abstract class PrimitiveString {
         public toUint8(): uint8 {return new Uint8(this.toString().charCodeAt(0));}
 
         public getCharset():ENCODING{ return ENCODING.BINARY; }
+
+        toHex(): string {
+            return "";
+        }
     }
     /***
      *

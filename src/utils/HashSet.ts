@@ -1,9 +1,10 @@
 import {AbstractSet} from "./AbstractSet";
-import {collection,  Set, spliterator} from '../Interface';
+import {collection, iterator, Set, spliterator} from '../Interface';
 import {Spliterators} from "./Spliterators";
 import {Arrays} from "../type/Arrays";
 import {AbstractCollection} from "./AbstractCollection";
 import {Objects} from "../type/Objects";
+import {HashMap} from "./HashMap";
 /****
  * @HashSet :
  *
@@ -16,6 +17,10 @@ export class HashSet<E> extends AbstractSet<E> implements Set<E>{
      *
      */
     protected value: E[]    = [];
+
+    private static readonly PRESENT:Object = Object();
+
+    private map:HashMap<E, Object>;
     /***
      * @offset: allows to calculate size of array.
      */
@@ -33,6 +38,25 @@ export class HashSet<E> extends AbstractSet<E> implements Set<E>{
             this.offset= value.length;
         }
     }
+
+    public iterator(): iterator<E> {return this.map.keySet().iterator();}
+
+    public size(): number {return this.map.size();}
+
+    public isEmpty(): boolean {return this.map.isEmpty();}
+
+    public contains(o: E): boolean {return this.map.containsKey(o);}
+
+    public add(value: E): boolean {
+        return this.map.put(value, HashSet.PRESENT ) == null;
+    }
+
+    public remove(value: Object): boolean {
+        return this.map.remove(value)==HashSet.PRESENT;
+    }
+
+    public clear() {this.map.clear();}
+
     /****
      * @toRefactor
      */

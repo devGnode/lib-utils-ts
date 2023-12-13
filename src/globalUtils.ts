@@ -83,6 +83,7 @@ String.prototype.orDefault          = Strings.prototype.orDefault;
 String.prototype.stripSlashes       = Strings.prototype.stripSlashes;
 String.prototype.compareTo          = Strings.prototype.compareTo;
 String.prototype.toArray            = Strings.prototype.toArray;
+String.prototype.getBytes           = Strings.prototype.getBytes;
 /***
  * Number extension
  */
@@ -117,4 +118,12 @@ Array.list                          = ArrayA.prototype.list;
 Array.newList                       = ArrayA.prototype.newList;
 Array.sum                           = ArrayA.prototype.sum;
 Array.prototype.equals              = ArrayA.prototype.equals;
+Array.prototype.sum                 = function( ):number{
+    let i:number = 0,  sum:number = 0,
+        len:number = this.length;
+    try{
+        for(; i < len; i++ ) sum += typeof parseInt( this[ i ] ) === "number" ? parseInt( this[ i ] )  : 0;
+    }catch(e){}
+    return sum;
+};
 Object.defineProperty(Array.prototype,"equals",{enumerable: false, writable: true, configurable: true});

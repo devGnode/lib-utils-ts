@@ -2,6 +2,8 @@ import {format} from "util";
 import {comparable, comparator, Func, List} from "../Interface";
 import {ArrayList} from "../utils/ArrayList";
 import {Objects} from "./Objects";
+import {ENCODING} from "../file/charset/ENCODING";
+import {Encoder} from "../file/charset/Encoder";
 /***
  * @Strings : Proxy class, allow to extend the prototype
  * of the native String or string Object. Dont forget to
@@ -71,6 +73,12 @@ export abstract class Strings extends String implements comparable<string>{
     public static repeatStringA( char : string, loop : number = 0 ) : String{ return loop <= 0 || Objects.isNull(loop) ? "" :new Array<any>(loop).fill(char.charAt(0)).join("");}
     /***/
     public toArray():string[]{return this.valueOf().split("");}
+    /***/
+    public getBytes(charsetTo:ENCODING = ENCODING.UTF_8, charsetFrom:ENCODING = ENCODING.UTF_8 ):string[]{
+        let encoder:Encoder = Encoder.from(Objects.requireNotNull(charsetFrom).toString());
+        if(!charsetTo.equals(charsetFrom))encoder.to(charsetTo.toString());
+        return encoder.encodeLoop(this.toString());
+    }
     /**
      * **/
     private static regExp( regexp : RegExp = /.+/, value : string, callback : Func<string,string>  ):string{

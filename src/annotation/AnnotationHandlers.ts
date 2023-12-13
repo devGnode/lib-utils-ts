@@ -159,6 +159,29 @@ export abstract class AnnotationHandlers {
         };
     }
 
+    public static annotationClazz<T extends Annotation, V extends Object>(annotation:Constructor<T>, ...args: Object[]):DecoratorClazz{
+        let inv:Invokable = new class AnnotationClazz implements Invokable{
+
+            public invoke(target: AnnotationTarget<Method>): void {
+                let classT:Constructor<any> = target.getReflector().getDeclaringConstructor();
+
+                // error
+                if(!annotation.isAnnotation())
+                    throw new RuntimeException(
+                        `Bad implementation of annotation [ @${annotation.getPackage().getName()}`+
+                        `.${annotation.getName()} ] from ${classT.toString()}`+
+                        `$${target.getReflector().getName()} : @${annotation.getName()}`+
+                        ` should be it an extends of Annotation class`
+                    );
+                target
+                    .getReflector()
+                    .getDeclaringConstructor()
+                    .getClassLoader()
+                    .setAnnotation(annotation.newInstance(...args));
+            }
+        };
+        return this.clazz(inv);
+    }
 
     public static annotationMethod<T extends Annotation, V extends Object>(annotation:Constructor<T>, ...args: Object[]):MethodDecorator<V>{
         let inv:Invokable = new class AnnotationMethod implements Invokable{
@@ -174,7 +197,7 @@ export abstract class AnnotationHandlers {
                         `$${target.getReflector().getName()} : @${annotation.getName()}`+
                         ` should be it an extends of Annotation class`
                     );
-                target.getReflector().setAnnotation(annotation.newInstance(args));
+                target.getReflector().setAnnotation(annotation.newInstance(...args));
             }
         };
         return this.method(inv);
@@ -183,7 +206,7 @@ export abstract class AnnotationHandlers {
     public static annotationAttribute<T extends Annotation>(annotation:Constructor<T>, ...args: Object[]):AttributeDecorator{
         let inv:Invokable = new class AnnotationMethod implements Invokable{
 
-            public invoke(target: AnnotationTarget<Method>): void {
+            public invoke(target: AnnotationTarget<Field>): void {
                 let classT:Constructor<any> = target.getReflector().getDeclaringConstructor();
 
                 // error
