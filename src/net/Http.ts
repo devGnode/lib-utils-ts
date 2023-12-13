@@ -26,13 +26,14 @@
 import * as http from "http";
 import * as https from "https";
 import {JSONException} from '../Exception';
-import {List, loader, restHttp, wrapHeader} from "../Interface";
+import {iterator, List, loader, MapEntries, restHttp, wrapHeader} from "../Interface";
 import {ArrayList} from "../utils/ArrayList";
 import {Proxy} from "./Proxy";
 import {Cookie} from "./Cookie";
 import "../globalUtils"
 import {Define} from "../Define";
 import {Constructor} from "../Constructor";
+import {HashMap} from "../utils/HashMap";
 /**
  *
  */
@@ -58,7 +59,7 @@ class httpEvent{
             handle;
         return new Promise<Response>((resolve,reject)=>{
             handle = httpA.request(
-                    rest.getHeaderAsObject().toJson(),
+                    rest.getHeaderAsObject(),
                     response=>{
                         let chunk = [];
                        if(rest.getLoader()&&(response.statusCode!==200&&!rest.getFollowRedirect()))rest.getLoader().error(`Failed to download resources, status code : ${response.statusCode}`);
@@ -133,7 +134,7 @@ export class Response {
      *
      */
     /***@toFix*/
-    public getHeaders() : /*HashMap<string,any>*/any{ return null; /* HashMap.of<string,any>(this.response.headers); */ }
+    public getHeaders() : HashMap<string,any>{ return  HashMap.of<string,any>(this.response.headers); }
     /***
      *
      */
@@ -196,10 +197,10 @@ abstract class AbstractRestHttp implements restHttp{
     protected encoding:BufferEncoding      = "utf-8";
     protected proto :httpProtoType         = null;
     /***@toFix*/
-    protected header :/*H ashMap<string,an y>*/any  = null;
+    protected header :HashMap<string,any>  = null;
     protected data :string                 = null;
     protected followRedirect:boolean       = false;
-    private loader:loader              = null;
+    private loader:loader                  = null;
     /***
      *
      */
@@ -207,7 +208,26 @@ abstract class AbstractRestHttp implements restHttp{
     /***
      *
      */
-    public getHeaderAsObject( ) : /* HashMap<string,any> */any {return this.header}
+    public getHeaderAsObject( ) :any {
+        let out:any = {};
+
+        let itr:iterator<MapEntries<string, any>>,
+            entry:MapEntries<string, any>;
+
+        itr = (<HashMap<string,any>>this.header.get("headers")).entrySet().iterator();
+        out.headers = {};
+        while(itr.hasNext()){
+            entry = itr.next();
+            out.headers[ entry.getKey() ] = entry.getValue();
+        }
+        this.header.remove(this.header.get("headers"));
+        itr = this.header.entrySet().iterator();
+        while(itr.hasNext()){
+            entry = itr.next();
+            out[entry.getKey()] = entry.getValue();
+        }
+        return out
+    }
     /***
      *
      */
@@ -268,7 +288,7 @@ abstract class AbstractRestHttp implements restHttp{
 
     public setData(data: string): void { this.data = data; }
     /***@toFix*/
-    public setHeader(header: /* HashMap<string, any> */any): void { this.header = header}
+    public setHeader(header:HashMap<string, any>): void { this.header = header}
 
     public setEncoding( encoding:BufferEncoding):restHttp{this.encoding = encoding; return  this;}
 
@@ -291,7 +311,7 @@ export class RestHttp extends AbstractRestHttp{
      * @param header
      * @param data
      */
-    constructor( header /*: HashMap<string,any> */= null, data : string = null) {
+    constructor( header: HashMap<string,any> = null, data : string = null) {
         super();
         this.header = header;
         this.data   = data;
@@ -313,7 +333,7 @@ export class RestHttps extends RestHttp{
      * @param header
      * @param data
      */
-    constructor(header : /*HashMap<string,any>*/any, data : string) {super(header,data); }
+    constructor(header : HashMap<string,any>, data : string) {super(header,data); }
     /***
      * Constructor
      */
@@ -327,14 +347,14 @@ export class RestHttps extends RestHttp{
  */
 export class HttpOptions<T extends restHttp> implements wrapHeader<T>{
 
-    private options : /*HashMap<string,any>*/any = null// new HashMap<string,any>({});
+    private options :HashMap<string,any> =  new HashMap<string,any>();
     private data : object|string   = null;
-    private params : string        = "";
+    private params :HashMap<string,string> =  new HashMap<string,string>();
     private Class : Constructor<T>;
 
     constructor( value : Function  ){
         this.Class = value.class();
-        this.options.put("headers",/*new HashMap<string,string>({})*/null);
+        this.options.put("headers",new HashMap<string,string>());
         this.withEndPoint("/");
         this.withPort(this.Class.newInstance().getProto().equals("https") ? 443 : 80 );
     }
@@ -525,9 +545,15 @@ export class HttpOptions<T extends restHttp> implements wrapHeader<T>{
      *
      * @param params
      */
-    private packParams( params : object ): string{
-        let chunk="";
-        /*HashMap.of<string,any>(params).each((value,key)=>chunk += "%s=%s&".format(key,encodeURI(String(value))));*/
+    private packParams( params:HashMap<string,string> ): string{
+        let chunk:string="", mapEntry:MapEntries<string, string>,
+            itr:iterator<MapEntries<string, string>> = params.entrySet().iterator();
+
+        while(itr.hasNext()){
+            mapEntry = itr.next();
+            chunk += "%s=%s&".format(mapEntry.getKey(),encodeURI(mapEntry.getValue()));
+        }
+
         return chunk.replace(/\&$/,"");
     }
 
@@ -542,7 +568,7 @@ export class HttpOptions<T extends restHttp> implements wrapHeader<T>{
    public withData(data : object|string, post: boolean = false ): HttpOptions<T>{
         let dat="";
         switch (typeof data) {
-            case "object": dat = post? this.packParams(data):JSON.stringify(data); break;
+            case "object": dat = post? /*this.packParams(data)*/ void 0:JSON.stringify(data); break;
             case "string": dat = data; break;
         }
         this.data = data;
@@ -552,14 +578,19 @@ export class HttpOptions<T extends restHttp> implements wrapHeader<T>{
      * @param params
      */
    public withParams( params : object ): HttpOptions<T>{
-       this.params = "%s%s".format("?",this.packParams(params));
+       //this.params = "%s%s".format("?",this.packParams(params));
        return this;
    }
+
+    public withParam(key:string, value:string ): HttpOptions<T>{
+        this.params.put(key,value);
+        return this;
+    }
    /***
     * @constructor
     */
    public build() : T{
-       if(!this.params.isEmpty()) this.options.put("path", (this.options.get("path")||"/")+this.params );
-        return this.Class.newInstance(this.options,JSON.stringify(this.data));
+       if(!this.params.isEmpty()) this.options.put("path", (this.options.get("path")||"/")+ "%s%s".format("?",this.packParams(this.params)) );
+        return this.Class.newInstance(this.options,typeof this.data === "string" ? this.data : JSON.stringify(this.data));
    }
 }

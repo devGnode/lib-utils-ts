@@ -72,7 +72,7 @@ export class Inet4Address extends InetAddress{
             src[3].valueOf()
     }
     /**/
-    public static of(inetString:string){
+    public static of(inetString:string):Inet4Address{
         let list: List<string> = inetString.explodeAsList(".");
         if( list.size() != 4 ) throw new IllegalArgumentException(`Malformed ip '${inetString}'`);
         try{

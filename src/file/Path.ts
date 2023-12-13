@@ -9,6 +9,7 @@ import { Arrays } from "../type/Arrays";
 import {File} from "./File";;
 /***
  * Wrapper Class
+ * @to-Fix
  */
 export class Path implements comparable<Path>{
 

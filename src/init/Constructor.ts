@@ -23,7 +23,7 @@ export class Constructor {
         return out;
     }
     /***/
-    public newInstance<T>(...args){
+    public newInstance<T>(...args:any[]){
         let tmp:any = new class{};
         tmp.constructor = this.value;
         if(tmp.constructor===undefined)throw new ClassNotFoundException('Class constructor not found !');

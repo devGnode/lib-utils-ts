@@ -1,8 +1,9 @@
 import {OutputStream} from "./OutputStream";
 import {FilterOutputStream} from "./FilterOutputStream";
 import * as os from "os";
-import {BYTE} from "../primitives/Globals";
-
+/***
+ * @to-fix
+ */
 export class PrintStream  extends FilterOutputStream{
 
     private readonly lineSeparator:string = os.EOL;

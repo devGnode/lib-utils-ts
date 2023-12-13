@@ -2,7 +2,6 @@ import {NullPointerException} from "../Exception";
 import {comparator, PrimitiveTypes, Serial} from "../Interface";
 import {flombok} from "../flombok";
 import {Arrays} from "./Arrays";
-import {Optional} from "../utils/Optional";
 /***
  * @Objects : Proxy class, allow to extend the prototype of the native Object.
  * Dont forget to implement your method in global interface ObjectConstructor,
@@ -47,9 +46,7 @@ export abstract class Objects extends Object implements comparator<Object>{
     /***@toFix*/
     @flombok.ENUMERABLEFUNC(false)
     public static nonNull(obj:Object):boolean{
-        return null;/*HashMap.of<string,Object>(obj)
-            .stream()
-            .anyMatch(value=> value !== null && value !== undefined );*/
+        return obj != null;
     }
     /***
      * @requireNotNull<T> :
@@ -137,13 +134,13 @@ export abstract class Objects extends Object implements comparator<Object>{
 
         let tmp: string;
         for (tmp of t1) {
-            p = Objects.typeof(o1[tmp]);
-            q = Objects.typeof(o2[tmp]);
+            p = Objects.typeof((<any>o1)[tmp]);
+            q = Objects.typeof((<any>o2)[tmp]);
 
             if (p.equals("object") && q.equals("object")) {
-                if (!Objects.deepEquals(o1[tmp], o2[tmp])) return false;
-            } else if (!Objects.typeof(o1[tmp]).equals("function") && !Objects.typeof(o1[tmp]).equals("object")) {
-                if (o1[tmp] !== o2[tmp]) return false;
+                if (!Objects.deepEquals((<any>o1)[tmp], (<any>o2)[tmp])) return false;
+            } else if (!Objects.typeof((<any>o1)[tmp]).equals("function") && !Objects.typeof((<any>o1)[tmp]).equals("object")) {
+                if ((<any>o1)[tmp] !== (<any>o2)[tmp]) return false;
             } else if(p.equals("function") && q.equals("function")) void 0;
             else {
                 return false;

@@ -15,6 +15,7 @@ import {Paths} from "./file/Paths";
 import {InputStreamReader} from "./file/InputStreamReader";
 import {FileReader} from "./file/FileReader";
 import {Package} from "./lang/Package";
+import {Optional} from "./utils/Optional";
 /***
  * @Constructor : in Js an Object it's just a function with an object prototype
  * @Interface   : constructor<T>
@@ -80,7 +81,7 @@ export class Constructor<T extends Object> implements ObjectStructure<T> {
     /***
      * @isNestedClass
      */
-    public isNested():boolean{ return Define.of(this.value["@Nested"]).orNull(false); }
+    public isNested():boolean{ return Define.of((<any>this.value)["@Nested"]).orNull(false); }
     /***
      * This method returns name of package class
      * @getPackage
@@ -99,7 +100,7 @@ export class Constructor<T extends Object> implements ObjectStructure<T> {
         if(!this.isEnum()) return null;
         return this
             .getFields(Field.STATIC)
-            .filter(field=>field.getValue().getClass().isEnum())
+            .filter(field=>field!=null&&field.getValue().getClass().isEnum())
             .map(field=><T>field.getValue());
     }
     /***
@@ -159,7 +160,7 @@ export class Constructor<T extends Object> implements ObjectStructure<T> {
      * @params type
      * @returns Field[]
      */
-    public getFields(type: number = (Field.INSTANCED|Field.STATIC)): Field[] {return this.objectReflector.getFields(type);}
+    public getFields(type: number = (Field.INSTANCED|Field.STATIC), acceptNull:boolean = false): Field[] {return this.objectReflector.getFields(type,acceptNull);}
     /***
      * @getField
      * @params name
@@ -167,6 +168,53 @@ export class Constructor<T extends Object> implements ObjectStructure<T> {
      * @returns Field
      */
     public getField(name: string, type: number): Field {return this.objectReflector.getField(name,type);}
+    /***
+     * <pre>
+     *     This method return all annotations
+     *     applied on this field.
+     * </pre>
+     * @getDeclaredAnnotations
+     * @return Annotation[] : All annotation primitive array
+     */
+    public getDeclaredAnnotations():Annotation[]{
+        if(!(<any>this.value)["@Annotations"]) return [];
+        return Optional
+            .ofNullable((<any>this.value)["@Annotations"])
+            .orElse([]);
+    }
+    /***
+     * @getAnnotation
+     * @types T : extends Annotation
+     * @param clazz :  Constructor<T> or Class<T>
+     * @return Annotation
+     */
+    public getAnnotation<T extends Annotation>(clazz:Class<T>|Constructor<T>):T{
+        let annotations:Annotation[];
+        if((annotations = this
+            .getDeclaredAnnotations()
+            .filter(a=>a.getName().equals(clazz.getName())))
+            .length>=1)
+            // return annotation
+            return <T>annotations[0];
+        return null;
+    }
+    /***
+     * @getAnnotation
+     * @types T : extends Annotation
+     * @param clazz :  Constructor<T> or Class<T>
+     * @return Annotation
+     */
+    public getAnnotations<T extends Annotation>(clazz:Class<T>|Constructor<T>):T[]{
+        let annotations:T[];
+        if((annotations = this
+            .getDeclaredAnnotations()
+            .filter(a=>a.getName().equals(clazz.getName()))
+            .map(a=><T>a))
+            .length>=1)
+            // return annotation
+            return annotations;
+        return null;
+    }
     /***
      * @getResourcesAsStream
      * @param name
@@ -178,9 +226,7 @@ export class Constructor<T extends Object> implements ObjectStructure<T> {
             let paths:Path[] = Paths
                 .projectResources()
                 .filter(value=>value.resolve(Paths.get(name)).toFile().isFile());
-
-            if( paths.length === 0 ) name = null;
-            name = Paths.projectResources()[0].resolve(Paths.get(name)).toString();
+            if( paths.length > 0 )  name = Paths.projectResources()[0].resolve(Paths.get(name,"")).toString();
         }
         return new FileReader(name);
     }
@@ -192,14 +238,6 @@ export class Constructor<T extends Object> implements ObjectStructure<T> {
             out += (this.isEnum() ? "enum" : "class")+" ";
         }
         return out+this.getFullName();
-    }
-    /***
-     * @deprecated
-     */
-    public getStaticEntries( ):string[]{
-        let out:string[]=[];
-        for(let entry in this.value)out.push(String(entry));
-        return out;
     }
 }
 Object.package(this);

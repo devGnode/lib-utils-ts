@@ -21,9 +21,9 @@ export class Parameter implements ParameterMember{
 
     public getDeclaringConstructor(): Constructor<any> {return this.parent.getDeclaringConstructor();}
 
-    getModifiers(): number {return 255;}
+    public getModifiers(): number {return 255;}
 
-    getName(): string { return this.name;}
+    public getName(): string { return this.name;}
 
     public getIndex():number{ return this.index; }
 }

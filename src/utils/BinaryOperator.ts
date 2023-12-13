@@ -27,6 +27,6 @@ export abstract class BinaryOperator<T> extends BiFunctionImpl<T, T, T>{
         };
     }
 
-    public call(thisArg: any, ...argArray): any {return this.apply(argArray[0],argArray[1]);}
+    public call(thisArg: any, ...argArray:any[]): any {return this.apply((<any>argArray)[0],(<any>argArray)[1]);}
 }
 Object.package(this);

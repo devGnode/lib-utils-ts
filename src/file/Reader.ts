@@ -22,6 +22,12 @@ export abstract class Reader {
     }
     /***
      *
+     */
+    public nextByte(buffer:number[], offset:number = 0, length:number):number{
+        return 0;
+    }
+    /***
+     *
      * @returns {boolean}
      */
     public abstract ready():boolean;

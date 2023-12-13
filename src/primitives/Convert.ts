@@ -5,7 +5,7 @@ import {Objects} from "../type/Objects";
 import {Encoder} from "../file/charset/Encoder";
 import {Types} from "./Types";
 /***
-* @Convert: Public abstract class
+ *  @Convert: Public abstract class
  *  @ConvertConsumer
  *  @ConvertConsumerRoundedHex
  *  @ConvertConsumerRounded
@@ -200,7 +200,7 @@ export abstract class Convert{
          * @param c
          * @return {string}
          */
-        bound(c):string{return c<0 ? "" : String.repeatString("\x00", c);}
+        bound(c:number):string{return c<0 ? "" : String.repeatString("\x00", c);}
         /***
          * @override
          */

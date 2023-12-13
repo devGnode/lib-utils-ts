@@ -31,7 +31,7 @@ export class ObjectsReflector{
      */
     public getMethod(name:string, type:number = Method.INSTANCED ):Method{
         return Optional
-            .ofNullable( type&Method.STATIC ? this.statics[name]: this.instanced[name] )
+            .ofNullable( type&Method.STATIC ? (<any>this.statics)[name]: (<any>this.instanced)[name] )
             .filter((o:Object)=>Objects.typeof(o).equals("function"))
             .map((value:Function)=> value !== undefined ? new Method(value,name, type, this.clazz, this.construct) : null)
             .orElse(null);
@@ -43,33 +43,38 @@ export class ObjectsReflector{
         let out:Method[]= [];
 
         let enumerate:string[] = Object.getOwnPropertyNames(this.statics);
-        for( let tmp of enumerate )if( typeof this.statics[tmp] === "function" ) out.push(this.getMethod(tmp,Method.STATIC));
+        for( let tmp of enumerate )if( typeof (<any>this.statics)[tmp] === "function" ) out.push(this.getMethod(tmp,Method.STATIC));
         // Static Methods
         enumerate = Object.getOwnPropertyNames(this.instanced);
-        for( let tmp of enumerate )if(typeof this.instanced[tmp]==="function") out.push(this.getMethod(tmp, Method.INSTANCED));
+        for( let tmp of enumerate )if(typeof (<any>this.instanced)[tmp]==="function") out.push(this.getMethod(tmp, Method.INSTANCED));
 
         return out;
     }
     /***
      * @param name
      * @param type
+     * @param acceptNull
      */
-    public getField(name:string, type:number= Field.INSTANCED):Field{
+    public getField(name:string, type:number= Field.INSTANCED, acceptNull:boolean = false):Field{
         return Optional
-            .ofNullable(type&Field.INSTANCED ? this.instanced[name] : this.statics[name] )
-            .map(value=> value !== undefined ? new Field(name, value, type, this.clazz, this.construct) : null)
+            .ofNullable(type&Field.INSTANCED ? (<any>this.instanced)[name] : (<any>this.statics)[name] )
+            .map(value=>{
+                if(acceptNull) return new Field(name, value===undefined?null:value, type, this.clazz, this.construct);
+                return value !== undefined ? new Field(name, value, type, this.clazz, this.construct) : null
+            })
             .orElse(null);
     }
     /***
      * @param type
+     * @param acceptNull
      */
-    public getFields(type: number = (Field.INSTANCED|Field.STATIC)): Field[] {
+    public getFields(type: number = (Field.INSTANCED|Field.STATIC), acceptNull:boolean = false): Field[] {
         let out:Field[] = [];
         if(type&Field.INSTANCED){
-            out = out.concat(Object.keys(this.instanced).map(value=>this.getField(value,Field.INSTANCED)));
+            out = out.concat(Object.keys(this.instanced).map(value=>this.getField(value,Field.INSTANCED,acceptNull)));
         }
         if(type&Field.STATIC){
-            out = out.concat(Object.keys(this.statics).map(value=>this.getField(value,Field.STATIC)));
+            out = out.concat(Object.keys(this.statics).map(value=>this.getField(value,Field.STATIC,acceptNull)));
         }
         return out;
     }

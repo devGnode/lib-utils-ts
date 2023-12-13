@@ -11,6 +11,7 @@ import { InputStreamReader } from "./file/InputStreamReader";
 import {FileReader} from "./file/FileReader";
 import {Package} from "./lang/Package";
 import {Optional} from "./utils/Optional";
+import {Annotation} from "./annotation/Annotation";
 //import {Launcher} from "./lang/misc/Launcher";
 /***
  * @ClassLoader
@@ -45,10 +46,10 @@ export class ClassLoader<T> implements classLoader<T>{
         let target:Object;
 
         target = this.getTarget(Objects.requireNotNull(method));
-        if(target[method.getName()]!==undefined)
+        if((<any>target)[method.getName()]!==undefined)
             throw new RuntimeException(`Method : ${method.getName()} already declared in @${this.value.name}`);
         // When you set a function you can't re-declare it
-        target[method.getName()] = function (...args:Object[]){
+        (<any>target)[method.getName()] = function (...args:Object[]){
             return method.invoke(this,...args);
         };
         Object.defineProperty(target, method.getName(), {writable:false,configurable:false});
@@ -62,15 +63,15 @@ export class ClassLoader<T> implements classLoader<T>{
         if( ( desc = Object.getOwnPropertyDescriptor(target,field.getName()) ) ){
             // if( !desc.writable );
             if( !desc.configurable ){}
-            if( !desc.writable && target[field.getName()]!== undefined ){} // already defined
+            if( !desc.writable && (<any>target)[field.getName()]!== undefined ){} // already defined
         }
-        target[field.getName()] = field.getValue();
+        (<any>target)[field.getName()] = field.getValue();
         // object descriptor
 
         return this;
     }
     /***/
-    public getPackage():Package{return new Package( Optional.ofNullable(this.value["@Package"]).orElse(null) );}
+    public getPackage():Package{return new Package( Optional.ofNullable((<any>this.value)["@Package"]).orElse(null) );}
     /***
      * @getResourcesAsStream
      * @param name
@@ -80,7 +81,26 @@ export class ClassLoader<T> implements classLoader<T>{
         if(!Paths.get(name).isAbsolute())name = Paths.projectResources()[0].resolve(Paths.get(name)).toString();
         return new FileReader(name);
     }
-
+    /***
+     * @getResourcesAsStream
+     * @param {Annotation} annotation
+     * @return {Annotation[]}
+     */
+    public setAnnotation(annotation:Annotation):Annotation[]{
+        Objects.requireNotNull(annotation);
+        Objects.requireNotNull(annotation).setFieldName(this.value.name);
+        if(Objects.isNull( (<any>this.value)["@Annotations"] )) {
+            new Field("@Annotations",[annotation], 1, null,this.value.class())
+                .getFieldDescriptor()
+                .value([annotation])
+                .enumerable(false)
+                .final()
+                .set();
+        }else{
+            (<any>this.value)["@Annotations"].push(annotation);
+        }
+        return (<any>this.value)['@Annotations'];
+    }
     //public setDescriptor(target:string,)
     /***
      * @param argArray

@@ -9,6 +9,7 @@ import {DataGramPacket} from "./DataGramPacket";
 import {Word} from "../primitives/Word";
 import {Inet4Address} from "./Inet4Address";
 import {BinaryInputStream} from "../primitives/BinaryInputStream";
+import {Buffer} from "buffer";
 
 interface receive {
     (socket:DGramSocket, inet:InetSocketAddr, message:BinaryInputStream):void
@@ -33,14 +34,14 @@ export class DGramSocket {
      *
      * @type {null}
      */
-    public lasError:Error = null;
-    public ttl:number     = 60;
+    private lasError:Error = null;
+    private ttl:number     = 2000;
 
     private state:number = DGramSocket.SO_NOT_CONNECTED;
 
     constructor() {
         this.so = dgram.createSocket({type:"udp4",reuseAddr:true});
-        this.so.addListener("error",this.error0);
+        this.so.addListener("error",(error:Error)=>this.error0(error));
     }
 
     private error0(error:Error):void{
@@ -83,11 +84,11 @@ export class DGramSocket {
                     resolve(new DataGramPacket(Inet4Address.of(remote.address), Word.mk(remote.port)).setStringData(message.toString("binary")));
                     valid =true;
                 }
-                if(this.ttl!=null) setTimeout( ()=>{
-                    isTimeout = true;
-                    !valid ? resolve(null) : void 0;
-                }, this.ttl);
             });
+            if(this.ttl!=null) setTimeout( ()=>{
+                isTimeout = true;
+                !valid ? resolve(null) : void 0;
+            }, this.ttl);
         });
     }
     /****
@@ -118,10 +119,20 @@ export class DGramSocket {
         if(this.sBound) throw new SocketException("Socket already bound");
         if(socketAddr==null)  socketAddr = InetSocketAddr.ofPort(0);
         this.resumeLastError();
+        this.address = socketAddr.getAddress();
+        this.port    = socketAddr.getPort();
+
         return new Promise(resolve =>{
+            let isResolve:boolean=false;
             this.so.bind(socketAddr.getPort(), socketAddr.getAddress().getHostAddress(), ()=>{
+                isResolve=true;
                 resolve(this.sBound = this.getLastMessageError()==null);
             });
+            if(this.getLastMessageError()!= null )
+            setTimeout(()=> !isResolve ? resolve(this.sBound = false): void 0, 1000);
+            else{
+                resolve(this.sBound = false);
+            }
         });
     }
     /***
@@ -132,13 +143,15 @@ export class DGramSocket {
         if(this.isClose()) throw new SocketException("Socket is close !");
         this.resumeLastError();
         return new Promise<boolean>(resolve => {
+           // console.log("BOUT", Buffer.from(packet.getData()).toString('hex'));
+          // console.log("BOUT", Buffer.from(packet.getData(),"binary").toString('hex'));
             this.so.send(
-                packet.getData(),
+                Buffer.from(packet.getData(),'binary'),
                 packet.getOffset(),
                 packet.getDataSize(),
                 packet.getPort(),
                 packet.getAddress().getHostAddress(),
-                (error:Error) => resolve( !!(this.lasError = error) )
+                (error:Error) => resolve( (this.lasError = error)==null )
             );
         });
     }
@@ -182,10 +195,10 @@ export class DGramSocket {
         this.lasError= this.address = null;
         this.sBound  = false;
         this.port    = -1;
-        this.ttl     = 60;
+        this.ttl     = 2000;
     }
     /***/
-    public setTTL(ttl:number){this.so.setTTL(this.ttl = ttl);}
+    public setTTL(ttl:number){this.so.setTTL( (this.ttl = ttl)/10 );}
     /**/
     public getTTL():number{ return this.ttl;}
     /***

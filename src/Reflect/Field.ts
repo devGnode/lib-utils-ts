@@ -199,7 +199,6 @@ export class Field implements Member{
             p = ((typePackage=this.getType().getPackage().getName())? typePackage+".":"")+this.getType().getName();
             p = p.replace( (this.level.equals(Field.INSTANCED)?this.getDeclaringClass():this.construct).getPackage().getName()+".", "");
         }
-        // //${this.value!=null? "= "+this.value:""}
         return `${this.level.equals(Field.INSTANCED)? this.getDeclaringClass().getName() :"static "+this.construct.getName()}`+
         `.${this.target}: ${p}`;
     }

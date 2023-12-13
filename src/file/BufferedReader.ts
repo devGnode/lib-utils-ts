@@ -38,6 +38,7 @@ export class BufferedReader extends Reader{
 
             }
         }catch (e) {
+            if(out!=null&&out.length>0) return out;
             return null;
         }
 
@@ -45,21 +46,12 @@ export class BufferedReader extends Reader{
     }
 
     public listOfLines():List<string>{
-        let out:List<string> = null, chr:string;
+        let out:List<string> = new ArrayList(), chr:string;
         try {
-            out = new ArrayList();
-            while( (chr = this.readLine()) ){
-                if( (chr= String.fromCharCode(this.read())) === "\r" ) void 0;
-                else if(chr === "\n" ) break;
-                else{
-                   out.add(chr);
-                }
-
-            }
-        }catch (e) {
-            return null;
+            while( (chr = this.readLine()) )out.add(chr);
+        }catch (e){
+            return out;
         }
-
         return out;
     }
 

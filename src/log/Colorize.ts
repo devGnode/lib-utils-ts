@@ -40,7 +40,7 @@ export class Colorize{
 
     public static of(message:string, color:string){
         let c:Colorize = new Colorize(message);
-        return c[color]==null ? c.black : c[color];
+        return (<any>c)[color]==null ? c.black : (<any>c)[color];
     }
 }
 Object.package(this);
