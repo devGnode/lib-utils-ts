@@ -9,7 +9,6 @@ import {Deprecate} from "../annotation/Deprecate";
  */
 export class Predication<T> implements predicate<T>{
 
-    @Deprecate.Deprecated
     public test: predicateFn<T>;
     /***
      *
