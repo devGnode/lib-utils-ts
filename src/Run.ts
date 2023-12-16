@@ -136,6 +136,39 @@ Risk.resumeFailureLoad();
 import {Log} from "./log/Global";
 import {Loggers} from "./log/Loggers";
 import {Static} from "./Package/Static";
+import {LogLevel} from "./log/LogLevel";
+import { Path } from "./file/Path";
+import {File} from "./file/File";
+/***
+ * logger configuration
+ */
+if(!Objects.isNull(args["log-disabled"])&&args["log-disabled"])Loggers.setLogStdout(false);
+if(!Objects.isNull(args["log-pattern"])){
+    if(!String(args["log-pattern"]).isEmpty()) Loggers.setPattern(String(args["log-pattern"]));
+}
+if(!Objects.isNull(args["log-level"])){
+    try {if(!String(args["log-level"]).isEmpty())
+        Loggers
+            .level(String(args["log-level"])
+            .split(",")
+            .map((value:string)=>LogLevel.valueOf(value)));
+    }catch (e) {
+       throw new RuntimeException(`Invalid log level '${String(args["log-level"])}' : ${e.message}`);
+    }
+}
+if(!Objects.isNull(args["log-color"])){
+    if (!String(args["log-color"]).isEmpty())Loggers.setColorize(String(args["log-color"]).equals("true"))
+}
+if(!Objects.isNull(args["log-output"])){
+    if(!String(args["log-output"]).isEmpty()){
+        let file:File = new File(String(args["log-output"]));
+        if(!file.exists())file.mkdir(true);
+        Loggers.setSaveLog(true);
+        Loggers.setOutputLog(new Path(String(args["log-output"])));
+    }
+}
+/***
+ */
 const constructor:Constructor<any> = Class.forName(/**/classToLoad/**/);
 const log:Log = Loggers.factory(constructor);
 if(Objects.isNull(args.quiet))log.debug(`Class ${Objects.toString(constructor)} loaded with successful `);

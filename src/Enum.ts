@@ -35,7 +35,7 @@ export abstract class Enum{
             .getEnumConstants()
             .filter(v=>v.name().equals(value))
             ).length === 0 )
-            throw new ClassNotFoundException(`Enum.ValueOf : Unknown Enumeration '${value}', not definition.`);
+            throw new ClassNotFoundException(`Enum.ValueOf : Unknown Enumeration '${value}', no definition.`);
 
         return enumF[0];
     }

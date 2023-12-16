@@ -223,7 +223,6 @@ export abstract class Loggers {
      * @param {boolean} stdout
      */
     public static setLogStdout( stdout:boolean = true ):void {
-        console.log("qdsqmskdlmksqmdkmsqkdmsqkdmksmdksqmkd", stdout, Objects.requireNotNull(stdout))
         this.logStdout = Objects.requireNotNull(stdout);
     }
     /***
