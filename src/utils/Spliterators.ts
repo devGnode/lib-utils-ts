@@ -3,10 +3,12 @@ import {Consumer, IntConsumer} from "../Consumer";
 import {NullPointerException} from "../Exception";
 import {Spliterator} from "./Spliterator";
 import {Objects} from "../type/Objects";
+import {Nested} from "../annotation/Nested";
 
 
 export abstract class Spliterators{
 
+    @Nested.NestedClass
     public static EmptySpliterator = class EmptySpliterator<T, S extends spliterator<T>, C> {
         constructor() {}
 
@@ -23,6 +25,7 @@ export abstract class Spliterators{
         };
     };
 
+    @Nested.NestedClass
     public static ArraySpliterator = class ArraySpliterator<T> extends Spliterator<T> {
         readonly array: Object[];
         index:number;
@@ -68,6 +71,7 @@ export abstract class Spliterators{
 
     };
 
+    @Nested.NestedClass
     public static IntArraySpliterator = class IntArraySpliterator extends Spliterator.OfInt{
         readonly array: number[];
         index:number;

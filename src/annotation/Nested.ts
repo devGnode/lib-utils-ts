@@ -13,8 +13,8 @@ export class Nested implements Invokable{
     protected constructor() {}
 
     public invoke(annotation: AnnotationTarget<Field>): void {
-        let pack:string;
-        //console.log("dsdsqdddddddddddddddddddddddddddddddddddddd---*-*-");
+        let pack:string, nestedPack:string,
+            field:Field = annotation.getReflector();
         Objects.requireNotNull(annotation.getReflector().getValue());
         if(!annotation
             .getReflector()
@@ -22,12 +22,16 @@ export class Nested implements Invokable{
             .getType()
             .equals("function")
         ) throw new Exception("Value of [ "+annotation.getReflector()+" ] is not class !");
-        //
-        pack = new PackageException().getLine(annotation.getReflector().getDeclaringConstructor().getName());
-        ///console.log(pack,annotation.getReflector().getDeclaringConstructor().getName());
-        //Package.fromClazzName(annotation.getReflector().getValue(), Objects.requireNotNull(pack));
-        //  Object.defineProperty(annotation.getReflector().getValue(),"@Nested",{value:true,enumerable:false,configurable:false,writable:false});
-       // console.log("isNested",(<Function>annotation.getReflector().getValue()).class().getDeclaringClass().toString(),  annotation.getReflector().getType().isNested())
+
+        pack = new PackageException().getLine(field.getDeclaringConstructor().getName());
+        if(pack == null)nestedPack = `${field.getDeclaringConstructor().toString().replace(/^class\s*/,"")}$`;
+        else{
+            nestedPack = `${Package.cleanUp(pack).toForNamePath()}$`;
+        }
+        if(!(typeof field.getValue().equals("function"))){
+            throw new Exception(`Wrong value of field !`);
+        }
+        Package.fromNested(field.getValue(), nestedPack);
     }
     /***
      * @Annotation : @Nested.NestedClass
@@ -36,7 +40,6 @@ export class Nested implements Invokable{
      * @constructor
      */
     public static NestedClass(target:Function, property:string):void{
-        //console.log("NESTED FOR = ",property)
         AnnotationHandlers.attribute<Nested>(Nested.ONE).call(null,target, property);
     }
 }

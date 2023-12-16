@@ -119,6 +119,7 @@ export abstract class System {
         System.setProperty("user.name",new Path(os.homedir()).getFileName().toString());
         System.setProperty("user.home",os.homedir());
         System.setProperty("file.null",os.release());
+        System.setProperty("deprecation.message","visible");
         //
         this.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
         this.setErr(new PrintStream(new FileOutputStream(FileDescriptor.err)));

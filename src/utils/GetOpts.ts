@@ -1,6 +1,7 @@
 import {MapType} from "../Interface";
 import {BiConsumer} from "../Consumer";
 import {Objects} from "../type/Objects";
+import {Nested} from "../annotation/Nested";
 
 interface argumentCli extends BiConsumer<string, string>{
     setDescriptor(descriptor:Object):void
@@ -22,6 +23,7 @@ export class GetOpts{
 
     private constructor() {}
 
+    @Nested.NestedClass
     public static readonly ArgumentParser = class ArgumentParser implements argumentCli{
 
         readonly reg:RegExp;
@@ -47,6 +49,7 @@ export class GetOpts{
      * @ShortArgs
      * parse short all argument
      */
+    @Nested.NestedClass
     public static readonly ShortArgs = class ShortArg
         extends GetOpts.ArgumentParser implements BiConsumer<string, string>{
         /***
@@ -70,6 +73,7 @@ export class GetOpts{
     /***
      *
      */
+    @Nested.NestedClass
     public static readonly LongArgs = class LongArgs
         extends GetOpts.ArgumentParser implements BiConsumer<string, string>{
         /***
@@ -87,6 +91,7 @@ export class GetOpts{
     /***
      *
      */
+    @Nested.NestedClass
     public static readonly DArgs = class LongArgs
         extends GetOpts.ArgumentParser implements BiConsumer<string, string>{
         /***

@@ -135,12 +135,14 @@ Risk.resumeFailureLoad();
  */
 import {Log} from "./log/Global";
 import {Loggers} from "./log/Loggers";
+import {Static} from "./Package/Static";
 const constructor:Constructor<any> = Class.forName(/**/classToLoad/**/);
 const log:Log = Loggers.factory(constructor);
 if(Objects.isNull(args.quiet))log.debug(`Class ${Objects.toString(constructor)} loaded with successful `);
 /***
  * @Launch app
  */
+Static.resume();
 if(!Objects.isNull(args.mode)&&args.mode.toLowerCase().equals("instance")){
     /***
      * Instance new Object
