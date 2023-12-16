@@ -4,6 +4,7 @@ import {AnnotationHandlers} from "./AnnotationHandlers";
 import { Package } from "../Package/Package";
 import {Path} from "../file/Path";
 import {PackageException} from "../Package/PackageException";
+import {Constructor} from "../Constructor";
 
 export class Packages implements Invokable{
 
@@ -12,13 +13,8 @@ export class Packages implements Invokable{
     protected constructor(o:PackageException) {this.o=o;}
 
     public invoke(annotation: AnnotationTarget<Member>): void {
-
-        console.log("AAklmmm",this.o.getLine(annotation.getReflector().getDeclaringConstructor().getName()),new Path(this.o.getLine(annotation.getReflector().getDeclaringConstructor().getName())).getParent().toForNamePath() )
-        Package.fromClazzName(
-            annotation.getReflector().getDeclaringConstructor().getInstance(),
-            new Path(this.o.getLine(annotation.getReflector().getDeclaringConstructor().getName())).getParent().toString()
-        );
-        console.log("AAklmmm2", annotation.getReflector().getDeclaringConstructor().getName() ,  annotation.getReflector().getDeclaringConstructor().getPackage() );
+        let c:Constructor<Object> = annotation.getReflector().getDeclaringConstructor();
+        Package.fromClazzName(c.getInstance(), new Path(this.o.getLine(c.getName())).getParent().toString());
     }
 
     public static Package( src:string = null ):DecoratorClazz{
